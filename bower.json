@@ -1,0 +1,44 @@
+{
+    "name": "ngData",
+    "version": "0.1.0",
+    "description": "",
+    "homepage": "https://github.com/lykmapipo/ngData",
+    "main": [
+        "dist/ngData.js"
+    ],
+    "authors": [
+        "lykmapipo <lallyelias87@gmail.com>"
+    ],
+    "keywords": [
+        "angular",
+        "authentication",
+        "authorization",
+        "user",
+        "subject",
+        "jwt",
+        "token",
+        "signin",
+        "signout",
+        "permission"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests",
+        "src",
+        "package.json",
+        "Gruntfile.js",
+        "example"
+    ],
+    "dependencies": {
+        "angular": "~1.4.1"
+    },
+    "devDependencies": {
+        "angular": "~1.3.13",
+        "angular-mocks": "~1.3.13",
+        "Faker": "~2.1.2"
+    }
+}
