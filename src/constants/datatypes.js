@@ -9,7 +9,7 @@
      */
     angular
         .module('ngData')
-        .constant('ngDataTypes', {
+        .constant('DataTypes', {
             //borrowed from
             //https://github.com/AndrewJo/sails-sqlite3/blob/master/lib/utils.js#L232
             'string': 'TEXT',

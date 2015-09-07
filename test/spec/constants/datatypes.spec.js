@@ -1,21 +1,16 @@
 'use strict';
 
 describe('ngData:DataTypes', function() {
-    var DataTypes;
 
-    // load the controller's module
+    // load the ngData module
     beforeEach(module('ngData'));
 
-    // inject ngDataTypes
-    beforeEach(inject(function(ngDataTypes) {
-        DataTypes = ngDataTypes;
+
+    it('should exists after being injected', inject(function(DataTypes) {
+        expect(DataTypes).to.exist;
     }));
 
-    it('should exists after being injected', function() {
-        expect(DataTypes).to.exists;
-    });
-
-    it('should have default values', function() {
+    it('should have default values', inject(function(DataTypes) {
         expect(DataTypes.string).to.be.equal('TEXT');
         expect(DataTypes.text).to.be.equal('TEXT');
 
@@ -36,5 +31,5 @@ describe('ngData:DataTypes', function() {
 
         expect(DataTypes.binary).to.be.equal('BLOB');
         expect(DataTypes.bytea).to.be.equal('BLOB');
-    });
+    }));
 });
