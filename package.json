@@ -1,7 +1,7 @@
 {
     "name": "ngData",
     "version": "0.1.0",
-    "description": "",
+    "description": "Simple WEBSQL and cordova SQLITE ORM for ionic and angular applications",
     "homepage": "https://github.com/lykmapipo/ngData",
     "author": "Lally Elias",
     "contributors": [{

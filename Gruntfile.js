@@ -26,7 +26,7 @@ module.exports = function(grunt) {
             meta: {
                 banner: [
                     '/**',
-                    ' * <%= pkg.description %>',
+                    ' * @description <%= pkg.description %>',
                     ' * @version v<%= pkg.version %> - <%= grunt.template.today() %>',
                     ' * @link <%= pkg.homepage %>',
                     ' * @authors <%= pkg.authors.join(", ") %>',
@@ -121,12 +121,11 @@ module.exports = function(grunt) {
                 dist: {
                     files: {
                         'dist/<%= pkg.name %>.js': [
-                            '<%= props.tmp %>/ngaa.js',
+                            '<%= props.tmp %>/ngData.js',
                             '<%= props.tmp %>/constants/**/*.js',
                             '<%= props.tmp %>/providers/**/*.js',
                             '<%= props.tmp %>/services/**/*.js',
-                            '<%= props.tmp %>/directives/**/*.js',
-                            '<%= props.tmp %>/controllers/**/*.js'
+                            '<%= props.tmp %>/directives/**/*.js'
                         ]
                     }
                 }

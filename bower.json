@@ -1,7 +1,7 @@
 {
     "name": "ngData",
     "version": "0.1.0",
-    "description": "",
+    "description": "Simple WEBSQL and cordova SQLITE ORM for ionic and angular applications",
     "homepage": "https://github.com/lykmapipo/ngData",
     "main": [
         "dist/ngData.js"
@@ -11,15 +11,11 @@
     ],
     "keywords": [
         "angular",
-        "authentication",
-        "authorization",
-        "user",
-        "subject",
-        "jwt",
-        "token",
-        "signin",
-        "signout",
-        "permission"
+        "orm",
+        "model",
+        "collection",
+        "activerecord",
+        "record"
     ],
     "license": "MIT",
     "ignore": [
@@ -34,11 +30,12 @@
         "example"
     ],
     "dependencies": {
-        "angular": "~1.4.1"
+        "angular": "~1.4.5"
     },
     "devDependencies": {
-        "angular": "~1.3.13",
-        "angular-mocks": "~1.3.13",
-        "Faker": "~2.1.2"
+        "Faker": "~2.1.2",
+        "angular": "~1.4.5",
+        "angular-mocks": "~1.4.5",
+        "faker": "Faker#~3.0.1"
     }
 }

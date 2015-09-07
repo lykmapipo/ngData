@@ -2,6 +2,8 @@ ngData
 =======
 [![Build Status](https://travis-ci.org/lykmapipo/ngData.svg?branch=master)](https://travis-ci.org/lykmapipo/ngData)
 
+Simple WEBSQL and cordova SQLITE ORM for [ionic]() and [angular]() applications
+
 
 ## Testing
 * Clone this repository
