@@ -9,7 +9,7 @@ Simple WEBSQL and cordova SQLITE ORM for [ionic]() and [angular]() applications
 * Clone this repository
 * Install all development dependencies
 ```sh
-$ npm install --dev && bower install
+$ npm install --save-dev && bower install
 ```
 * Then run test
 ```sh
