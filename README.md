@@ -26,6 +26,9 @@ $ grunt
 ## Contribute
 Fork this repo and push in your ideas. Do not forget to add a bit of test(s) of what value you adding.
 
+## References
+[sqlite blob time](http://www.numericalexpert.com/blog/sqlite_blob_time/sqlite_time_etc.html)
+
 ## Licence
 
 Copyright (c) 2015 lykmapipo && Contributors

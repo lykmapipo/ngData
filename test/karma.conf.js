@@ -23,6 +23,7 @@ module.exports = function(config) {
         files: [
             'bower_components/angular/angular.js',
             'bower_components/angular-uuid4/angular-uuid4.js',
+            'bower_components/ngCordova/dist/ng-cordova.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'bower_components/squel/squel-basic.js',
             'bower_components/Faker/build/build/faker.js',
