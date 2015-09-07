@@ -8,6 +8,9 @@
      *              for ionic and angular applications
      */
     angular
-        .module('ngData', []);
+        .module('ngData', [
+            'ngCordova',
+            'uuid4'
+        ]);
 
 }());

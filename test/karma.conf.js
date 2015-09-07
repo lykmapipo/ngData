@@ -22,7 +22,9 @@ module.exports = function(config) {
         // list of files / patterns to load in the browser
         files: [
             'bower_components/angular/angular.js',
+            'bower_components/angular-uuid4/angular-uuid4.js',
             'bower_components/angular-mocks/angular-mocks.js',
+            'bower_components/squel/squel-basic.js',
             'bower_components/Faker/build/build/faker.js',
             'src/*.js',
             'src/constants/**/*.js',
