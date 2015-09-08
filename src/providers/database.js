@@ -29,7 +29,7 @@
                 //connection magic getter and setter
                 Object.defineProperty(DB, 'connection', {
                     get: function() {
-                        return self.connection
+                        return self.connection;
                     },
                     set: function(connection) {
                         self.connection = connection;

@@ -9,7 +9,7 @@
      */
     angular
         .module('ngData')
-        .factory('Query', function($database, $q) {
+        .factory('Query', function($database) {
             //create a local copy of squel
             //by cloning/copying a global squel
             var query = angular.copy(squel);
@@ -27,21 +27,18 @@
 
             //extending local squel with then executor
             query.cls.QueryBuilder.prototype.then = function( /*resolve, reject*/ ) {
-                /*jshint validthis:true*/
                 var self = this;
 
-                var then = $database.query(self.toString(), undefined).then();
-                then = then['then'].apply(then, arguments);
-                return then;
-
-                /*jshint validthis:false*/
+                var promise = $database.query(self.toString(), undefined).then();
+                promise = promise.then.apply(promise, arguments);
+                return promise;
             };
 
             //extending local squel with catch executor
-            query.cls.QueryBuilder.prototype.catch = function() {
-                var then = this.then();
-                then = then['catch'].apply(then, arguments);
-                return then;
+            query.cls.QueryBuilder.prototype.catch = function(/*reject*/) {
+                var promise = this.then();
+                promise = promise.catch.apply(promise, arguments);
+                return promise;
             };
 
             //export squel query builder
