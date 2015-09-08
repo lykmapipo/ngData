@@ -24,6 +24,7 @@
         "_": false,
         "Knex": false,
         "knex": false,
+        "squel": false,
         "bluebird": false
     }
 }
