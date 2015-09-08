@@ -3,9 +3,6 @@
 //more query examples can be found at
 //https://hiddentao.github.io/squel/
 describe('ngData:Query Builder factory', function() {
-    this.timeout = function() {
-        return 5000;
-    };
 
     // load the ngData module
     beforeEach(module('ngData'));
@@ -59,100 +56,71 @@ describe('ngData:Query Builder factory', function() {
             .to.equal('INSERT INTO users (firstName) VALUES (\'' + firstName + '\')');
     }));
 
-    it('should be able to execute `INSERT` sql query', function(done) {
+    it('should be able to execute `INSERT` sql query', inject(function($rootScope, Query) {
 
-        inject(function($rootScope, Query) {
+        Query
+            .insert()
+            .into('users')
+            .values([{
+                firstName: faker.name.firstName()
+            }])
+            .catch(function(error) {
+                expect(error).to.exist;
+                expect(error.code).to.be.equal(5);
+                expect(error.message).to.be.equal('no such table: users');
+            });
 
-            Query
-                .insert()
-                .into('users')
-                .values([{
-                    firstName: faker.name.firstName()
-                }])
-                .catch(function(error) {
-                    expect(error).to.exist;
-                    expect(error.code).to.be.equal(5);
-                    expect(error.message).to.be.equal('no such table: users');
-                });
+        //wait for propagation
+        $rootScope.$apply();
+    }));
 
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-                done();
-            }, 1000);
+    it('should be able to execute `SELECT` sql query', inject(function($rootScope, Query) {
 
+        Query
+            .select()
+            .from('users')
+            .catch(function(error) {
+                expect(error).to.exist;
+                expect(error.code).to.be.equal(5);
+                expect(error.message).to.be.equal('no such table: users');
+            });
 
-        });
-    });
+        //wait for propagation
+        $rootScope.$apply();
 
-    it('should be able to execute `SELECT` sql query', function(done) {
+    }));
 
-        inject(function($rootScope, Query) {
+    it('should be able to execute `UPDATE` sql query', inject(function($rootScope, Query) {
 
-            Query
-                .select()
-                .from('users')
-                .catch(function(error) {
-                    expect(error).to.exist;
-                    expect(error.code).to.be.equal(5);
-                    expect(error.message).to.be.equal('no such table: users');
-                });
+        Query
+            .update()
+            .table('users')
+            .set('firstName', faker.name.firstName())
+            .catch(function(error) {
+                expect(error).to.exist;
+                expect(error.code).to.be.equal(5);
+                expect(error.message).to.be.equal('no such table: users');
+            });
 
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-                done();
-            }, 1000);
+        //wait for propagation
+        $rootScope.$apply();
 
+    }));
 
-        });
-    });
+    it('should be able to execute `DELETE` sql query', inject(function($rootScope, Query) {
 
-    it('should be able to execute `UPDATE` sql query', function(done) {
+        Query
+            .delete()
+            .from('users')
+            .catch(function(error) {
+                expect(error).to.exist;
+                expect(error.code).to.be.equal(5);
+                expect(error.message).to.be.equal('no such table: users');
+            });
 
-        inject(function($rootScope, Query) {
+        //wait for propagation
+        $rootScope.$apply();
 
-            Query
-                .update()
-                .table('users')
-                .set('firstName', faker.name.firstName())
-                .catch(function(error) {
-                    expect(error).to.exist;
-                    expect(error.code).to.be.equal(5);
-                    expect(error.message).to.be.equal('no such table: users');
-                });
-
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-                done();
-            }, 1000);
-
-
-        });
-    });
-
-    it('should be able to execute `DELETE` sql query', function(done) {
-
-        inject(function($rootScope, Query) {
-
-            Query
-                .delete()
-                .from('users')
-                .catch(function(error) {
-                    expect(error).to.exist;
-                    expect(error.code).to.be.equal(5);
-                    expect(error.message).to.be.equal('no such table: users');
-                });
-
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-                done();
-            }, 1000);
-
-
-        });
-    });
+    }));
 
 });
