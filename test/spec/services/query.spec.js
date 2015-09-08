@@ -50,9 +50,9 @@ describe('ngData:Query Builder factory', function() {
             Query
                 .insert()
                 .into('users')
-                .values({
+                .values([{
                     firstName: faker.name.firstName()
-                })
+                }])
                 .then(function() {})
                 .catch(function(error) {
                     expect(error).to.exist;

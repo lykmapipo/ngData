@@ -14,19 +14,24 @@ module.exports = function(config) {
         basePath: '../',
 
         // testing framework to use (jasmine/mocha/qunit/...)
-        frameworks: ['mocha', 'chai'],
+        frameworks: ['mocha', 'chai', 'phantomjs-shim'],
 
         // reporters configuration 
         reporters: ['mocha'],
 
         // list of files / patterns to load in the browser
         files: [
+            // bower:js
             'bower_components/angular/angular.js',
-            'bower_components/angular-uuid4/angular-uuid4.js',
+            'bower_components/bluebird/js/browser/bluebird.js',
+            'bower_components/lodash/lodash.js',
+            'bower_components/knex/build/knex.js',
             'bower_components/ngCordova/dist/ng-cordova.js',
             'bower_components/squel/squel-basic.js',
-            'bower_components/angular-mocks/angular-mocks.js',
             'bower_components/Faker/build/build/faker.js',
+            'bower_components/angular-mocks/angular-mocks.js',
+            'bower_components/faker/build/build/faker.js',
+            // endbower
             'src/*.js',
             'src/constants/**/*.js',
             'src/providers/**/*.js',
@@ -58,7 +63,8 @@ module.exports = function(config) {
             'karma-phantomjs-launcher',
             'karma-mocha',
             'karma-chai',
-            'karma-mocha-reporter'
+            'karma-mocha-reporter',
+            'karma-phantomjs-shim'
         ],
 
         // Continuous Integration mode

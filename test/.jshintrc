@@ -29,7 +29,10 @@
         "expect": false,
         "inject": false,
         "it": false,
-        "spyOn": false,
         "faker": false,
+        "_": false,
+        "Knex": false,
+        "knex": false,
+        "bluebird": false
     }
 }
