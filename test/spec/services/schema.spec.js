@@ -16,4 +16,27 @@ describe('ngData:schema factory', function() {
         expect(Schema.sqlTypeCast('integer')).to.equal(DataTypes.integer);
     }));
 
+
+    it('should be able to convert JSON Schema attribitute to SQL DDL', inject(function(Schema, DataTypes) {
+        var attributes = {
+            firstName: {
+                type: DataTypes.string,
+                unique: true,
+                defaultsTo: faker.name.firstName()
+            },
+            lastName: {
+                type: 'string'
+            },
+            ssn: {
+                type: 'string',
+                primaryKey: true
+            }
+        };
+
+        var ddl = Schema.build(attributes);
+
+        expect(ddl).to.exist;
+
+    }));
+
 });
