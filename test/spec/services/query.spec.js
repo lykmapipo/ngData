@@ -12,6 +12,7 @@ describe('ngData:Query Builder factory', function() {
 
     it('should be injectable', inject(function(Query) {
         expect(Query).to.exist;
+
         expect(Query.select().then).to.exist;
         expect(Query.select().catch).to.exist;
 
@@ -23,6 +24,7 @@ describe('ngData:Query Builder factory', function() {
 
         expect(Query.delete().then).to.exist;
         expect(Query.delete().catch).to.exist;
+
     }));
 
     it('should be able to build `SELECT` query', inject(function(Query) {
@@ -53,9 +55,9 @@ describe('ngData:Query Builder factory', function() {
                 firstName: firstName
             }).toString();
 
-        expect(query).to.equal('INSERT INTO users (firstName) VALUES (\'' + firstName + '\')');
+        expect(query)
+            .to.equal('INSERT INTO users (firstName) VALUES (\'' + firstName + '\')');
     }));
-
 
     it('should be able to execute `INSERT` sql query', function(done) {
 
@@ -83,7 +85,6 @@ describe('ngData:Query Builder factory', function() {
         });
     });
 
-
     it('should be able to execute `SELECT` sql query', function(done) {
 
         inject(function($rootScope, Query) {
@@ -106,7 +107,6 @@ describe('ngData:Query Builder factory', function() {
 
         });
     });
-
 
     it('should be able to execute `UPDATE` sql query', function(done) {
 
@@ -131,7 +131,6 @@ describe('ngData:Query Builder factory', function() {
 
         });
     });
-
 
     it('should be able to execute `DELETE` sql query', function(done) {
 
