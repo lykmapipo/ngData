@@ -16,6 +16,7 @@
             'text': 'TEXT',
 
             //integer data types
+            'serial': 'INTEGER',
             'boolean': 'INTEGER',
             'int': 'INTEGER',
             'integer': 'INTEGER',
@@ -27,6 +28,7 @@
 
             //text data types
             'date': 'TEXT',
+            'datestamp': 'TEXT'
             'datetime': 'TEXT',
 
             'object': 'TEXT',
@@ -34,6 +36,7 @@
             'array': 'TEXT',
 
             'binary': 'BLOB',
+            'blob': 'BLOB',
             'bytea': 'BLOB'
 
             //if data type is missed default to TEXT
