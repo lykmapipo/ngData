@@ -3,8 +3,8 @@
 
     /**
      * @ngdoc module
-     * @name ngData
-     * @description provide helpers to configure ngData
+     * @name $database
+     * @description database connection manager and provider
      */
     angular
         .module('ngData')
@@ -16,7 +16,7 @@
             self.name = 'db';
             self.description = 'Database';
             self.version = '1.0.0';
-            self.size = 4 * 1024 * 1024;
+            self.size = -1;
 
             //database connection reference
             self.connection = null;

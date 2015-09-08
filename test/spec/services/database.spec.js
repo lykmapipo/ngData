@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngData:$database', function() {
+describe('ngData:$database factory', function() {
     this.timeout = function() {
         return 5000;
     };
