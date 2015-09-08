@@ -14,6 +14,17 @@
             //by cloning/copying a global squel
             var query = angular.copy(squel);
 
+            //extend insert queries with `values(Array|Object)` builder
+            query.cls.Insert.prototype.values = function(values) {
+                //this refer to insert query context
+                if (angular.isArray(values)) {
+                    this.setFieldsRows(values);
+                } else {
+                    this.setFields(values);
+                }
+                return this;
+            };
+
             //extending local squel with then executor
             query.cls.QueryBuilder.prototype.then = function(resolve, reject) {
                 /*jshint validthis:true*/
