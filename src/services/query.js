@@ -35,7 +35,7 @@
             };
 
             //extending local squel with catch executor
-            query.cls.QueryBuilder.prototype.catch = function(/*reject*/) {
+            query.cls.QueryBuilder.prototype.catch = function( /*reject*/ ) {
                 var promise = this.then();
                 promise = promise.catch.apply(promise, arguments);
                 return promise;
