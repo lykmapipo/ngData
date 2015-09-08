@@ -16,7 +16,7 @@
             self.name = 'db';
             self.description = 'Database';
             self.version = '1.0.0';
-            self.size = -1;
+            self.size = 4*1024*1024;
 
             //database connection reference
             self.connection = null;
@@ -41,7 +41,7 @@
                  * @return {Object} database connection
                  */
                 DB.connect = function() {
-                    //check if there is 
+                    //check if there is
                     //exsting database connection
                     if (self.connection) {
                         return;
@@ -58,7 +58,7 @@
                         });
                     }
 
-                    //otherwise open WebSQL database connection 
+                    //otherwise open WebSQL database connection
                     else {
                         self.connection =
                             window.openDatabase(
