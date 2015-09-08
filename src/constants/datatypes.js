@@ -28,7 +28,7 @@
 
             //text data types
             'date': 'TEXT',
-            'datestamp': 'TEXT'
+            'datestamp': 'TEXT',
             'datetime': 'TEXT',
 
             'object': 'TEXT',

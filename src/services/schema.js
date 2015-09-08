@@ -52,8 +52,8 @@
 
                     var str = [
                         '"' + key + '"', // attribute name
-                        SchemaBuilder.sqlTypeCast(attr.type), // attribute type
-                        attr.primaryKey ? 'PRIMARY KEY' : '', // primary key
+                        SchemaBuilder.sqlTypeCast(attribute.type), // attribute type
+                        attribute.primaryKey ? 'PRIMARY KEY' : '', // primary key
                         attribute.unique ? 'UNIQUE' : '', // unique constraint
                         attribute.defaultsTo ? 'DEFAULT "' + attribute.defaultsTo + '"' : ''
                     ].join(' ').trim();
