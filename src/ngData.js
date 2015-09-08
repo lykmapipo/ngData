@@ -9,8 +9,7 @@
      */
     angular
         .module('ngData', [
-            'ngCordova',
-            'uuid4'
+            'ngCordova'
         ]);
 
 }());

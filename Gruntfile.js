@@ -35,6 +35,25 @@ module.exports = function(grunt) {
                     ''
                 ].join('\n')
             },
+            // Automatically inject Bower components into the app
+            wiredep: {
+                test: {
+                    devDependencies: true,
+                    src: '<%= karma.unit.configFile %>',
+                    ignorePath: /\.\.\//,
+                    fileTypes: {
+                        js: {
+                            block: /(([\s\t]*)\/{2}\s*?bower:\s*?(\S*))(\n|\r|.)*?(\/{2}\s*endbower)/gi,
+                            detect: {
+                                js: /'(.*\.js)'/gi
+                            },
+                            replace: {
+                                js: '\'{{filePath}}\','
+                            }
+                        }
+                    }
+                }
+            },
             //clean environments
             clean: {
                 dist: {
@@ -71,6 +90,7 @@ module.exports = function(grunt) {
                     src: ['<%= props.example %>/**/*.js']
                 }
             },
+
             //watch environment
             watch: {
                 bower: {
@@ -112,6 +132,8 @@ module.exports = function(grunt) {
                     ]
                 }
             },
+
+            //concat task configuration
             concat: {
                 options: {
                     banner: '<%= meta.banner %>\n',
@@ -145,12 +167,15 @@ module.exports = function(grunt) {
                     }]
                 }
             },
+
+            //karma task configuration
             karma: {
                 unit: {
                     configFile: '<%= props.test %>/karma.conf.js',
                     singleRun: true
                 }
             },
+
             // The actual grunt server settings
             connect: {
                 options: {

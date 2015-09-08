@@ -21,7 +21,9 @@
     "globals": {
         "angular": false,
         "faker": false,
-        "moment": false,
-        "KJUR": false
+        "_": false,
+        "Knex": false,
+        "knex": false,
+        "bluebird": false
     }
 }

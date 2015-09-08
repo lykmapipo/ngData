@@ -31,7 +31,9 @@
     ],
     "dependencies": {
         "angular": "~1.4.5",
-        "angular-uuid4": "~0.3.0",
+        "bluebird": "~2.9.34",
+        "knex": "~0.8.6",
+        "lodash": "~3.10.1",
         "ngCordova": "~0.1.20-alpha",
         "squel": "~4.1.1"
     },
@@ -43,6 +45,13 @@
     "overrides": {
         "squel": {
             "main": "squel-basic.js"
+        },
+        "knex": {
+            "main": "build/knex.js",
+            "dependencies": {
+                "bluebird": "~2.9.34",
+                "lodash": "~3.10.1"
+            }
         }
     }
 }
