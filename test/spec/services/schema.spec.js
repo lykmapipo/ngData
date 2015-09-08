@@ -12,4 +12,8 @@ describe('ngData:schema factory', function() {
         expect(Schema.build).to.exist;
     }));
 
+    it('should be able to cast js types to sql type', inject(function(Schema, DataTypes) {
+        expect(Schema.sqlTypeCast('integer')).to.equal(DataTypes.integer);
+    }));
+
 });
