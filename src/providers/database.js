@@ -16,7 +16,7 @@
             self.name = 'db';
             self.description = 'Database';
             self.version = '1.0.0';
-            self.size = 4*1024*1024;
+            self.size = 4 * 1024 * 1024;
 
             //database connection reference
             self.connection = null;
