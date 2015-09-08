@@ -1,9 +1,6 @@
 'use strict';
 
 describe('ngData:$database factory', function() {
-    this.timeout = function() {
-        return 5000;
-    };
 
     // load the ngData module
     beforeEach(module('ngData'));
@@ -22,26 +19,19 @@ describe('ngData:$database factory', function() {
     }));
 
 
-    it('should be able to execute plain sql query', function(done) {
+    it('should be able to execute plain sql query', inject(function($rootScope, $database) {
 
-        inject(function($rootScope, $database) {
+        $database
+            .query('SELECT * FROM users')
+            .catch(function(error) {
+                expect(error).to.exist;
+                expect(error.code).to.be.equal(5);
+                expect(error.message).to.be.equal('no such table: users');
+            });
 
-            $database
-                .query('SELECT * FROM users')
-                .catch(function(error) {
-                    expect(error).to.exist;
-                    expect(error.code).to.be.equal(5);
-                    expect(error.message).to.be.equal('no such table: users');
-                });
+        //wait for propagation
+        $rootScope.$apply();
 
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-                done();
-            }, 1000);
-
-
-        });
-    });
+    }));
 
 });
