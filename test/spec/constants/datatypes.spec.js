@@ -5,7 +5,6 @@ describe('ngData:DataTypes', function() {
     // load the ngData module
     beforeEach(module('ngData'));
 
-
     it('should exists after being injected', inject(function(DataTypes) {
         expect(DataTypes).to.exist;
     }));

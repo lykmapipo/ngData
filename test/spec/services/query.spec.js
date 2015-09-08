@@ -13,6 +13,16 @@ describe('ngData:Query Builder factory', function() {
     it('should be injectable', inject(function(Query) {
         expect(Query).to.exist;
         expect(Query.select().then).to.exist;
+        expect(Query.select().catch).to.exist;
+
+        expect(Query.insert().then).to.exist;
+        expect(Query.insert().catch).to.exist;
+
+        expect(Query.update().then).to.exist;
+        expect(Query.update().catch).to.exist;
+
+        expect(Query.delete().then).to.exist;
+        expect(Query.delete().catch).to.exist;
     }));
 
     it('should be able to build `SELECT` query', inject(function(Query) {
@@ -21,9 +31,13 @@ describe('ngData:Query Builder factory', function() {
     }));
 
     it('should be able to build `UPDATE` query', inject(function(Query) {
+        var firstName = faker.name.firstName();
+
         var query =
-            Query.update().table('users').set('firstName', 'abcdef').toString();
-        expect(query).to.equal('UPDATE users SET firstName = \'abcdef\'');
+            Query.update().table('users').set('firstName', firstName).toString();
+
+        expect(query)
+            .to.equal('UPDATE users SET firstName = \'' + firstName + '\'');
     }));
 
     it('should be able to build `DELETE` query', inject(function(Query) {
@@ -53,7 +67,6 @@ describe('ngData:Query Builder factory', function() {
                 .values([{
                     firstName: faker.name.firstName()
                 }])
-                .then(function() {})
                 .catch(function(error) {
                     expect(error).to.exist;
                     expect(error.code).to.be.equal(5);
@@ -78,7 +91,6 @@ describe('ngData:Query Builder factory', function() {
             Query
                 .select()
                 .from('users')
-                .then(function() {})
                 .catch(function(error) {
                     expect(error).to.exist;
                     expect(error.code).to.be.equal(5);
@@ -104,7 +116,6 @@ describe('ngData:Query Builder factory', function() {
                 .update()
                 .table('users')
                 .set('firstName', faker.name.firstName())
-                .then(function() {})
                 .catch(function(error) {
                     expect(error).to.exist;
                     expect(error.code).to.be.equal(5);
@@ -129,7 +140,6 @@ describe('ngData:Query Builder factory', function() {
             Query
                 .delete()
                 .from('users')
-                .then(function() {})
                 .catch(function(error) {
                     expect(error).to.exist;
                     expect(error.code).to.be.equal(5);

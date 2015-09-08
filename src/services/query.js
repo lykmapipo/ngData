@@ -26,25 +26,22 @@
             };
 
             //extending local squel with then executor
-            query.cls.QueryBuilder.prototype.then = function(resolve, reject) {
+            query.cls.QueryBuilder.prototype.then = function( /*resolve, reject*/ ) {
                 /*jshint validthis:true*/
                 var self = this;
 
-                //execute a current query
-                var promise = $q(function(_resolve, _reject) {
-                    //this refer to squel instance
-                    $database.query(self.toString(), undefined)
-                        .then(function(results) {
-                            _resolve(results);
-                        }).catch(function(error) {
-                            _reject(error);
-                        });
-                });
-
-                //return promise for resolution
-                return promise.then(resolve, reject);
+                var then = $database.query(self.toString(), undefined).then();
+                then = then['then'].apply(then, arguments);
+                return then;
 
                 /*jshint validthis:false*/
+            };
+
+            //extending local squel with catch executor
+            query.cls.QueryBuilder.prototype.catch = function() {
+                var then = this.then();
+                then = then['catch'].apply(then, arguments);
+                return then;
             };
 
             //export squel query builder
