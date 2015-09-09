@@ -9,7 +9,7 @@ describe('ngData:DataTypes', function() {
         expect(DataTypes).to.exist;
     }));
 
-    it('should have default values', inject(function(DataTypes) {
+    it('should be able to map common JS data types to their respective SQL data types', inject(function(DataTypes) {
         expect(DataTypes.String).to.be.equal('TEXT');
 
         expect(DataTypes.Boolean).to.be.equal('INTEGER');
