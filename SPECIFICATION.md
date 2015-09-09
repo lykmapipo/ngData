@@ -1,5 +1,13 @@
 # Specification
 
+$collection
+$model
+$schema
+$migrationprovider
+$seedprovider
+$databaseprovider
+    pool(max,min)
+
 ## Connection
 - Establish data base connection based on environment
     + SQLite for ionic
@@ -14,7 +22,7 @@ Apply latest migration and provide other utilities for:
 - etc
 
 ### Data Seeding
-- seed a 
+- seed a table
 
 ## Collection
 Collection of models.
@@ -98,15 +106,32 @@ Collection of models.
 //User collection
 angular
     .module('ngPOS')
-    .factory('User',function($ngDB){
-        return $ngDB.model('User',{tableName:'users'});
+    .factory('User',function(ngData){
+        return ngData.model('User',{
+            tableName:'users',
+            properties: {
+                firstName: {
+                    type: String,
+                    unique: true,
+                    defaultsTo: defaultsTo
+                },
+                lastName: {
+                    type: String
+                },
+                ssn: {
+                    type: String,
+                    primaryKey: true,
+                    index: true
+                },
+                fullName:function(){}
+            },
+            withNoSSN: function(){}
+        });
     }); 
 ```
 
-## Model
-Object relational mapper
-
+## Model methods
 - `save():Promise`
-- `remove()|del()|delete():Promise`
+- `remove():Promise`
 - `toJSON():Object`
 - `toObject():Object`

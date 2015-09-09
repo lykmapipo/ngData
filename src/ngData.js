@@ -9,7 +9,8 @@
      */
     angular
         .module('ngData', [
-            'ngCordova'
+            'ngCordova',
+            'bt.jsonValidator'
         ]);
 
 }());

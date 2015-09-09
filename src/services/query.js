@@ -17,7 +17,7 @@
             //extend insert queries with `values(Array|Object)` builder
             query.cls.Insert.prototype.values = function(values) {
                 //this refer to insert query context
-                if (angular.isArray(values)) {
+                if (_.isArray(values)) {
                     this.setFieldsRows(values);
                 } else {
                     this.setFields(values);

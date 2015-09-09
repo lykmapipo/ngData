@@ -4,37 +4,41 @@
     /**
      * @ngdoc constant
      * @name ngDataTypes
-     * @description provide common datatypes that can be used in WEBSQL and SQLITE
-     *              databases. 
+     * @description common data types that can be used in WebSQL and SQLite
+     *              and their corresponding JS types. 
      */
     angular
         .module('ngData')
         .constant('DataTypes', {
-            //borrowed from
-            //https://github.com/AndrewJo/sails-sqlite3/blob/master/lib/utils.js#L232
-            'string': 'TEXT',
-            'text': 'TEXT',
+            //map for JS to SQL data types
+
+            //string datatypes
+            'String': 'TEXT',
 
             //integer data types
-            'boolean': 'INTEGER',
-            'int': 'INTEGER',
-            'integer': 'INTEGER',
+            'Boolean': 'INTEGER',
+            'Integer': 'INTEGER',
 
             //real data types
-            'number': 'REAL',
-            'float': 'REAL',
-            'double': 'REAL',
+            'Number': 'REAL',
 
             //text data types
-            'date': 'TEXT',
-            'datetime': 'TEXT',
+            'Date': 'TEXT',
 
-            'object': 'TEXT',
-            'json': 'TEXT',
-            'array': 'TEXT',
+            'Object': 'TEXT',
+            'Function': 'TEXT',
+            'Array': 'TEXT',
+            'Int8Array': 'TEXT',
+            'Uint8Array': 'TEXT',
+            'Uint8ClampedArray': 'TEXT',
+            'Int16Array': 'TEXT',
+            'Uint16Array': 'TEXT',
+            'Int32Array': 'TEXT',
+            'Uint32Array': 'TEXT',
+            'Float32Array': 'TEXT',
+            'Float64Array': 'TEXT',
 
-            'binary': 'BLOB',
-            'bytea': 'BLOB'
+            'Blob': 'BLOB'
 
             //if data type is missed default to TEXT
         });
