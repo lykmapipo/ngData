@@ -63,6 +63,8 @@ describe('ngData:Query Builder factory', function() {
             .into('users')
             .values([{
                 firstName: faker.name.firstName()
+            }, {
+                firstName: faker.name.firstName()
             }])
             .catch(function(error) {
                 expect(error).to.exist;
