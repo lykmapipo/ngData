@@ -32,6 +32,7 @@
     "dependencies": {
         "angular": "~1.4.5",
         "angular-json-validator": "~1.0.0",
+        "faker": "Faker#~3.0.1",
         "lodash": "~3.10.1",
         "ngCordova": "~0.1.20-alpha",
         "squel": "~4.1.1"
