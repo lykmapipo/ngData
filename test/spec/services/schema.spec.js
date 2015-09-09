@@ -76,27 +76,57 @@ describe('ngData:Schema', function() {
         expect(sqlObject).to.equal(JSON.stringify(objecti));
     }));
 
+    describe('Schema Builder', function() {
 
-    it('should be able to drop existing table', function(done) {
-        inject(function($rootScope, Schema) {
+        it('should be able to drop existing table', function(done) {
+            inject(function($rootScope, Schema) {
 
-            expect(Schema.dropTable).to.exist;
-            expect(Schema.dropTable).to.be.a('function');
+                expect(Schema.dropTable).to.exist;
+                expect(Schema.dropTable).to.be.a('function');
 
-            Schema
-                .dropTable('users')
-                .catch(function(error) {
-                    expect(error).to.exist;
-                    expect(error.message).to.equal('no such table: users');
-                    done();
-                });
+                Schema
+                    .dropTable('users')
+                    .catch(function(error) {
+                        expect(error).to.exist;
+                        expect(error.message).to.equal('no such table: users');
+                        done();
+                    });
 
-            setTimeout(function() {
-                $rootScope.$apply();
-            }, 1000);
+                setTimeout(function() {
+                    $rootScope.$apply();
+                }, 1000);
 
+            });
         });
-    });
 
+
+        it('should be able to add a column to an existing table', function(done) {
+            inject(function($rootScope, Schema) {
+
+                expect(Schema.addColumn).to.exist;
+                expect(Schema.addColumn).to.be.a('function');
+
+                Schema
+                    .addColumn('users', {
+                        firstName: {
+                            type: String,
+                            unique: true,
+                            defaultsTo: defaultsTo
+                        }
+                    })
+                    .catch(function(error) {
+                        expect(error).to.exist;
+                        expect(error.message).to.equal('no such table: users');
+                        done();
+                    });
+
+                setTimeout(function() {
+                    $rootScope.$apply();
+                }, 1000);
+
+            });
+        });
+
+    });
 
 });

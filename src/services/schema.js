@@ -146,6 +146,48 @@
             };
 
 
+            /**
+             * @description  add a new column to the table
+             * @param {String}   table    name of the table
+             * @param {[type]}   attrDef  attribute definition
+             * @return {Promise} 
+             */
+            Schema.addColumn = function(table, attrDef) {
+                //TODO escape table name
+
+                //prepare column schema
+                var schema = Schema.propertiesDDL(attrDef);
+
+                //TODO fix unique column alter
+
+                // build query
+                var query = 'ALTER TABLE ' + table + ' ADD COLUMN ' + schema;
+
+                //execute query
+                return $database.query(query, undefined);
+
+            };
+
+
+            // Remove attribute from table
+            // In SQLite3, this is tricky since there's no support for DROP COLUMN 
+            // in ALTER TABLE. We'll have to rename the old table, create a new table
+            // with the same name minus the column and copy all the data over.
+            Schema.removeColumn = function(table /*, attrName*/ ) {
+                //TODO escape table name
+
+                //query to rename table
+                var oldTableName = table + '_old_';
+                var renameTableQuery =
+                    'ALTER TABLE ' + table + ' RENAME TO ' + oldTableName;
+
+                //TODO create a new table using existing schema
+                //TODO copy all data from old table to new table
+
+                return $database.query(renameTableQuery, undefined);
+            };
+
+
             return Schema;
         });
 

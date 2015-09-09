@@ -33,6 +33,9 @@ Fork this repo and push in your ideas. Do not forget to add a bit of test(s) of 
 - [JSON Schema Core](http://json-schema.org/latest/json-schema-core.html)
 - [JSON Schema Validation](http://json-schema.org/latest/json-schema-validation.html)
 
+## TODO
+- [ ] Add SQL query logging
+
 ## Licence
 
 Copyright (c) 2015 lykmapipo && Contributors
