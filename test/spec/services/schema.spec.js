@@ -1,7 +1,11 @@
 'use strict';
 
 
-describe('ngData:schema factory', function() {
+describe('ngData:Schema', function() {
+    this.timeout = function() {
+        return 4000;
+    };
+
     var defaultsTo = faker.name.firstName();
 
     var properties = {
@@ -71,5 +75,28 @@ describe('ngData:schema factory', function() {
         var sqlObject = Schema.toSQLValue(objecti);
         expect(sqlObject).to.equal(JSON.stringify(objecti));
     }));
+
+
+    it('should be able to drop existing table', function(done) {
+        inject(function($rootScope, Schema) {
+
+            expect(Schema.dropTable).to.exist;
+            expect(Schema.dropTable).to.be.a('function');
+
+            Schema
+                .dropTable('users')
+                .catch(function(error) {
+                    expect(error).to.exist;
+                    expect(error.message).to.equal('no such table: users');
+                    done();
+                });
+
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 1000);
+
+        });
+    });
+
 
 });

@@ -81,7 +81,7 @@
                     DB.connect();
 
                     return $cordovaSQLite
-                        .execute(self.connection, query, bindings);
+                        .execute(self.connection, query, bindings).then();
                 };
 
                 //export database

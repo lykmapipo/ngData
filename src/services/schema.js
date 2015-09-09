@@ -8,7 +8,7 @@
      */
     angular
         .module('ngData')
-        .factory('Schema', function(DataTypes) {
+        .factory('Schema', function(DataTypes, $database) {
             var Schema = {};
 
             /**
@@ -124,6 +124,25 @@
                 //TODO add blob convertion support
 
                 return value;
+            };
+
+
+            /**
+             * @function
+             * @description drop a schema database table
+             * @return {Promise} promise that will eventually resolve with the 
+             *                           result of drop a table
+             *
+             * @private
+             */
+            Schema.dropTable = function(tableName) {
+                // TODO escape table name
+
+                // prepare drop query
+                var query = 'DROP TABLE ' + tableName;
+
+                // run the query
+                return $database.query(query, undefined);
             };
 
 
