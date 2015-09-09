@@ -38,7 +38,6 @@
         "squel": "~4.1.1"
     },
     "devDependencies": {
-        "Faker": "~2.1.2",
         "angular-mocks": "~1.4.5",
         "faker": "Faker#~3.0.1"
     },
