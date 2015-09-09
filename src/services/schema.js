@@ -37,7 +37,7 @@
 
                 // iterate properties and 
                 // build SQL DDL per each property
-                Object.keys(properties).forEach(function(key) {
+                _.keys(properties).forEach(function(key /*property name*/ ) {
                     var property = {};
 
                     // normalize simple key/value property
@@ -49,6 +49,7 @@
                     }
 
                     // check if property support autoincrement
+                    // and default it to primary key
                     if (property.autoIncrement) {
                         property.type = 'Integer';
                         property.primaryKey = true;
@@ -88,6 +89,41 @@
                     }
                 }));
 
+            };
+
+
+            /**
+             * @function
+             * @description transform a JS type to corresponding SQL type
+             * @param {Object} value value to be converted to SQL value
+             * @return {Object} SQL value for the given JS value
+             * @private
+             */
+            Schema.toSQLValue = function(value) {
+
+                // cast dates to SQL date
+                if (_.isDate(value)) {
+                    value = value.toUTCString();
+                }
+
+                // cast functions to strings
+                if (_.isFunction(value)) {
+                    value = value.toString();
+                }
+
+                // cast Arrays as strings
+                if (_.isArray(value) || _.isTypedArray(value)) {
+                    value = JSON.stringify(value);
+                }
+
+                // stringify object value
+                if (_.isPlainObject(value)) {
+                    value = JSON.stringify(value);
+                }
+
+                //TODO add blob convertion support
+
+                return value;
             };
 
 

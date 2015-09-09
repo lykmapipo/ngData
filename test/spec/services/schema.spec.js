@@ -57,4 +57,19 @@ describe('ngData:schema factory', function() {
 
     }));
 
+    it('should be able to convert JS value to their respective SQL value', inject(function(Schema) {
+
+        var date = new Date();
+        var sqlDate = Schema.toSQLValue(date);
+        expect(sqlDate).to.equal(date.toUTCString());
+
+        var arrayy = [1, 2, 3, 4];
+        var sqlArray = Schema.toSQLValue(arrayy);
+        expect(sqlArray).to.equal(JSON.stringify(arrayy));
+
+        var objecti = faker.helpers.contextualCard();
+        var sqlObject = Schema.toSQLValue(objecti);
+        expect(sqlObject).to.equal(JSON.stringify(objecti));
+    }));
+
 });

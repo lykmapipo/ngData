@@ -26,6 +26,7 @@
             'Date': 'TEXT',
 
             'Object': 'TEXT',
+            'Function': 'TEXT',
             'Array': 'TEXT',
             'Int8Array': 'TEXT',
             'Uint8Array': 'TEXT',
