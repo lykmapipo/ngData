@@ -8,21 +8,22 @@ describe('ngData:schema factory', function() {
 
     it('should be injectable', inject(function(Schema) {
         expect(Schema).to.exist;
-        expect(Schema.sqlTypeCast).to.exist;
-        expect(Schema.build).to.exist;
+        expect(Schema.toSQLType).to.exist;
+        expect(Schema.toDDL).to.exist;
     }));
 
     it('should be able to cast js types to sql type', inject(function(Schema, DataTypes) {
-        expect(Schema.sqlTypeCast('integer')).to.equal(DataTypes.integer);
+        expect(Schema.toSQLType('integer')).to.equal(DataTypes.integer);
     }));
 
 
-    it('should be able to convert JSON Schema attribitute to SQL DDL', inject(function(Schema, DataTypes) {
+    it('should be able to convert JSON Schema attributes to SQL DDL', inject(function(Schema, DataTypes) {
+        var defaultsTo = faker.name.firstName();
         var attributes = {
             firstName: {
                 type: DataTypes.string,
                 unique: true,
-                defaultsTo: faker.name.firstName()
+                defaultsTo: defaultsTo
             },
             lastName: {
                 type: 'string'
@@ -33,7 +34,12 @@ describe('ngData:schema factory', function() {
             }
         };
 
-        var ddl = Schema.build(attributes);
+        var ddl = Schema.toDDL(attributes);
+
+        var expectedDDL =
+            'firstName TEXT  UNIQUE DEFAULT "' + defaultsTo + '", lastName TEXT, ssn TEXT PRIMARY KEY';
+
+        expect(ddl).to.equal(expectedDDL);
 
         expect(ddl).to.exist;
 

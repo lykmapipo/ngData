@@ -23,9 +23,9 @@ module.exports = function(config) {
         files: [
             // bower:js
             'bower_components/angular/angular.js',
-            'bower_components/bluebird/js/browser/bluebird.js',
+            'bower_components/tv4/tv4.js',
+            'bower_components/angular-json-validator/angular-json-validator.js',
             'bower_components/lodash/lodash.js',
-            'bower_components/knex/build/knex.js',
             'bower_components/ngCordova/dist/ng-cordova.js',
             'bower_components/squel/squel-basic.js',
             'bower_components/Faker/build/build/faker.js',

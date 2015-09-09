@@ -1,5 +1,13 @@
 # Specification
 
+$collection
+$model
+$schema
+$migrationprovider
+$seedprovider
+$databaseprovider
+    pool(max,min)
+
 ## Connection
 - Establish data base connection based on environment
     + SQLite for ionic
@@ -14,7 +22,7 @@ Apply latest migration and provide other utilities for:
 - etc
 
 ### Data Seeding
-- seed a 
+- seed a table
 
 ## Collection
 Collection of models.
