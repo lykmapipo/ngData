@@ -29,6 +29,7 @@ Fork this repo and push in your ideas. Do not forget to add a bit of test(s) of 
 ## References
 - [sqlite blob time](http://www.numericalexpert.com/blog/sqlite_blob_time/sqlite_time_etc.html)
 - [JSON Schema](http://json-schema.org/)
+- [JSON Schema Core](http://json-schema.org/latest/json-schema-core.html)
 - [JSON Schema Validation](http://json-schema.org/latest/json-schema-validation.html)
 
 ## Licence

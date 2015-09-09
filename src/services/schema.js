@@ -47,7 +47,7 @@
 
                     // Override Type for autoIncrement
                     if (attribute.autoIncrement) {
-                        attribute.type = 'serial';
+                        attribute.type = 'integer';
                         attribute.primaryKey = true;
                     }
 
