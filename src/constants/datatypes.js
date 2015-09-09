@@ -4,30 +4,40 @@
     /**
      * @ngdoc constant
      * @name ngDataTypes
-     * @description common datatypes that can be used in WebSQL and SQLite
-     *              databases. 
+     * @description common data types that can be used in WebSQL and SQLite
+     *              and their corresponding JS types. 
      */
     angular
         .module('ngData')
         .constant('DataTypes', {
             //map for JS to SQL data types
-            'string': 'TEXT',
+
+            //string datatypes
+            'String': 'TEXT',
 
             //integer data types
-            'boolean': 'INTEGER',
-            'integer': 'INTEGER',
+            'Boolean': 'INTEGER',
+            'Integer': 'INTEGER',
 
             //real data types
-            'number': 'REAL',
+            'Number': 'REAL',
 
             //text data types
-            'date': 'TEXT',
-            'datetime': 'TEXT',
+            'Date': 'TEXT',
 
-            'object': 'TEXT',
-            'array': 'TEXT',
+            'Object': 'TEXT',
+            'Array': 'TEXT',
+            'Int8Array': 'TEXT',
+            'Uint8Array': 'TEXT',
+            'Uint8ClampedArray': 'TEXT',
+            'Int16Array': 'TEXT',
+            'Uint16Array': 'TEXT',
+            'Int32Array': 'TEXT',
+            'Uint32Array': 'TEXT',
+            'Float32Array': 'TEXT',
+            'Float64Array': 'TEXT',
 
-            'blob': 'BLOB'
+            'Blob': 'BLOB'
 
             //if data type is missed default to TEXT
         });

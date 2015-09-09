@@ -18,7 +18,8 @@
              * @return {String}
              */
             SchemaBuilder.toSQLType = function(type) {
-                return DataTypes[type.toLowerCase()] || 'TEXT';
+                type = type.name || type;
+                return DataTypes[type] || 'TEXT';
             };
 
             /**
@@ -36,18 +37,15 @@
 
                     // normalize simple key/value attribute
                     // ex: name: 'string'
-                    if (typeof attributes[key] === 'string') {
+                    if (!_.isPlainObject(attributes[key])) {
                         attribute.type = attributes[key];
-                    }
-
-                    // set the attribute values to the object key
-                    else {
+                    } else {
                         attribute = attributes[key];
                     }
 
-                    // Override Type for autoIncrement
+                    // check if attribute support autoincrement
                     if (attribute.autoIncrement) {
-                        attribute.type = 'integer';
+                        attribute.type = 'Integer';
                         attribute.primaryKey = true;
                     }
 

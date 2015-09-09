@@ -13,7 +13,8 @@ describe('ngData:schema factory', function() {
     }));
 
     it('should be able to cast js types to sql type', inject(function(Schema, DataTypes) {
-        expect(Schema.toSQLType('integer')).to.equal(DataTypes.integer);
+        expect(Schema.toSQLType('Integer')).to.equal(DataTypes.Integer);
+        expect(Schema.toSQLType(String)).to.equal(DataTypes.String);
     }));
 
 
@@ -21,15 +22,15 @@ describe('ngData:schema factory', function() {
         var defaultsTo = faker.name.firstName();
         var attributes = {
             firstName: {
-                type: DataTypes.string,
+                type: DataTypes.String,
                 unique: true,
                 defaultsTo: defaultsTo
             },
             lastName: {
-                type: 'string'
+                type: String
             },
             ssn: {
-                type: 'string',
+                type: String,
                 primaryKey: true
             }
         };

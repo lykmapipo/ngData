@@ -10,19 +10,19 @@ describe('ngData:DataTypes', function() {
     }));
 
     it('should have default values', inject(function(DataTypes) {
-        expect(DataTypes.string).to.be.equal('TEXT');
+        expect(DataTypes.String).to.be.equal('TEXT');
 
-        expect(DataTypes.boolean).to.be.equal('INTEGER');
-        expect(DataTypes.integer).to.be.equal('INTEGER');
+        expect(DataTypes.Boolean).to.be.equal('INTEGER');
+        expect(DataTypes.Integer).to.be.equal('INTEGER');
 
-        expect(DataTypes.number).to.be.equal('REAL');
+        expect(DataTypes.Number).to.be.equal('REAL');
 
-        expect(DataTypes.date).to.be.equal('TEXT');
+        expect(DataTypes.Date).to.be.equal('TEXT');
 
-        expect(DataTypes.object).to.be.equal('TEXT');
-        expect(DataTypes.array).to.be.equal('TEXT');
+        expect(DataTypes.Object).to.be.equal('TEXT');
+        expect(DataTypes.Array).to.be.equal('TEXT');
 
-        expect(DataTypes.blob).to.be.equal('BLOB');
+        expect(DataTypes.Blob).to.be.equal('BLOB');
 
     }));
 
