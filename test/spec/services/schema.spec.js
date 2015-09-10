@@ -3,7 +3,7 @@
 
 describe('ngData:Schema', function() {
     this.timeout = function() {
-        return 4000;
+        return 8000;
     };
 
     var defaultsTo = faker.name.firstName();
@@ -34,6 +34,7 @@ describe('ngData:Schema', function() {
         expect(Schema.propertiesDDL).to.exist;
     }));
 
+
     it('should be able to cast js data types to sql type', inject(function(Schema, DataTypes) {
         expect(Schema.castToSQLType('Integer')).to.equal(DataTypes.Integer);
         expect(Schema.castToSQLType(String)).to.equal(DataTypes.String);
@@ -61,6 +62,7 @@ describe('ngData:Schema', function() {
 
     }));
 
+
     it('should be able to convert JS value to their respective SQL value', inject(function(Schema) {
 
         var date = new Date();
@@ -75,58 +77,5 @@ describe('ngData:Schema', function() {
         var sqlObject = Schema.toSQLValue(objecti);
         expect(sqlObject).to.equal(JSON.stringify(objecti));
     }));
-
-    describe('Schema Builder', function() {
-
-        it('should be able to drop existing table', function(done) {
-            inject(function($rootScope, Schema) {
-
-                expect(Schema.dropTable).to.exist;
-                expect(Schema.dropTable).to.be.a('function');
-
-                Schema
-                    .dropTable('users')
-                    .catch(function(error) {
-                        expect(error).to.exist;
-                        expect(error.message).to.equal('no such table: users');
-                        done();
-                    });
-
-                setTimeout(function() {
-                    $rootScope.$apply();
-                }, 1000);
-
-            });
-        });
-
-
-        it('should be able to add a column to an existing table', function(done) {
-            inject(function($rootScope, Schema) {
-
-                expect(Schema.addColumn).to.exist;
-                expect(Schema.addColumn).to.be.a('function');
-
-                Schema
-                    .addColumn('users', {
-                        firstName: {
-                            type: String,
-                            unique: true,
-                            defaultsTo: defaultsTo
-                        }
-                    })
-                    .catch(function(error) {
-                        expect(error).to.exist;
-                        expect(error.message).to.equal('no such table: users');
-                        done();
-                    });
-
-                setTimeout(function() {
-                    $rootScope.$apply();
-                }, 1000);
-
-            });
-        });
-
-    });
 
 });

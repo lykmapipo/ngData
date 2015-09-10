@@ -80,8 +80,7 @@
                     //ensure database connection exists
                     DB.connect();
 
-                    return $cordovaSQLite
-                        .execute(self.connection, query, bindings);
+                    return $cordovaSQLite.execute(self.connection, query, bindings);
                 };
 
                 //export database

@@ -130,61 +130,121 @@
             /**
              * @function
              * @description drop a schema database table
-             * @return {Promise} promise that will eventually resolve with the 
-             *                           result of drop a table
-             *
+             * @param {String} table name of schema
+             * @return {Promise} promise 
              * @private
              */
-            Schema.dropTable = function(tableName) {
+            Schema.dropTable = function(table) {
                 // TODO escape table name
 
                 // prepare drop query
-                var query = 'DROP TABLE ' + tableName;
+                var query = 'DROP TABLE ' + table;
 
                 // run the query
-                return $database.query(query, undefined);
+                return $database.query(query);
             };
 
 
             /**
-             * @description  add a new column to the table
-             * @param {String}   table    name of the table
-             * @param {[type]}   attrDef  attribute definition
-             * @return {Promise} 
+             * @function
+             * @description drop a schema tempotrary database table
+             * @param {String} table name of schema
+             * @return {Promise} promise
+             * @private
              */
-            Schema.addColumn = function(table, attrDef) {
+            Schema.dropTemporaryTable = function(table) {
+                //obtain temporary table name
+                table = table + '_t';
+
+                // run the query
+                return Schema.dropTable(table);
+            };
+
+
+            /**
+             * @description create schema table
+             * @param  {String} table      name of the table
+             * @param  {Object} properties JSON schema
+             * @return {Promise}
+             */
+            Schema.createTable = function(table, properties) {
                 //TODO escape table name
 
-                //prepare column schema
-                var schema = Schema.propertiesDDL(attrDef);
+                // iterate through each attribute, building a query string
+                var _schema = Schema.propertiesDDL(properties);
 
-                //TODO fix unique column alter
+                // Build query
+                var query =
+                    'CREATE TABLE ' + table + ' (' + _schema + ')';
 
-                // build query
-                var query = 'ALTER TABLE ' + table + ' ADD COLUMN ' + schema;
-
-                //execute query
-                return $database.query(query, undefined);
+                // run the query
+                return $database.query(query);
 
             };
 
 
-            // Remove attribute from table
-            // In SQLite3, this is tricky since there's no support for DROP COLUMN 
-            // in ALTER TABLE. We'll have to rename the old table, create a new table
-            // with the same name minus the column and copy all the data over.
-            Schema.removeColumn = function(table /*, attrName*/ ) {
-                //TODO escape table name
+            /**
+             * @description create schema temporary table
+             * @param  {String} table      name of the table
+             * @param  {Object} properties JSON schema
+             * @return {Promise}
+             */
+            Schema.createTemporaryTable = function(table, properties) {
+                //obtain temporary table name
+                table = table + '_t';
 
-                //query to rename table
-                var oldTableName = table + '_old_';
-                var renameTableQuery =
-                    'ALTER TABLE ' + table + ' RENAME TO ' + oldTableName;
+                // run the query
+                return Schema.createTable(table, properties);
 
-                //TODO create a new table using existing schema
-                //TODO copy all data from old table to new table
+            };
 
-                return $database.query(renameTableQuery, undefined);
+            /**
+             * @description alter schema table structure in case of any changes
+             * @param  {String} table      name of the table
+             * @param  {Object} properties JSON schema
+             * @return {Promise}
+             */
+            Schema.alter = function(table /*, previousProps , newProps*/ ) {
+                //TODO make use of transaction
+                // var tempTable = table + '_t';
+
+                // iterate through each attribute, building a query string
+                // var _schema = Schema.propertiesDDL(previousProps);
+
+                // create temporary table
+                // var query ='CREATE TABLE ' + tempTable + ' (' + _schema + ');';
+
+                // copy data to temporary table
+                // query +='INSERT INTO ' + tempTable + ' AS SELECT * FROM ' + table + ';';
+
+                var query = 'SELECT * FROM ' + table + ';';
+
+                console.log(query);
+
+                //create a temporary table
+                // return Schema
+                //     .createTemporaryTable(table, previousProps)
+                //     .then(function() { //TODO copy all data to temporary table
+                //         return Query.select().from(table);
+                //     })
+                //     .then(function(results) {
+                //         return Query.fetchAll(results);
+                //     })
+                //     .then(function(result) {
+                //         //drop original table
+                //         console.log(result);
+                //         return Schema.dropTable(table);
+                //     })
+                //     .then(function() {
+                //         //create a new table
+                //         return Schema.createTable(table, newProps);
+                //     })
+                //     .then(function() {
+                //         //TODO copy data from temporary table
+                //         //drop temporary table
+                //         return Schema.dropTemporaryTable(table);
+                //     });
+                return $database.query(query);
             };
 
 
