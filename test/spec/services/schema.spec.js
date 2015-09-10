@@ -35,8 +35,8 @@ describe('ngData:Schema', function() {
     }));
 
     it('should be able to cast js data types to sql type', inject(function(Schema, DataTypes) {
-        expect(Schema.castToSQLType('Integer')).to.equal(DataTypes.Integer);
-        expect(Schema.castToSQLType(String)).to.equal(DataTypes.String);
+        expect(Schema.castToSQLType('integer')).to.equal(DataTypes.integer);
+        expect(Schema.castToSQLType(String)).to.equal(DataTypes.string);
     }));
 
 

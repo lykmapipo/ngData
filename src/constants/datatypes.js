@@ -34,7 +34,7 @@
             'array': 'TEXT',
 
             'binary': 'BLOB',
-            'bytea': 'BLOB'
+            'byte': 'BLOB'
 
             //if data type is missed default to TEXT
         });
