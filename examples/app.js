@@ -1,8 +1,9 @@
 (function(){
   'use strict';
 
-  //@name webexample
-  // example dir for testing ngData module
+  /**
+   * @name webexample
+   */
   angular
         .module('webexample',['ngData'])
         .config(function($databaseProvider){
