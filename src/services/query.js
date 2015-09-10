@@ -16,22 +16,26 @@
 
             //extend insert queries with `values(Array|Object)` builder
             query.cls.Insert.prototype.values = function(values) {
-                //this refer to insert query context
-                if (_.isArray(values)) {
-                    this.setFieldsRows(values);
-                } else {
+
+                if (_.isPlainObject(values)) {
                     this.setFields(values);
+                } else {
+                    //TODO fix collection insertion
+                    this.setFieldsRows(values);
                 }
                 return this;
             };
 
             //extending local squel with then executor
             query.cls.QueryBuilder.prototype.then = function( /*resolve, reject*/ ) {
-                var self = this;
 
-                var promise = $database.query(self.toString(), undefined).then();
-                promise = promise.then.apply(promise, arguments);
-                return promise;
+                //prepare query
+                var query = this.toString();
+
+                return $database.query(query).then();
+                // var promise = $database.query(query).then();
+                // promise = promise.then.apply(promise, arguments);
+                // return promise;
             };
 
             //extending local squel with catch executor
@@ -39,6 +43,42 @@
                 var promise = this.then();
                 promise = promise.catch.apply(promise, arguments);
                 return promise;
+            };
+
+            /**
+             * @description process `SQLResultSetRowList` to obtain data
+             * @param  {SQLResultSetRowList} result [description]
+             * @return {Object|Array}        [description]
+             */
+            query.fetch = function(result) {
+                var output = null;
+
+                if (result.rows) {
+                    //fetch an object from `SQLResultSetRowList`
+                    if (result.rows.length === 1) {
+                        output = angular.copy(result.rows.item(0));
+                    }
+                }
+
+                return output;
+            };
+
+
+            /**
+             * @description process `SQLResultSetRowList` to obtain data
+             * @param  {SQLResultSetRowList} result [description]
+             * @return {Object|Array}        [description]
+             */
+            query.fetchAll = function(result) {
+                var output = [];
+
+                if (result.rows) {
+                    for (var i = 0; i < result.rows.length; i++) {
+                        output.push(angular.copy(result.rows.item(i)));
+                    }
+                }
+
+                return output;
             };
 
             //export squel query builder

@@ -1,5 +1,14 @@
 # Specification
 
+## Schema change algorithm
+- [ ] create a temporary table
+- [ ] copy all data to temporary table
+- [ ] drop original table
+- [ ] create a new table
+- [ ] copy data from temporary table
+- [ ] drop temporary table
+- [ ] what if schema name change?
+
 $collection
 $model
 $schema

@@ -3,7 +3,7 @@
 
 describe('ngData:Schema', function() {
     this.timeout = function() {
-        return 4000;
+        return 8000;
     };
 
     var defaultsTo = faker.name.firstName();
@@ -34,6 +34,7 @@ describe('ngData:Schema', function() {
         expect(Schema.propertiesDDL).to.exist;
     }));
 
+
     it('should be able to cast js data types to sql type', inject(function(Schema, DataTypes) {
         expect(Schema.castToSQLType('integer')).to.equal(DataTypes.integer);
         expect(Schema.castToSQLType(String)).to.equal(DataTypes.string);
@@ -61,6 +62,7 @@ describe('ngData:Schema', function() {
 
     }));
 
+
     it('should be able to convert JS value to their respective SQL value', inject(function(Schema) {
 
         var date = new Date();
@@ -76,6 +78,7 @@ describe('ngData:Schema', function() {
         expect(sqlObject).to.equal(JSON.stringify(objecti));
     }));
 
+<<<<<<< HEAD
     describe('Schema Builder', function() {
 
         it('should be able to drop existing table', function(done) {
@@ -130,3 +133,6 @@ describe('ngData:Schema', function() {
     });
 
 });
+=======
+});
+>>>>>>> 1ba66f9af481f0a54cbe88f2458a02c7543db646
