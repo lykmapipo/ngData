@@ -25,12 +25,11 @@ module.exports = function(config) {
             'bower_components/angular/angular.js',
             'bower_components/tv4/tv4.js',
             'bower_components/angular-json-validator/angular-json-validator.js',
+            'bower_components/faker/build/build/faker.js',
             'bower_components/lodash/lodash.js',
             'bower_components/ngCordova/dist/ng-cordova.js',
             'bower_components/squel/squel-basic.js',
-            'bower_components/Faker/build/build/faker.js',
             'bower_components/angular-mocks/angular-mocks.js',
-            'bower_components/faker/build/build/faker.js',
             // endbower
             'src/*.js',
             'src/constants/**/*.js',
