@@ -24,6 +24,15 @@
                 return _.get(DataTypes, type, 'TEXT');
             };
 
+            Schema.normalizeProperty = function(key, properties) {
+                var _property = {};
+                if (!_.isPlainObject(properties[key])) {
+                    _property.type = properties[key];
+                } else {
+                    _property = properties[key];
+                }
+                return _property;
+            };
 
             /**
              * @function
@@ -38,15 +47,9 @@
                 // iterate properties and 
                 // build SQL DDL per each property
                 _.keys(properties).forEach(function(key /*property name*/ ) {
-                    var property = {};
-
                     // normalize simple key/value property
                     // ex: name: 'string'
-                    if (!_.isPlainObject(properties[key])) {
-                        property.type = properties[key];
-                    } else {
-                        property = properties[key];
-                    }
+                    var property = Schema.normalizeProperty(key, properties);
 
                     // check if property support autoincrement
                     // and default it to primary key
@@ -199,6 +202,67 @@
             };
 
             /**
+             * @function
+             * @description update existing data to comply with the new table structure
+             * @param  {Array} data       current table data
+             * @param  {Object} properties new JSON schema properties
+             * @return {Array}            
+             * @private
+             */
+            Schema.copyData = function(data, properties) {
+                return _.map(data, function(model) {
+                    //prepare missing data
+                    var missing = _.omit(properties, _.keys(model));
+                    var additional = {};
+                    
+                    _.keys(missing).forEach(function(key) {
+                        //deduce JS data type
+                        var property = Schema.normalizeProperty(key, properties);
+                        var type =
+                            (property.type.name || property.type) || 'String';
+
+                        //obtain property default value
+                        var defaultsTo = properties[key].defaultsTo;
+                        switch (type) {
+                            case 'String':
+                                additional[key] = defaultsTo || '';
+                                break;
+                            case 'Boolean':
+                                additional[key] = defaultsTo || true;
+                                break;
+                            case 'Number':
+                                additional[key] = defaultsTo || 0;
+                                break;
+                            case 'Date':
+                                additional[key] = defaultsTo || new Date();
+                                break;
+                            case 'Object':
+                                additional[key] = defaultsTo || {};
+                                break;
+                            case 'Array':
+                            case 'Int8Array':
+                            case 'Uint8Array':
+                            case 'Uint8ClampedArray':
+                            case 'Int16Array':
+                            case 'Uint16Array':
+                            case 'Int32Array':
+                            case 'Uint32Array':
+                            case 'Float32Array':
+                            case 'Float64Array':
+                                additional[key] = defaultsTo || [];
+                                break;
+                            default:
+                                additional[key] = '';
+                                break;
+                        }
+                    });
+
+                    //merge additional with original data
+                    return _.merge(model, additional);
+                });
+            };
+
+            /**
              * @description alter schema table structure in case of any changes
              * @param  {String} table      name of the table
              * @param  {Object} properties JSON schema
@@ -238,8 +302,11 @@
                                             //copy data if exist
                                             var data = Query.fetchAll(r4);
                                             if (data.length > 0) {
+                                                //TODO data to new table
                                                 q.resolve(data);
-                                            } else {
+                                            }
+                                            //nothing to copy
+                                            else {
                                                 q.resolve(data);
                                             }
                                         }, errorHandler);
