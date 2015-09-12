@@ -214,7 +214,7 @@
                     //prepare missing data
                     var missing = _.omit(properties, _.keys(model));
                     var additional = {};
-                    
+
                     _.keys(missing).forEach(function(key) {
                         //deduce JS data type
                         var property = Schema.normalizeProperty(key, properties);
@@ -301,14 +301,18 @@
                                         tx.executeSql(sftt, [], function(tx, r4) {
                                             //copy data if exist
                                             var data = Query.fetchAll(r4);
-                                            if (data.length > 0) {
-                                                //TODO data to new table
-                                                q.resolve(data);
-                                            }
-                                            //nothing to copy
-                                            else {
-                                                q.resolve(data);
-                                            }
+
+                                            //prepare data
+                                            data = Schema.copyData(data, properties);
+
+                                            //execute all inserts
+                                            _.forEach(data, function(model) {
+                                                var query = Query.insert().into(table).values(model).toString();
+                                                tx.executeSql(query);
+                                            });
+                                            
+                                            q.resolve(data);
+
                                         }, errorHandler);
                                     }, errorHandler);
                                 }, errorHandler);
