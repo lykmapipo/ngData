@@ -32,10 +32,9 @@
                 //prepare query
                 var query = this.toString();
 
-                return $database.query(query).then();
-                // var promise = $database.query(query).then();
-                // promise = promise.then.apply(promise, arguments);
-                // return promise;
+                var promise = $database.query(query).then();
+                promise = promise.then.apply(promise, arguments);
+                return promise;
             };
 
             //extending local squel with catch executor

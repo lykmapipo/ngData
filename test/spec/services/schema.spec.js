@@ -36,7 +36,7 @@ describe('ngData:Schema', function() {
 
 
     it('should be able to cast js data types to sql type', inject(function(Schema, DataTypes) {
-        expect(Schema.castToSQLType('Integer')).to.equal(DataTypes.Integer);
+        expect(Schema.castToSQLType('Number')).to.equal(DataTypes.Number);
         expect(Schema.castToSQLType(String)).to.equal(DataTypes.String);
     }));
 
@@ -78,4 +78,35 @@ describe('ngData:Schema', function() {
         expect(sqlObject).to.equal(JSON.stringify(objecti));
     }));
 
+<<<<<<< HEAD
 });
+=======
+    it('should be able to update existing table data for new table structure', inject(function(Schema) {
+        var data = [{
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            ssn: faker.random.number().toString(),
+        }, {
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            ssn: faker.random.number().toString(),
+        }];
+
+        var props = _.merge(properties, {
+            otherName: String,
+            dob: Date,
+            interests: {
+                type: Array,
+                defaultsTo: [faker.internet.userName()]
+            }
+        });
+
+        data = Schema.copyData(data, props);
+
+        expect(_.map(data, 'otherName')).to.exist;
+        expect(_.map(data, 'dob')).to.exist;
+        expect(_.map(data, 'interests')).to.exist;
+    }));
+
+});
+>>>>>>> fd7285a3eb8df3a5c1d02fef941b092383e8a233

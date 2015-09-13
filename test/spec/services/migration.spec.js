@@ -46,57 +46,6 @@ describe('ngData:Migration', function() {
                 $rootScope.$apply();
             }, 50);
 
-
-        });
-    });
-
-    beforeEach(function(done) {
-        inject(function($rootScope, Schema) {
-
-            Schema
-                .dropTemporaryTable(table)
-                .then(function(result) {
-                    expect(result).to.exist;
-                    done();
-                })
-                .catch(function(error) {
-                    expect(error).to.exist;
-                    done();
-                });
-
-            setTimeout(function() {
-                $rootScope.$apply();
-            }, 50);
-
-
-        });
-    });
-
-    beforeEach(function(done) {
-        inject(function($rootScope, Query) {
-
-            Query
-                .insert()
-                .into(table)
-                .values({
-                    firstName: faker.name.firstName(),
-                    lastName: faker.name.lastName(),
-                    ssn: faker.random.number().toString(),
-                })
-                .then(function(result) {
-                    expect(result).to.exist;
-                    done();
-                })
-                .catch(function(error) {
-                    expect(error).to.exist;
-                    done();
-                });
-
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-            }, 50);
-
         });
     });
 
@@ -107,12 +56,16 @@ describe('ngData:Migration', function() {
             Schema
                 .alter(table, properties)
                 .then(function(result) {
+                    console.log('r');
                     console.log(result);
+                    // console.log(result.rowsAffected);
+                    // console.log(result.insertId);
 
                     done();
                 })
                 .catch(function(error) {
-                    console.log(error);
+                    console.log('e');
+                    console.log(error.message);
 
                     done();
                 });

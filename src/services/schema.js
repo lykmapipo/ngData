@@ -8,7 +8,7 @@
      */
     angular
         .module('ngData')
-        .factory('Schema', function(DataTypes, $database) {
+        .factory('Schema', function($q, DataTypes, $database, Query) {
             var Schema = {};
 
             /**
@@ -24,6 +24,15 @@
                 return _.get(DataTypes, type, 'TEXT');
             };
 
+            Schema.normalizeProperty = function(key, properties) {
+                var _property = {};
+                if (!_.isPlainObject(properties[key])) {
+                    _property.type = properties[key];
+                } else {
+                    _property = properties[key];
+                }
+                return _property;
+            };
 
             /**
              * @function
@@ -38,15 +47,9 @@
                 // iterate properties and 
                 // build SQL DDL per each property
                 _.keys(properties).forEach(function(key /*property name*/ ) {
-                    var property = {};
-
                     // normalize simple key/value property
                     // ex: name: 'string'
-                    if (!_.isPlainObject(properties[key])) {
-                        property.type = properties[key];
-                    } else {
-                        property = properties[key];
-                    }
+                    var property = Schema.normalizeProperty(key, properties);
 
                     // check if property support autoincrement
                     // and default it to primary key
@@ -199,54 +202,128 @@
             };
 
             /**
+             * @function
+             * @description update existing data to comply with the new table structure
+             * @param  {Array} data       current table data
+             * @param  {Object} properties new JSON schema properties
+             * @return {Array}            
+             * @private
+             */
+            Schema.copyData = function(data, properties) {
+                return _.map(data, function(model) {
+                    //prepare missing data
+                    var missing = _.omit(properties, _.keys(model));
+                    var additional = {};
+
+                    _.keys(missing).forEach(function(key) {
+                        //deduce JS data type
+                        var property = Schema.normalizeProperty(key, properties);
+                        var type =
+                            (property.type.name || property.type) || 'String';
+
+                        //obtain property default value
+                        var defaultsTo = properties[key].defaultsTo;
+                        switch (type) {
+                            case 'String':
+                                additional[key] = defaultsTo || '';
+                                break;
+                            case 'Boolean':
+                                additional[key] = defaultsTo || true;
+                                break;
+                            case 'Number':
+                                additional[key] = defaultsTo || 0;
+                                break;
+                            case 'Date':
+                                additional[key] = defaultsTo || new Date();
+                                break;
+                            case 'Object':
+                                additional[key] = defaultsTo || {};
+                                break;
+                            case 'Array':
+                            case 'Int8Array':
+                            case 'Uint8Array':
+                            case 'Uint8ClampedArray':
+                            case 'Int16Array':
+                            case 'Uint16Array':
+                            case 'Int32Array':
+                            case 'Uint32Array':
+                            case 'Float32Array':
+                            case 'Float64Array':
+                                additional[key] = defaultsTo || [];
+                                break;
+                            default:
+                                additional[key] = '';
+                                break;
+                        }
+                    });
+
+                    //merge additional with original data
+                    return _.merge(model, additional);
+                });
+            };
+
+            /**
              * @description alter schema table structure in case of any changes
              * @param  {String} table      name of the table
              * @param  {Object} properties JSON schema
              * @return {Promise}
              */
-            Schema.alter = function(table /*, previousProps , newProps*/ ) {
+            Schema.alter = function(table, properties) {
+                var q = $q.defer();
+                $database.connect();
+                var con = $database.connection;
+                var _error;
+
+                function errorHandler(tx, error) {
+                    _error = new Error(error.message);
+                    return error;
+                }
+
                 //TODO make use of transaction
-                // var tempTable = table + '_t';
+                var tt = table + '_t';
+                var n = Schema.propertiesDDL(properties);
 
-                // iterate through each attribute, building a query string
-                // var _schema = Schema.propertiesDDL(previousProps);
+                //queries
+                var drtt = 'DROP TABLE IF EXISTS "' + tt + '"';
+                var ret = 'ALTER TABLE "' + table + '" RENAME TO "' + tt + '"';
+                var crt = 'CREATE TABLE "' + table + '" (' + n + ')';
+                var sftt = 'SELECT * FROM "' + tt + '"';
 
-                // create temporary table
-                // var query ='CREATE TABLE ' + tempTable + ' (' + _schema + ');';
+                con
+                    .transaction(function(tx) {
+                            // drop temporary table if exists
+                            tx.executeSql(drtt, [], function(tx /*, r1*/ ) {
+                                // create temporary table
+                                tx.executeSql(ret, [], function(tx /*, r2*/ ) {
+                                    //re-create table based on new schema
+                                    tx.executeSql(crt, [], function(tx /*, r3*/ ) {
+                                        //select data from temporary table
+                                        tx.executeSql(sftt, [], function(tx, r4) {
+                                            //copy data if exist
+                                            var data = Query.fetchAll(r4);
 
-                // copy data to temporary table
-                // query +='INSERT INTO ' + tempTable + ' AS SELECT * FROM ' + table + ';';
+                                            //prepare data
+                                            data = Schema.copyData(data, properties);
 
-                var query = 'SELECT * FROM ' + table + ';';
+                                            //execute all inserts
+                                            _.forEach(data, function(model) {
+                                                var query = Query.insert().into(table).values(model).toString();
+                                                tx.executeSql(query);
+                                            });
+                                            
+                                            q.resolve(data);
 
-                console.log(query);
+                                        }, errorHandler);
+                                    }, errorHandler);
+                                }, errorHandler);
+                            }, errorHandler);
+                        },
+                        function( /*tx, error*/ ) {
+                            q.reject(_error);
+                        });
 
-                //create a temporary table
-                // return Schema
-                //     .createTemporaryTable(table, previousProps)
-                //     .then(function() { //TODO copy all data to temporary table
-                //         return Query.select().from(table);
-                //     })
-                //     .then(function(results) {
-                //         return Query.fetchAll(results);
-                //     })
-                //     .then(function(result) {
-                //         //drop original table
-                //         console.log(result);
-                //         return Schema.dropTable(table);
-                //     })
-                //     .then(function() {
-                //         //create a new table
-                //         return Schema.createTable(table, newProps);
-                //     })
-                //     .then(function() {
-                //         //TODO copy data from temporary table
-                //         //drop temporary table
-                //         return Schema.dropTemporaryTable(table);
-                //     });
-                return $database.query(query);
+                return q.promise;
             };
-
 
             return Schema;
         });

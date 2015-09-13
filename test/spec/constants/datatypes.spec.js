@@ -13,7 +13,6 @@ describe('ngData:DataTypes', function() {
         expect(DataTypes.String).to.be.equal('TEXT');
 
         expect(DataTypes.Boolean).to.be.equal('INTEGER');
-        expect(DataTypes.Integer).to.be.equal('INTEGER');
 
         expect(DataTypes.Number).to.be.equal('REAL');
 

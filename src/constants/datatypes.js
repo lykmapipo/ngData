@@ -17,7 +17,6 @@
 
             //integer data types
             'Boolean': 'INTEGER',
-            'Integer': 'INTEGER',
 
             //real data types
             'Number': 'REAL',
