@@ -7,7 +7,7 @@
   angular
         .module('webexample',['ngData'])
         .config(function($databaseProvider){
-          
+
             $databaseProvider.name = 'testDB';
             $databaseProvider.description = 'this is a test db';
             $databaseProvider.version = '1.0.0';
