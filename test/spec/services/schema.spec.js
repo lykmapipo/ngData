@@ -78,9 +78,8 @@ describe('ngData:Schema', function() {
         expect(sqlObject).to.equal(JSON.stringify(objecti));
     }));
 
-<<<<<<< HEAD
 });
-=======
+
     it('should be able to update existing table data for new table structure', inject(function(Schema) {
         var data = [{
             firstName: faker.name.firstName(),
@@ -107,6 +106,5 @@ describe('ngData:Schema', function() {
         expect(_.map(data, 'dob')).to.exist;
         expect(_.map(data, 'interests')).to.exist;
     }));
-
+    
 });
->>>>>>> fd7285a3eb8df3a5c1d02fef941b092383e8a233
