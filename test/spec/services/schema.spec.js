@@ -78,7 +78,7 @@ describe('ngData:Schema', function() {
         expect(sqlObject).to.equal(JSON.stringify(objecti));
     }));
 
-});
+
 
     it('should be able to update existing table data for new table structure', inject(function(Schema) {
         var data = [{
@@ -106,5 +106,5 @@ describe('ngData:Schema', function() {
         expect(_.map(data, 'dob')).to.exist;
         expect(_.map(data, 'interests')).to.exist;
     }));
-    
+
 });
