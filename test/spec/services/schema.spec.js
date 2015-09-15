@@ -79,7 +79,6 @@ describe('ngData:Schema', function() {
     }));
 
 
-
     it('should be able to update existing table data for new table structure', inject(function(Schema) {
         var data = [{
             firstName: faker.name.firstName(),
