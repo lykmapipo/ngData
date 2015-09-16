@@ -9,7 +9,7 @@
         .factory('Collection', function(){
 
             /**
-             * @description model
+             * @description Collection
              * @param {type} table [description]
              */
              function Collection(options){
@@ -44,7 +44,7 @@
              * @param  {Function} callback
              * @return {type}
              */
-            Collection.prototype.delete = function (/*conditions, callback*/) {
+            Collection.prototype.remove = function (/*conditions, callback*/) {
 
             };
 
@@ -114,10 +114,10 @@
 
             /**
              * @description Issue a findAndModify remove command
-             * @param  {Object}   conditions [description]
-             * @param  {Object}   options    [description]
-             * @param  {Function} callback   [description]
-             * @return {[type]}              [description]
+             * @param  {Object}   conditions
+             * @param  {Object}   options
+             * @param  {Function} callback
+             * @return {type}              [description]
              */
             Collection.prototype.findOneAndRemove = function(/*conditions, options, callback*/) {
 
@@ -138,7 +138,7 @@
             /**
              * @description Creates a Query, applies the passed conditions, and
              *              returns the Query.
-             * @param  {String} path [description]
+             * @param  {String} path
              * @param  {Object} val  [optional]
              * @return {Query}      [description]
              */
