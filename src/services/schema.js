@@ -304,13 +304,14 @@
 
                                             //prepare data
                                             data = Schema.copyData(data, properties);
+                                            
 
                                             //execute all inserts
                                             _.forEach(data, function(model) {
                                                 var query = Query.insert().into(table).values(model).toString();
-                                                tx.executeSql(query);
+                                                tx.executeSql(query, angular.noop, errorHandler);
                                             });
-                                            
+
                                             q.resolve(data);
 
                                         }, errorHandler);

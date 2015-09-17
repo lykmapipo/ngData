@@ -144,3 +144,27 @@ angular
 - `remove():Promise`
 - `toJSON():Object`
 - `toObject():Object`
+
+## Usage
+
+### Create new instance
+```js
+angular
+    .module('ngPOS')
+    .controller(function(User){
+        $scope.user = new User();
+
+        $scope.save = function(user){
+            user.save();
+        };
+
+        $scope.delete = function(user){
+            user.remove();
+        };
+
+        $scope.index = function(criteria, limit, offset){
+            User.find(criteria).limit(limit).offset(offset);
+        };
+
+    });
+```

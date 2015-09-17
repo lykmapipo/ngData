@@ -65,7 +65,7 @@ describe('ngData:Migration', function() {
                 })
                 .catch(function(error) {
                     console.log('e');
-                    console.log(error.message);
+                    console.log(error);
 
                     done();
                 });
