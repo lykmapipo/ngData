@@ -51,4 +51,6 @@ describe('$ngData', function() {
 
     });
 
+    it('should be able to initialize database schema');
+
 });

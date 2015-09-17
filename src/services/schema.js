@@ -269,6 +269,8 @@
              * @return {Promise}
              */
             Schema.alter = function(table, properties) {
+                console.log(table);
+                console.log(properties);
                 var q = $q.defer();
                 $database.connect();
                 var con = $database.connection;

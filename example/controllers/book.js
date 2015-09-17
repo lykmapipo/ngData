@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('webexample')
+        .module('ngBooks')
         .controller('BookCtrl', function($scope, Book) {
 
             $scope.index = function(offset, limit) {
@@ -12,7 +12,6 @@
             $scope.book = Book.new();
 
             $scope.show = function(id) {
-                return Book.findById(id);
                 return Book.findById(id);
             };
 
