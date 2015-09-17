@@ -8,24 +8,14 @@
      */
     angular
         .module('ngData')
-        .factory('Model', function(inflector) {
+        .factory('Model', function() {
 
             /**
              * @description Model constructor
              */
-            function Model(options) {
-                this.name = options.name;
-                
-                this.tableName =
-                    options.tableName ||
-                    inflector.pluralize(options.name.toLowerCase());
+            function Model() {
+
             }
-
-            //table back this model
-            Model.prototype.tableName;
-
-            //name of the model
-            Model.prototype.name;
 
 
             /**

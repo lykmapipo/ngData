@@ -24,6 +24,8 @@ describe('$ngData', function() {
                 }
             });
 
+            console.log(User);
+
             expect(User).to.exist;
         }));
 
@@ -39,7 +41,7 @@ describe('$ngData', function() {
 
             expect(User.tableName).to.exist;
             expect(User.tableName).to.be.equal('users');
-            
+
         }));
 
     });

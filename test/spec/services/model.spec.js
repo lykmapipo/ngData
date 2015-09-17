@@ -8,12 +8,11 @@ describe('ngData:Model', function() {
 
         expect(Model).to.exist;
 
-        var model = new Model({
-            name: 'User'
-        });
+        var model = new Model();
 
         expect(model.save).to.exist;
         expect(model.remove).to.exist;
+        expect(model.toObject).to.exist;
         expect(model.toString).to.exist;
         expect(model.toJSON).to.exist;
 

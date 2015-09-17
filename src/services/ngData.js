@@ -41,7 +41,7 @@
      */
     angular
         .module('ngData')
-        .factory('$ngData', function(Model) {
+        .factory('$ngData', function(Collection) {
             var $ngData = {};
 
             //models map registry
@@ -67,7 +67,7 @@
                 //compile a model definition
                 //and register it
                 else {
-                    $ngData.models[name] = new Model(definition);
+                    $ngData.models[name] = new Collection(definition);
                     return _.get($ngData.models, name);
                 }
             };

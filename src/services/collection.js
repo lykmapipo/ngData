@@ -1,20 +1,36 @@
-(function(){
-  'use strict';
+(function() {
+    'use strict';
 
-  /**
-   * the documentation in this factory was borrowed from mongoose api
-   */
-  angular
+    /**
+     * the documentation in this factory was borrowed from mongoose api
+     */
+    angular
         .module('ngData')
-        .factory('Collection', function(){
+        .factory('Collection', function(Model, inflector) {
 
             /**
              * @description Collection
              * @param {type} table [description]
              */
-             function Collection(options){
-               this.table = options.tablename;
-             }
+            function Collection(options) {
+                this.name = options.name;
+
+                this.tableName =
+                    options.tableName ||
+                    inflector.pluralize(options.name.toLowerCase());
+
+                this.definition = options;
+            }
+
+            //table back this collection
+            Collection.prototype.tableName;
+
+            //name of collection
+            Collection.prototype.name;
+
+            //model definition
+            Collection.prototype.definition;
+
 
             /**
              * @description Shortcut for creating a new Document that is
@@ -23,7 +39,7 @@
              * @param {Function} callback
              * @return {type}
              */
-            Collection.prototype.create = function (/*doc, callback*/) {
+            Collection.prototype.create = function( /*doc, callback*/ ) {
 
             };
 
@@ -34,7 +50,7 @@
              * @param  {Object}   options
              * @param  {Function} callback
              */
-            Collection.prototype.update = function (/*conditions, doc, options, callback*/) {
+            Collection.prototype.update = function( /*conditions, doc, options, callback*/ ) {
 
             };
 
@@ -44,7 +60,7 @@
              * @param  {Function} callback
              * @return {type}
              */
-            Collection.prototype.remove = function (/*conditions, callback*/) {
+            Collection.prototype.remove = function( /*conditions, callback*/ ) {
 
             };
 
@@ -56,7 +72,7 @@
              * @param  {Function} callback
              * @return {Qurey}
              */
-            Collection.prototype.find = function (/*conditions, projections, options, callback*/) {
+            Collection.prototype.find = function( /*conditions, projections, options, callback*/ ) {
 
             };
 
@@ -69,7 +85,7 @@
              * @param  {Function} callback
              * @return {Query}               [description]
              */
-            Collection.prototype.findById = function (/*id, projections, options, callback*/) {
+            Collection.prototype.findById = function( /*id, projections, options, callback*/ ) {
 
             };
 
@@ -82,8 +98,8 @@
              * @param  {Function} callback
              * @return {type}            [description]
              */
-            Collection.prototype.findByIdAndDelete = function (/*id, options, callback*/) {
-              // body...
+            Collection.prototype.findByIdAndDelete = function( /*id, options, callback*/ ) {
+                // body...
             };
 
             /**
@@ -96,7 +112,7 @@
              * @param  {Function} callback
              * @return {[type]}            [description]
              */
-            Collection.prototype.findByIdAndUpdate = function (/*id, update, options, callback*/) {
+            Collection.prototype.findByIdAndUpdate = function( /*id, update, options, callback*/ ) {
 
             };
 
@@ -108,7 +124,7 @@
              * @param  {Function} callback
              * @return {Query}               [this]
              */
-            Collection.prototype.findOne = function (/*conditions, projections, options, callback*/) {
+            Collection.prototype.findOne = function( /*conditions, projections, options, callback*/ ) {
 
             };
 
@@ -119,7 +135,7 @@
              * @param  {Function} callback
              * @return {type}              [description]
              */
-            Collection.prototype.findOneAndRemove = function(/*conditions, options, callback*/) {
+            Collection.prototype.findOneAndRemove = function( /*conditions, options, callback*/ ) {
 
             };
 
@@ -131,7 +147,7 @@
              * @param  {Function} callback
              * @return {Query}
              */
-            Collection.prototype.findOneAndUpdate = function(/*conditions, update, options, callback*/) {
+            Collection.prototype.findOneAndUpdate = function( /*conditions, update, options, callback*/ ) {
 
             };
 
@@ -142,7 +158,7 @@
              * @param  {Object} val  [optional]
              * @return {Query}      [description]
              */
-            Collection.prototype.where = function (/*path, val*/) {
+            Collection.prototype.where = function( /*path, val*/ ) {
 
             };
 
@@ -152,7 +168,7 @@
              * @param  {Number} val [description]
              * @return {type}     [description]
              */
-            Collection.prototype.limit = function (/*val*/) {
+            Collection.prototype.limit = function( /*val*/ ) {
 
             };
 
@@ -161,7 +177,7 @@
              * @param  {(Object|String)} arg [description]
              * @return {Query}    [this]
              */
-            Collection.prototype.sort = function (/*arg*/) {
+            Collection.prototype.sort = function( /*arg*/ ) {
 
             };
 
@@ -171,7 +187,7 @@
              * @param  {Number} val
              * @return {[type]}      [description]
              */
-            Collection.prototype.gt = function (/*path, val*/) {
+            Collection.prototype.gt = function( /*path, val*/ ) {
 
             };
 
@@ -181,7 +197,7 @@
              * @param  {Number} val
              * @return {[type]}      [description]
              */
-            Collection.prototype.gte = function (/*path, val*/) {
+            Collection.prototype.gte = function( /*path, val*/ ) {
 
             };
 
@@ -191,7 +207,7 @@
              * @param  {Number} val
              * @return {[type]}      [description]
              */
-            Collection.prototype.lt = function (/*path, val*/) {
+            Collection.prototype.lt = function( /*path, val*/ ) {
 
             };
 
@@ -201,7 +217,7 @@
              * @param  {Number} val
              * @return {[type]}      [description]
              */
-            Collection.prototype.lte = function (/*path, val*/) {
+            Collection.prototype.lte = function( /*path, val*/ ) {
 
             };
 
@@ -211,7 +227,7 @@
              * @param  {Number} val
              * @return {[type]}      [description]
              */
-            Collection.prototype.in = function (/*path, val*/) {
+            Collection.prototype.in = function( /*path, val*/ ) {
 
             };
 
@@ -221,7 +237,7 @@
              * @param  {(Object|String)} arg
              * @return {Query}     [this]
              */
-            Collection.prototype.select = function (/*arg*/) {
+            Collection.prototype.select = function( /*arg*/ ) {
 
             };
 
@@ -230,7 +246,7 @@
              * @param  {Array} options
              * @return {Query}         [this]
              */
-            Collection.prototype.and = function (/*options*/) {
+            Collection.prototype.and = function( /*options*/ ) {
 
             };
 
@@ -239,7 +255,7 @@
              * @param  {Array} array
              * @return {Query}       [this]
              */
-            Collection.prototype.or = function (/*array*/) {
+            Collection.prototype.or = function( /*array*/ ) {
 
             };
 
@@ -248,7 +264,7 @@
              * @param  {Array} array
              * @return {Query}       [this]
              */
-            Collection.prototype.nor  = function (/*array*/) {
+            Collection.prototype.nor = function( /*array*/ ) {
 
             };
 
@@ -258,7 +274,7 @@
              * @param  {Object} options
              * @return {[type]}         [description]
              */
-             Collection.prototype.index = function (/*fields, options*/) {
+            Collection.prototype.index = function( /*fields, options*/ ) {
 
             };
 
@@ -268,7 +284,7 @@
              * @param  {Function} callback
              * @return {Query} this
              */
-            Collection.prototype.count = function (/*criteria, callback*/) {
+            Collection.prototype.count = function( /*criteria, callback*/ ) {
 
             };
 
@@ -279,7 +295,7 @@
              * @param  {Function} callback
              * @return {[type]}
              */
-             Collection.prototype.distinct = function (/*fields, criteria, callback*/) {
+            Collection.prototype.distinct = function( /*fields, criteria, callback*/ ) {
 
             };
 
@@ -289,7 +305,7 @@
              * @param  {Object} val
              * @return {[type]}     [description]
              */
-            Collection.prototype.equals = function (/*val*/) {
+            Collection.prototype.equals = function( /*val*/ ) {
 
             };
 
@@ -299,18 +315,18 @@
              * @param  {Number} val
              * @return {[type]}      [description]
              */
-            Collection.prototype.exists = function (/*path, val*/) {
-              // body...
+            Collection.prototype.exists = function( /*path, val*/ ) {
+                // body...
             };
 
             /**
              * @description Executes this query and returns a promise
              * @return {promise}
              */
-            Collection.prototype.then = function () {
-              // body...
+            Collection.prototype.then = function() {
+                // body...
             };
 
-             return Collection;
+            return Collection;
         });
 }());
