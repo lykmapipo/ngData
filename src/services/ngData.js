@@ -42,6 +42,7 @@
     angular
         .module('ngData')
         .factory('$ngData', function() {
-            // body...
+            var $ngData = {};
+            return $ngData;
         });
 }());
