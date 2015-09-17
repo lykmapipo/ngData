@@ -55,19 +55,21 @@
              * @return {Object}            valid ngData model
              */
             $ngData.model = function(name, definition) {
-                //extend definition with model name
-                definition.name = name;
-
                 //check if model alreay exist
-                var modelExist = _.has($ngData.models, name);
-                if (modelExist) {
-                    return _.get($ngData.models, name);
+                var model = _.get($ngData.models, name);
+                if (model) {
+                    return model;
                 }
 
                 //compile a model definition
                 //and register it
                 else {
+                    //extend definition with model name
+                    definition.name = name;
+
+                    //instantiate a collection with definetion
                     $ngData.models[name] = new Collection(definition);
+                    
                     return _.get($ngData.models, name);
                 }
             };

@@ -24,9 +24,12 @@ describe('$ngData', function() {
                 }
             });
 
-            console.log(User);
-
             expect(User).to.exist;
+            expect(User.tableName).to.exist;
+            expect(User.name).to.exist;
+            expect(User.definition).to.exist;
+            expect($ngData.model('User')).to.exist;
+
         }));
 
         it('should be able inflect table name from model name', inject(function($ngData) {
