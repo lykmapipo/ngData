@@ -34,15 +34,6 @@
 
             };
 
-            /**
-             * @description parse the object to String object
-             * @return {Object} [String object]
-             */
-            Model.prototype.toString = function() {
-
-                return null;
-            };
-
 
             /**
              * @description return object representation of this model instance

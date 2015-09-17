@@ -8,12 +8,12 @@
      */
     angular
         .module('ngData')
-        .factory('Schema', function($q, DataTypes, $database, Query) {
+        .factory('Schema', function($q, DataTypes, $database, SQL) {
             var Schema = {};
 
             /**
              * @function
-             * @description cast JS data types to respective SQLite3/WebSQL 
+             * @description cast JS data types to respective SQLite3/WebSQL
              *              data types
              * @param {String|Constructor} type valid JS type constructor or name
              * @return {String} valid SQL type or default to TEXT if non found
@@ -44,7 +44,7 @@
             Schema.propertiesDDL = function(properties) {
                 var ddl = '';
 
-                // iterate properties and 
+                // iterate properties and
                 // build SQL DDL per each property
                 _.keys(properties).forEach(function(key /*property name*/ ) {
                     // normalize simple key/value property
@@ -83,7 +83,7 @@
              * @private
              */
             Schema.getIndexes = function(properties) {
-                // iterate through the properties 
+                // iterate through the properties
                 // and pull out any index property
                 return _.compact(_.map(_.keys(properties), function(name) {
                     var property = _.get(properties, name);
@@ -134,7 +134,7 @@
              * @function
              * @description drop a schema database table
              * @param {String} table name of schema
-             * @return {Promise} promise 
+             * @return {Promise} promise
              * @private
              */
             Schema.dropTable = function(table) {
@@ -206,7 +206,7 @@
              * @description update existing data to comply with the new table structure
              * @param  {Array} data       current table data
              * @param  {Object} properties new JSON schema properties
-             * @return {Array}            
+             * @return {Array}
              * @private
              */
             Schema.copyData = function(data, properties) {
@@ -300,15 +300,15 @@
                                         //select data from temporary table
                                         tx.executeSql(sftt, [], function(tx, r4) {
                                             //copy data if exist
-                                            var data = Query.fetchAll(r4);
+                                            var data = SQL.fetchAll(r4);
 
                                             //prepare data
                                             data = Schema.copyData(data, properties);
-                                            
+
 
                                             //execute all inserts
                                             _.forEach(data, function(model) {
-                                                var query = Query.insert().into(table).values(model).toString();
+                                                var query = SQL.insert().into(table).values(model).toString();
                                                 tx.executeSql(query, angular.noop, errorHandler);
                                             });
 
