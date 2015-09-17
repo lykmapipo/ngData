@@ -10,7 +10,7 @@
 
             /**
              * @description Collection
-             * @param {type} table [description]
+             * @param {Object}
              */
             function Collection(options) {
                 this.name = options.name;
@@ -33,6 +33,28 @@
 
 
             /**
+             * @description initialize new model without persist it
+             * @return {Object}      new model instance
+             */
+            Collection.prototype.new = function(data) {
+                //instantiate new model
+                var model = new Model(this.definition.properties);
+
+                //set data
+                if (data && _.isPlainObject(data)) {
+                    _.foEach(data, function(value, key) {
+                        if (_.has(model, key)) {
+                            model[key] = value;
+                        }
+                    });
+                }
+                
+                //return model instance
+                return model;
+            };
+
+
+            /**
              * @description Shortcut for creating a new Document that is
              *              automatically saved to the db if valid.
              * @param {(Object|Array)} doc
@@ -42,6 +64,7 @@
             Collection.prototype.create = function( /*doc, callback*/ ) {
 
             };
+
 
             /**
              * @description Updates documents in the database without
@@ -54,6 +77,7 @@
             Collection.prototype.update = function( /*conditions, doc, options, callback*/ ) {
 
             };
+
 
             /**
              * @description Removes documents from the collection.

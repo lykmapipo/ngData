@@ -57,7 +57,7 @@
             $ngData.model = function(name, definition) {
                 //check if model alreay exist
                 var model = _.get($ngData.models, name);
-                if (model) {
+                if (model && !definition) {
                     return model;
                 }
 
@@ -69,11 +69,13 @@
 
                     //instantiate a collection with definetion
                     $ngData.models[name] = new Collection(definition);
-                    
+
                     return _.get($ngData.models, name);
                 }
             };
 
+
+            //export $ngData factory
             return $ngData;
         });
 }());

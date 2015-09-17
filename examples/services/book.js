@@ -2,19 +2,19 @@
 
 
 angular
-  .module('webexample')
-  .factory('Book',function (Model) {
-    var Book = new Model({
-      tableName:'books',
-      properties:{
-        name:String,
-        author:Object,
-        isbn:{
-          type:String,
-          required:true
-        }
-      }
-  });
+    .module('webexample')
+    .factory('Book', function($ngData) {
+        var Book = $ngData.model('Book', {
+            tableName: 'books',
+            properties: {
+                name: String,
+                author: Object,
+                isbn: {
+                    type: String,
+                    required: true
+                }
+            }
+        });
 
-  return Book;
-});
+        return Book;
+    });

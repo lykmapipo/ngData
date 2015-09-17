@@ -13,9 +13,27 @@
             /**
              * @description Model constructor
              */
-            function Model() {
-
+            function Model(properties) {
+                if (properties) {
+                    this.properties = properties;
+                }
+                //initialize model
+                this._init();
             }
+
+            /**
+             * @description initial model
+             * @private
+             */
+            Model.prototype._init = function() {
+                _.forEach(_.keys(this.properties), function(property) {
+                    this[property] =
+                        _.get(this.properties, property).defaultsTo;
+                }.bind(this));
+            };
+
+            //model properties
+            Model.prototype.properties;
 
 
             /**
@@ -39,16 +57,17 @@
              * @description return object representation of this model instance
              * @return {Object}
              */
-            Model.prototype.toObject = function() {
-
-            };
+            Model.prototype.toObject =
+                Model.prototype.valueOf = function() {
+                    return _.pick(this, _.keys(this.properties));
+                };
 
             /**
-             * @description parse the model to JSON object
+             * @description return json representation of a model instance
              * @return {Object} 
              */
             Model.prototype.toJSON = function() {
-
+                return this.toObject();
             };
 
             return Model;

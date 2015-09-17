@@ -1,20 +1,20 @@
-(function(){
-  'use strict';
+(function() {
+    'use strict';
 
-  /**
-   * @name webexample
-   */
-  angular
-        .module('webexample',['ngData'])
-        .config(function($databaseProvider){
+    /**
+     * @name webexample
+     */
+    angular
+        .module('webexample', ['ngData'])
+        .config(function($databaseProvider) {
 
             $databaseProvider.name = 'testDB';
             $databaseProvider.description = 'this is a test db';
             $databaseProvider.version = '1.0.0';
-            $databaseProvider.size = 8 *1024 *1024;
+            $databaseProvider.size = 8 * 1024 * 1024;
 
         })
-        .run(function($database) {
-            $database.connect();
+        .run(function($ngData) {
+            $ngData.initialize();
         });
 }());

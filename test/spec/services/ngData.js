@@ -38,7 +38,9 @@ describe('$ngData', function() {
 
             var User = $ngData.model('User', {
                 properties: {
-                    firstName: String
+                    firstName: {
+                        type: String
+                    }
                 }
             });
 
