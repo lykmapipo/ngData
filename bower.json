@@ -1,51 +1,54 @@
 {
-  "name": "ngdata",
-  "version": "0.1.0",
-  "description": "Simple WEBSQL and cordova SQLITE ORM for ionic and angular applications",
-  "homepage": "https://github.com/lykmapipo/ngData",
-  "main": [
-    "dist/ngData.js"
-  ],
-  "authors": [
-    "lykmapipo <lallyelias87@gmail.com>"
-  ],
-  "keywords": [
-    "angular",
-    "orm",
-    "model",
-    "collection",
-    "activerecord",
-    "record"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests",
-    "src",
-    "package.json",
-    "Gruntfile.js",
-    "example"
-  ],
-  "dependencies": {
-    "angular": "~1.4.5",
-    "angular-inflector": "~0.2.0",
-    "angular-json-validator": "~1.0.0",
-    "faker": "Faker#~3.0.1",
-    "lodash": "~3.10.1",
-    "ngCordova": "~0.1.20-alpha",
-    "squel": "~4.1.1"
-  },
-  "devDependencies": {
-    "angular": "~1.4.5",
-    "angular-mocks": "~1.4.5",
-    "faker": "Faker#~3.0.1"
-  },
-  "overrides": {
-    "squel": {
-      "main": "squel-basic.js"
+    "name": "ngdata",
+    "version": "0.1.0",
+    "description": "Simple WEBSQL and cordova SQLITE ORM for ionic and angular applications",
+    "homepage": "https://github.com/lykmapipo/ngData",
+    "main": [
+        "dist/ngData.js"
+    ],
+    "authors": [
+        "lykmapipo <lallyelias87@gmail.com>"
+    ],
+    "keywords": [
+        "angular",
+        "orm",
+        "model",
+        "collection",
+        "activerecord",
+        "record"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests",
+        "src",
+        "package.json",
+        "Gruntfile.js",
+        "example"
+    ],
+    "dependencies": {
+        "angular": "~1.4.5",
+        "angular-inflector": "~0.2.0",
+        "angular-json-validator": "~1.0.0",
+        "faker": "Faker#~3.0.1",
+        "lodash": "~3.10.1",
+        "ngCordova": "~0.1.20-alpha",
+        "squel": "~4.1.1"
+    },
+    "devDependencies": {
+        "angular": "~1.4.5",
+        "angular-mocks": "~1.4.5",
+        "faker": "Faker#~3.0.1"
+    },
+    "overrides": {
+        "squel": {
+            "main": "squel-basic.js"
+        }
+    },
+    "resolutions": {
+        "angular": "1.4.5"
     }
-  }
 }
