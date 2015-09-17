@@ -176,7 +176,7 @@
                 // iterate through each attribute, building a query string
                 var _schema = Schema.propertiesDDL(properties);
 
-                // Build query
+                //Build query
                 var query =
                     'CREATE TABLE ' + table + ' (' + _schema + ')';
 

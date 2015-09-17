@@ -16,7 +16,7 @@
              * @param  {Object}   projections [optional fields to return]
              * @param  {Object}   options     [optional]
              * @param  {Function} callback
-             * @return {Qurey}
+             * @return {Query}
              */
             Query.prototype.find = function( /*conditions, projections, options, callback*/ ) {
 
