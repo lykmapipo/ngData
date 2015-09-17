@@ -37,6 +37,10 @@ module.exports = function(grunt) {
             },
             // Automatically inject Bower components into the app
             wiredep: {
+                example: {
+                    src: ['<%= props.example %>/index.html'],
+                    ignorePath: /\.\.\//
+                },
                 test: {
                     devDependencies: true,
                     src: '<%= karma.unit.configFile %>',
@@ -123,7 +127,7 @@ module.exports = function(grunt) {
                 },
                 livereload: {
                     options: {
-                        livereload: '<%= connect.options.livereload %>'
+                        livereload: '<%= connect.options.livereload %>',
                     },
                     files: [
                         '<%= props.example %>/{,*/}*.html',
@@ -219,6 +223,8 @@ module.exports = function(grunt) {
     grunt.registerTask('serve', 'Compile then start a connect web server', function() {
         grunt.task.run([
             'clean:server',
+            'build',
+            'wiredep:example',
             'connect:livereload',
             'watch'
         ]);

@@ -41,7 +41,7 @@
      */
     angular
         .module('ngData')
-        .factory('$ngData', function(Collection, Schema) {
+        .factory('$ngData', function(Collection, Schema, $q) {
             var $ngData = {};
 
             //models map registry
@@ -81,9 +81,13 @@
                 //1. scan for models
 
                 //2. apply migration
-                _.forEach(_.values($ngData.models), function(collection) {
-                    Schema.alter(collection.tableName, collection.properties);
+                var migrations = _.map(_.values($ngData.models), function(collection) {
+                    console.log(collection);
+                    return Schema
+                        .alter(collection.tableName, collection.properties);
                 });
+
+                return $q.all(migrations);
 
             };
 

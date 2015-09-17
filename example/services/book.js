@@ -2,8 +2,9 @@
 
 
 angular
-    .module('webexample')
+    .module('ngBooks')
     .factory('Book', function($ngData) {
+        
         var Book = $ngData.model('Book', {
             tableName: 'books',
             properties: {
