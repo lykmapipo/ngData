@@ -34,6 +34,7 @@
                 }.bind(this));
             };
 
+            
             //model properties
             Model.prototype.properties;
 

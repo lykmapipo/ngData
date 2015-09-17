@@ -1,54 +1,44 @@
 'use strict';
 
 describe('ngData:Collection', function() {
+    var User;
 
     beforeEach(module('ngData'));
 
+    beforeEach(inject(function($ngData) {
+        User = $ngData.model('Customer', {
+            properties: {
+                name: {
+                    type: String,
+                    defaultsTo: faker.name.findName()
+                },
+                code: {
+                    type: String
+                }
+            }
+        });
+    }));
+
     describe('Collection#new', function() {
 
-        it('should be able to instantiate new model instance', inject(function($ngData) {
-            var User = $ngData.model('Customer', {
-                properties: {
-                    name: {
-                        type: String,
-                        defaultsTo: faker.name.firstName()
-                    },
-                    code: {
-                        type: String
-                    }
-                }
-            });
-
+        it('should be able to instantiate new model instance', inject(function() {
 
             expect(User.new).to.exist;
             var user = User.new();
-            expect(user).to.exist;
 
+            expect(user).to.exist;
             expect(user).to.have.ownProperty('name');
             expect(user).to.have.ownProperty('code');
 
         }));
 
-        it('should be able to instantiate new model instance with data', inject(function($ngData) {
-            var User = $ngData.model('Customer', {
-                properties: {
-                    name: {
-                        type: String,
-                        defaultsTo: faker.name.findName()
-                    },
-                    code: {
-                        type: String
-                    }
-                }
-            });
+        it('should be able to instantiate new model instance with data', inject(function() {
 
             var _user = {
                 name: faker.name.findName(),
                 code: faker.random.uuid()
             };
 
-
-            expect(User.new).to.exist;
             var user = User.new(_user);
 
             expect(user.name).to.be.equal(_user.name);
