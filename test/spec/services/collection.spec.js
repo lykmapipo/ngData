@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngData:Collection', function() {
+describe('Collection', function() {
     var User;
 
     beforeEach(module('ngData'));

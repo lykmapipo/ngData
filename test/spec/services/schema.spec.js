@@ -1,7 +1,7 @@
 'use strict';
 
 
-describe('ngData:Schema', function() {
+describe('Schema', function() {
     this.timeout = function() {
         return 8000;
     };

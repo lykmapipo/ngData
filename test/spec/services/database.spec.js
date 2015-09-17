@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngData:$database factory', function() {
+describe('$database', function() {
 
     // load the ngData module
     beforeEach(module('ngData'));

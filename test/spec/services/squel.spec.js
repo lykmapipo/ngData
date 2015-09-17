@@ -2,7 +2,7 @@
 
 //more query examples can be found at
 //https://hiddentao.github.io/squel/
-describe('ngData:SQL Builder factory', function() {
+describe('SQL', function() {
 
     // load the ngData module
     beforeEach(module('ngData'));

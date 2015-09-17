@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngData:$databaseProvider', function() {
+describe('$databaseProvider', function() {
     var databaseProvider;
 
     // load the ngData module

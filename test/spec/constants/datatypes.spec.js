@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngData:DataTypes', function() {
+describe('DataTypes', function() {
 
     // load the ngData module
     beforeEach(module('ngData'));

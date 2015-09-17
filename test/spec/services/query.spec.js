@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngData:Query', function(){
+describe('Query', function() {
 
     beforeEach(module('ngData'));
 

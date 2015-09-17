@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ngData:Model', function() {
+describe('Model', function() {
 
     beforeEach(module('ngData'));
 

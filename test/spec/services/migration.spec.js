@@ -1,7 +1,7 @@
 'use strict';
 
 
-describe('ngData:Migration', function() {
+describe('Migration', function() {
     this.timeout = function() {
         return 8000;
     };
