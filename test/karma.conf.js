@@ -23,6 +23,7 @@ module.exports = function(config) {
         files: [
             // bower:js
             'bower_components/angular/angular.js',
+            'bower_components/angular-inflector/dist/angular-inflector.min.js',
             'bower_components/tv4/tv4.js',
             'bower_components/angular-json-validator/angular-json-validator.js',
             'bower_components/faker/build/build/faker.js',

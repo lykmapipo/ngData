@@ -1,27 +1,29 @@
 'use strict';
 
-describe('ngData:Model', function(){
+describe('ngData:Model', function() {
 
-  beforeEach(module('ngData'));
+    beforeEach(module('ngData'));
 
-  it('should be injectable', inject(function(Model){
+    it('should be injectable', inject(function(Model) {
 
-      expect(Model).to.exist;
+        expect(Model).to.exist;
 
-      var model = new Model();
+        var model = new Model({
+            name: 'User'
+        });
 
-      expect(model.save).to.exist;
-      expect(model.remove).to.exist;
-      expect(model.toString).to.exist;
-      expect(model.toJSON).to.exist;
+        expect(model.save).to.exist;
+        expect(model.remove).to.exist;
+        expect(model.toString).to.exist;
+        expect(model.toJSON).to.exist;
 
-  }));
+    }));
 
-  it('should  be able to save the model instance');
+    it('should  be able to save the model instance');
 
-  it('should be able to remove the model instance');
+    it('should be able to remove the model instance');
 
-  it('should be able to parse the model instance to string');
+    it('should be able to parse the model instance to string');
 
-  it('should be able to parse the model instance to JSON');
+    it('should be able to parse the model instance to JSON');
 });

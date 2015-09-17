@@ -10,7 +10,8 @@
     angular
         .module('ngData', [
             'ngCordova',
-            'bt.jsonValidator'
+            'bt.jsonValidator',
+            'platanus.inflector'
         ]);
 
 }());
