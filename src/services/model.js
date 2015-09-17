@@ -27,8 +27,10 @@
              */
             Model.prototype._init = function() {
                 _.forEach(_.keys(this.properties), function(property) {
+
                     this[property] =
                         _.get(this.properties, property).defaultsTo;
+
                 }.bind(this));
             };
 

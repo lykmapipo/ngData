@@ -42,13 +42,13 @@
 
                 //set data
                 if (data && _.isPlainObject(data)) {
-                    _.foEach(data, function(value, key) {
+                    _.forEach(data, function(value, key) {
                         if (_.has(model, key)) {
                             model[key] = value;
                         }
                     });
                 }
-                
+
                 //return model instance
                 return model;
             };
