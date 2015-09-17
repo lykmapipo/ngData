@@ -20,7 +20,7 @@
      * 						type:String,
      * 						required:true
      * 					},
-     * 					code:String
+     * 					code:String,
      * 					email:{
      * 						type:String,
      * 						email:true,
@@ -32,11 +32,11 @@
      * 					}
      * 				}
      * 			});
-     * 			
+     *
      * 		//return created model
      * 		return Customer;
      * 	});
-     * 
+     *
      * @public
      */
     angular

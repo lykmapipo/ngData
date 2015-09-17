@@ -27,11 +27,10 @@
 
             /**
              * @description parse the object to String object
-             * @return {Object} [String object]
+             * @return {Object} [String object representation]
              */
-            Model.prototype.toString = function () {
+            Model.prototype.toObject = function () {
 
-              return null;
             };
 
             /**
@@ -40,7 +39,6 @@
              */
             Model.prototype.toJSON = function () {
 
-              return JSON.stringify(this);
             };
 
             return Model;

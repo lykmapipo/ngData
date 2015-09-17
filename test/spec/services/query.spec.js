@@ -1,128 +1,61 @@
 'use strict';
 
-//more query examples can be found at
-//https://hiddentao.github.io/squel/
-describe('ngData:Query Builder factory', function() {
+describe('ngData:Query', function(){
 
-    // load the ngData module
     beforeEach(module('ngData'));
 
-    it('should be injectable', inject(function(Query) {
-        expect(Query).to.exist;
+    it('should be injectable');
 
-        expect(Query.select().then).to.exist;
-        expect(Query.select().catch).to.exist;
+    it('should be able to select record based on criteria');
 
-        expect(Query.insert().then).to.exist;
-        expect(Query.insert().catch).to.exist;
+    it('it should be able to find records on given conditions or criteria ');
 
-        expect(Query.update().then).to.exist;
-        expect(Query.update().catch).to.exist;
+    it('it should be able to find a record based on a given  record id');
 
-        expect(Query.delete().then).to.exist;
-        expect(Query.delete().catch).to.exist;
+    it('it should be able to find a record based on a given id and remove it from the database');
 
-    }));
+    it('it should be able to find a record based on a given id and update it based on update object');
 
-    it('should be able to build `SELECT` query', inject(function(Query) {
-        var query = Query.select().from('users').toString();
-        expect(query).to.equal('SELECT * FROM users');
-    }));
+    it('it should be able to  find only one object based on  given conditions and criteria');
 
-    it('should be able to build `UPDATE` query', inject(function(Query) {
-        var firstName = faker.name.firstName();
+    it('it should be able to find a record and remove it based on the given conditions');
 
-        var query =
-            Query.update().table('users').set('firstName', firstName).toString();
+    it('it should be able to find a record and update it based on the given conditions');
 
-        expect(query)
-            .to.equal('UPDATE users SET firstName = \'' + firstName + '\'');
-    }));
+    it('it should be able to create a query that passes the conditions and return a query');
 
-    it('should be able to build `DELETE` query', inject(function(Query) {
-        var query = Query.delete().from('users').toString();
-        expect(query).to.equal('DELETE FROM users');
-    }));
+    it('it should be able to specify the number of record that a query should return');
 
-    it('should be able to build `INSERT` query', inject(function(Query) {
-        var firstName = faker.name.firstName();
+    it('it should be able to set the sort order based on the given argument');
 
-        var query =
-            Query.insert().into('users').values({
-                firstName: firstName
-            }).toString();
+    it('it should be able to specify  greater than query condition');
 
-        expect(query)
-            .to.equal('INSERT INTO users (firstName) VALUES (\'' + firstName + '\')');
-    }));
+    it('it should be able to specify  greate or equal query condition');
 
-    it('should be able to execute `INSERT` sql query', inject(function($rootScope, Query) {
+    it('it should be able to specify  less than query condition');
 
-        Query
-            .insert()
-            .into('users')
-            .values([{
-                firstName: faker.name.firstName()
-            }, {
-                firstName: faker.name.firstName()
-            }])
-            .catch(function(error) {
-                expect(error).to.exist;
-                expect(error.code).to.be.equal(5);
-                expect(error.message).to.be.equal('no such table: users');
-            });
+    it('it should be able to specify  less or equal query condition');
 
-        //wait for propagation
-        $rootScope.$apply();
-    }));
+    it('it should be able to specify in query condition');
 
-    it('should be able to execute `SELECT` sql query', inject(function($rootScope, Query) {
+    it('it should be able to specify the records fields that are to be included');
 
-        Query
-            .select()
-            .from('users')
-            .catch(function(error) {
-                expect(error).to.exist;
-                expect(error.code).to.be.equal(5);
-                expect(error.message).to.be.equal('no such table: users');
-            });
+    it('it should be able to specify the arguments of and condition');
 
-        //wait for propagation
-        $rootScope.$apply();
+    it('it should be able to specify the arguments of or condition');
 
-    }));
+    it('it should be able to specify the arguments of nor condition');
 
-    it('should be able to execute `UPDATE` sql query', inject(function($rootScope, Query) {
+    it('it should be able to define index for model schema');
 
-        Query
-            .update()
-            .table('users')
-            .set('firstName', faker.name.firstName())
-            .catch(function(error) {
-                expect(error).to.exist;
-                expect(error.code).to.be.equal(5);
-                expect(error.message).to.be.equal('no such table: users');
-            });
+    it('it should be able to specify a query as a count query');
 
-        //wait for propagation
-        $rootScope.$apply();
+    it('it should be able to declare and execute distinct() function');
 
-    }));
+    it('it should be able to specify the complementary comparison value for paths specified with where()');
 
-    it('should be able to execute `DELETE` sql query', inject(function($rootScope, Query) {
+    it('it should be able to specify an exist condition in a query');
 
-        Query
-            .delete()
-            .from('users')
-            .catch(function(error) {
-                expect(error).to.exist;
-                expect(error.code).to.be.equal(5);
-                expect(error.message).to.be.equal('no such table: users');
-            });
-
-        //wait for propagation
-        $rootScope.$apply();
-
-    }));
+    it('it should be able to execute a query and return a promise');
 
 });
