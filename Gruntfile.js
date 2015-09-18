@@ -154,17 +154,6 @@ module.exports = function(grunt) {
                             '<%= props.tmp %>/directives/**/*.js'
                         ]
                     }
-                },
-                ex: {
-                    files: {
-                        'examples/<%= pkg.name %>.js': [
-                            '<%= props.tmp %>/ngData.js',
-                            '<%= props.tmp %>/constants/**/*.js',
-                            '<%= props.tmp %>/providers/**/*.js',
-                            '<%= props.tmp %>/services/**/*.js',
-                            '<%= props.tmp %>/directives/**/*.js'
-                        ]
-                    }
                 }
             },
             // ng-annotate tries to make the code safe for minification automatically
@@ -188,6 +177,31 @@ module.exports = function(grunt) {
                 unit: {
                     configFile: '<%= props.test %>/karma.conf.js',
                     singleRun: true
+                }
+            },
+
+            //universal module definition task
+            umd: {
+                dist: {
+                    src: 'dist/<%= pkg.name %>.js',
+                    dest: 'dist/<%= pkg.name %>.js',
+                    objectToExport: 'ngData',
+                    globalAlias: 'ngData',
+                    amdModuleId: 'ngData',
+                    indent: 4,
+                    deps: {
+                        args: [
+                            'angular',
+                            '_',
+                            'squel'
+                        ],
+                        default: [
+                            'angular',
+                            '_',
+                            'squel'
+                        ],
+                        items: ['angular', 'lodash', 'squel']
+                    }
                 }
             },
 
@@ -237,14 +251,8 @@ module.exports = function(grunt) {
         'jshint',
         'karma',
         'ngAnnotate',
-        'concat:dist'
-    ]);
-
-    grunt.registerTask('buildex', [
-        'jshint',
-        'karma',
-        'ngAnnotate',
-        'concat:ex'
+        'concat:dist',
+        'umd:dist'
     ]);
 
     grunt.registerTask('test', [
