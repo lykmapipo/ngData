@@ -5,7 +5,7 @@
      * @ngdoc module
      * @name SQL
      * @description sql builder based on sql
-     * @see https://hiddentao.github.io/sql/
+     * @see https://hiddentao.github.io/squel/
      */
     angular
         .module('ngData')

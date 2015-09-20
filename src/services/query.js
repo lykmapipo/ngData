@@ -1,6 +1,13 @@
 (function() {
     'use strict';
 
+    /**
+     * @ngdoc module
+     * @name Query
+     * @description query builder based on squel
+     * @see https://hiddentao.github.io/squel/
+     */
+
     angular
         .module('ngData')
         .factory('Query', function() {
@@ -183,7 +190,7 @@
              * @param  {(Object|String)} arg
              * @return {Query}     [this]
              */
-            Query.prototype.select = function( /*arg*/ ) {
+            Query.prototype.select = function(/*arg*/ ) {
 
             };
 
@@ -213,7 +220,6 @@
             Query.prototype.nor = function( /*array*/ ) {
 
             };
-            
 
             /**
              * @description Specifying this query as a count query.
@@ -253,7 +259,7 @@
              * @return {[type]}      [description]
              */
             Query.prototype.exists = function( /*path, val*/ ) {
-                // body...
+
             };
 
             /**
@@ -261,7 +267,7 @@
              * @return {promise}
              */
             Query.prototype.then = function() {
-                // body...
+
             };
 
             /**
@@ -270,7 +276,7 @@
              */
             Query.prototype.offset =
                 Query.prototype.skip = function( /*val*/ ) {
-                    // body...
+
                 };
 
             return Query;
