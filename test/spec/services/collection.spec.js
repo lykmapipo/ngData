@@ -48,6 +48,14 @@ describe('Collection', function() {
 
     });
 
+    describe('Collection#remove', function() {
+        it('should be an instance of query', inject(function(Query) {
+            var query = User.remove();
+            expect(query).to.be.an.instanceof(Query);
+            console.log(query);
+        }));
+    });
+
     it('should be able to create a new record and save it into the database');
 
     it('should be able to update the record in the database without returning them');

@@ -26,6 +26,26 @@
                 return this;
             };
 
+            //extend select with ability to pass array fields
+            sql.cls.Select.prototype.columns = function(fields) {
+
+                //is multiple field selection
+                if (_.isArray(fields)) {
+                    //iterate over all fields
+                    _.forEach(fields, function(field) {
+                        this.field(field);
+                    });
+                }
+
+                //is single field selection
+                else {
+                    this.field(fields);
+                }
+
+                return this;
+
+            };
+
             //extending local sql with then executor
             sql.cls.QueryBuilder.prototype.then = function( /*resolve, reject*/ ) {
 
