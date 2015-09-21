@@ -3,12 +3,27 @@
 
     angular
         .module('ngData')
-        .factory('Query', function() {
+        .factory('Query', function(SQL) {
 
-            function Query() {
+            function Query(options) {
+                //harmonize options
+                options = _.merge(options, {
+                    type: 'select'
+                });
 
+                if (options.collection) {
+                    this.collection = options.collection;
+                }
+
+                this.type = options.type;
+
+                //instantiate SQL
+                this.sql = SQL[this.type]();
             }
 
+            Query.prototype.sql;
+
+            Query.prototype.collection;
 
             /**
              * @description find documents
@@ -18,8 +33,13 @@
              * @param  {Function} callback
              * @return {Qurey}
              */
-            Query.prototype.find = function( /*conditions, projections, options, callback*/ ) {
+            Query.prototype.find = function( /*conditions , projections, options*/ ) {
 
+                if (!this.select && this.type === 'select') {
+                    this.select = SQL.select();
+                }
+
+                return this;
             };
 
             /**
@@ -31,8 +51,10 @@
              * @param  {Function} callback
              * @return {Query}               [description]
              */
-            Query.prototype.findById = function( /*id, projections, options, callback*/ ) {
-
+            Query.prototype.findById = function(id, projections, options) {
+                return this.find({
+                    id: id
+                }, projections, options);
             };
 
             /**
@@ -213,7 +235,7 @@
             Query.prototype.nor = function( /*array*/ ) {
 
             };
-            
+
 
             /**
              * @description Specifying this query as a count query.

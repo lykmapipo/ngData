@@ -6,7 +6,7 @@
      */
     angular
         .module('ngData')
-        .factory('Collection', function(Model, inflector) {
+        .factory('Collection', function(Model, inflector, Query) {
 
             /**
              * @description Collection
@@ -61,8 +61,24 @@
              * @param {Function} callback
              * @return {type}
              */
-            Collection.prototype.create = function( /*doc, callback*/ ) {
+            Collection.prototype.create = function(doc) {
+                var query = new Query({
+                    collection: this,
+                    type: 'insert'
+                });
 
+                //TODO batch create
+                //execute creates in parallel
+
+                //handle single create
+                query.values(doc);
+
+                //execute query
+                //fetch created model if primary key is auto increment
+
+                //return model instance
+
+                return query;
             };
 
 
@@ -74,18 +90,30 @@
              * @param  {Object}   options
              * @param  {Function} callback
              */
-            Collection.prototype.update = function( /*conditions, doc, options, callback*/ ) {
+            Collection.prototype.update = function( /*conditions, doc, options*/ ) {
 
+                var query = new Query({
+                    collection: this,
+                    type: 'update'
+                });
+
+                return query;
             };
 
 
             /**
              * @description Removes documents from the collection.
              * @param  {Object}   conditions
-             * @param  {Function} callback
-             * @return {type}
+             * @return {Query}
              */
-            Collection.prototype.remove = function( /*conditions, callback*/ ) {
+            Collection.prototype.remove = function( /*conditions*/ ) {
+
+                var query = new Query({
+                    collection: this,
+                    type: 'delete'
+                });
+
+                return query;
 
             };
 
