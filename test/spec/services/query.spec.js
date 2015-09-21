@@ -59,4 +59,5 @@ describe('Query', function() {
     it('should be able to execute a query and return a promise');
 
 
+
 });

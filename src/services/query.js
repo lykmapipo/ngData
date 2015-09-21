@@ -14,6 +14,7 @@
 
             function Query() {
 
+              this.query;
             }
 
 
@@ -190,7 +191,7 @@
              * @param  {(Object|String)} arg
              * @return {Query}     [this]
              */
-            Query.prototype.select = function(/*arg*/ ) {
+            Query.prototype.select = function( /*arg*/ ) {
 
             };
 
