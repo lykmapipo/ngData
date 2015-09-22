@@ -34,7 +34,7 @@
                 }.bind(this));
             };
 
-            
+
             //model properties
             Model.prototype.properties;
 
@@ -67,7 +67,7 @@
 
             /**
              * @description return json representation of a model instance
-             * @return {Object} 
+             * @return {Object}
              */
             Model.prototype.toJSON = function() {
                 return this.toObject();
