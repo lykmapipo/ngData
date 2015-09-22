@@ -23,18 +23,30 @@
                     //TODO fix collection insertion
                     this.setFieldsRows(values);
                 }
+
+                return this;
+            };
+
+            //extend update set to support object values
+            sql.cls.Update.prototype.sets = function(field, value) {
+
+                if (_.isPlainObject(field)) {
+                    this.setFields(field);
+                } else if (field && value) {
+                    this.set(field, value);
+                }
+
                 return this;
             };
 
             //extend select with ability to pass array fields
             sql.cls.Select.prototype.columns = function(fields) {
-
                 //is multiple field selection
                 if (_.isArray(fields)) {
                     //iterate over all fields
                     _.forEach(fields, function(field) {
                         this.field(field);
-                    });
+                    }.bind(this));
                 }
 
                 //is single field selection

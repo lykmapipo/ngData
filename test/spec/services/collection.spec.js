@@ -48,11 +48,24 @@ describe('Collection', function() {
 
     });
 
+    describe('Collection#create', function() {
+        it('should be an instance of query', inject(function(Query) {
+            var query = User.create();
+            expect(query).to.be.an.instanceof(Query);
+        }));
+    });
+
     describe('Collection#remove', function() {
         it('should be an instance of query', inject(function(Query) {
             var query = User.remove();
             expect(query).to.be.an.instanceof(Query);
-            console.log(query);
+        }));
+    });
+
+    describe('Collection#update', function() {
+        it('should be an instance of query', inject(function(Query) {
+            var query = User.update();
+            expect(query).to.be.an.instanceof(Query);
         }));
     });
 

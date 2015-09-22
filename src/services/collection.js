@@ -62,19 +62,24 @@
              * @return {type}
              */
             Collection.prototype.create = function(doc) {
+
                 var query = new Query({
                     collection: this,
                     type: 'insert'
                 });
 
+                //TODO retur error if no doc provided
+
                 //TODO batch create
                 //execute creates in parallel
 
                 //handle single create
-                query.values(doc);
+                if (doc) {
+                    query.sql.values(doc);
+                }
 
-                //execute query
-                //fetch created model if primary key is auto increment
+                //TODO execute query
+                //TODO fetch created model if primary key is auto increment
 
                 //return model instance
 
@@ -90,12 +95,19 @@
              * @param  {Object}   options
              * @param  {Function} callback
              */
-            Collection.prototype.update = function( /*conditions, doc, options*/ ) {
+            Collection.prototype.update = function(conditions, doc /*, options*/ ) {
 
                 var query = new Query({
                     collection: this,
                     type: 'update'
                 });
+
+                //set updated values
+                query.sql.sets(doc);
+
+
+                //TODO build condition
+                //TODO return update response after execution
 
                 return query;
             };

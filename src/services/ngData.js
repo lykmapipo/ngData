@@ -82,7 +82,6 @@
 
                 //2. apply migration
                 var migrations = _.map(_.values($ngData.models), function(collection) {
-                    console.log(collection);
                     return Schema
                         .alter(collection.tableName, collection.properties);
                 });

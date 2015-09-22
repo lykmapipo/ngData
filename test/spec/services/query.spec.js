@@ -2,13 +2,67 @@
 
 describe('Query', function() {
 
+    var User;
+
     beforeEach(module('ngData'));
 
-    it('should be injectable');
+    beforeEach(inject(function($ngData) {
+        User = $ngData.model('Customer', {
+            properties: {
+                name: {
+                    type: String,
+                    defaultsTo: faker.name.findName()
+                },
+                code: {
+                    type: String
+                }
+            }
+        });
+    }));
+
+    it('should be injectable', inject(function(Query) {
+        var query = new Query({
+            collection: User
+        });
+
+        expect(query).to.exist;
+
+        expect(query).to.be.instanceof(Query);
+
+    }));
+
+    describe('Query#find', function() {
+
+        it('should be able to build simple select query', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find();
+
+            expect(query.toString()).to.be.equal('SELECT * FROM customers');
+
+        }));
+
+        it('should return a select query with given single projections', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find('name');
+
+            expect(query.toString()).to.equal('SELECT name FROM customers');
+        }));
+
+        it('should return a select query with given multiple projections', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find(['name', 'age']);
+
+            expect(query.toString()).to.equal('SELECT name, age FROM customers');
+        }));
+
+    });
 
     it('should be able to select record based on criteria');
 
-    it('should be able to find records on given conditions or criteria ');
+    it('should be able to find records on given conditions or criteria');
 
     it('should be able to find a record based on a given  record id');
 
@@ -57,7 +111,5 @@ describe('Query', function() {
     it('should be able to specify an exist condition in a query');
 
     it('should be able to execute a query and return a promise');
-
-
 
 });
