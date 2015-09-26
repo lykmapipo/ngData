@@ -36,6 +36,8 @@
 
             Query.prototype.collection;
 
+            Query.prototype.expression;
+
             Query.prototype._init = function() {
                 //instantiate SQL
                 this.sql = SQL[this.type]();
@@ -67,10 +69,12 @@
              * @return {Query}
              */
             Query.prototype.find = function(conditions, projections /*options*/ ) {
-                //harmonize argumets
+                //harmonize arguments
                 if (_.isArray(conditions) || _.isString(conditions)) {
                     projections = conditions;
                     conditions = undefined;
+                } else if (_.isPlainObject(conditions)) {
+                    //TODO check if the projections is a string or is an array
                 }
 
                 if (!this.sql && this.type === 'select') {
@@ -104,7 +108,7 @@
              * @description Issue a mongodb findAndModify remove command by a
              *               document's _id field. findByIdAndRemove(id, ...) is
              *               equivalent to findOneAndRemove({ id: id }, ...).
-             * @param  {(Object|String|Number)}   id      value of `id` to query by
+             * @param  {(Object|String|Number)}   id   value of `id` to query by
              * @param  {Object}   options
              * @return {Query}            
              */
@@ -121,9 +125,10 @@
              * @param  {Object}   options
              * @return {Query}            
              */
-            Query.prototype.findByIdAndUpdate = function( /*id, update, options*/ ) {
+            Query.prototype.findByIdAndUpdate =
+                function( /*id, update, options*/ ) {
 
-            };
+                };
 
             /**
              * @description Find One document
@@ -132,9 +137,10 @@
              * @param  {Object}   options
              * @return {Query}               
              */
-            Query.prototype.findOne = function( /*conditions, projections, options*/ ) {
+            Query.prototype.findOne =
+                function( /*conditions, projections, options*/ ) {
 
-            };
+                };
 
             /**
              * @description Issue a findAndModify remove command
@@ -143,9 +149,10 @@
              * @param  {Function} callback
              * @return {Query}              
              */
-            Query.prototype.findOneAndRemove = function( /*conditions, options*/ ) {
+            Query.prototype.findOneAndRemove =
+                function( /*conditions, options*/ ) {
 
-            };
+                };
 
             /**
              * @description Issues a mongodb findAndModify update command.
@@ -154,9 +161,10 @@
              * @param  {Object}   options
              * @return {Query}    
              */
-            Query.prototype.findOneAndUpdate = function( /*conditions, update, options*/ ) {
+            Query.prototype.findOneAndUpdate =
+                function( /*conditions, update, options*/ ) {
 
-            };
+                };
 
             /**
              * @description Specify the 'where' query conditions
@@ -165,6 +173,9 @@
              * @return {Query}      
              */
             Query.prototype.where = function(path /*val*/ ) {
+
+                // instantiate expression object
+                this.expression = SQL.expr();
 
                 if (path) {
                     if (typeof(path === 'string')) {
@@ -179,7 +190,7 @@
              * @description Specifies the maximum number of records the query
              *              will return. can not be used with distinct
              * @param  {Number} val [description]
-             * @return {Query}     
+             * @return {Query}  
              */
             Query.prototype.limit = function( /*val*/ ) {
 
@@ -188,7 +199,7 @@
             /**
              * @description Sets the sort order
              * @param  {(Object|String)} arg [description]
-             * @return {Query}    
+             * @return {Query} 
              */
             Query.prototype.sort = function( /*arg*/ ) {
 
@@ -198,47 +209,80 @@
              * @description Specifies a 'greater than' query condition.
              * @param  {String} path
              * @param  {Number} val
-             * @return {Query}      
+             * @return {Query}     
              */
-            Query.prototype.gt = function( /*path, val*/ ) {
+            Query.prototype.gt = function(path, val) {
+                //harmonize arguments
+                if (_.isNumber(path)) {
+                    val = path;
+                }
 
+                if (path && val) {
+                    this.expression.and(path + ' > ' + val);
+                }
+
+                return this;
             };
 
             /**
              * @description Specifies a 'greater or equal' query condition.
              * @param  {String} path
              * @param  {Number} val
-             * @return {Query}      
+             * @return {Query}   
              */
-            Query.prototype.gte = function( /*path, val*/ ) {
+            Query.prototype.gte = function(path, val) {
+                if (_.isNumber(path)) {
+                    val = path;
+                }
 
+                if (path && val) {
+                    this.expression.and(path + ' >= ' + val);
+                }
+
+                return this;
             };
 
             /**
              * @description Specifies a 'less than' query condition.
              * @param  {String} path
              * @param  {Number} val
-             * @return {Query}      
+             * @return {Query}  
              */
-            Query.prototype.lt = function( /*path, val*/ ) {
+            Query.prototype.lt = function(path, val) {
+                if (_.isNumber(path)) {
+                    val = path;
+                }
 
+                if (path && val) {
+                    this.expression.and(path + ' < ' + val);
+                }
+
+                return this;
             };
 
             /**
              * @description Specifies a 'less or equal' query condition.
              * @param  {String} path
              * @param  {Number} val
-             * @return {Query}      
+             * @return {Query}  
              */
-            Query.prototype.lte = function( /*path, val*/ ) {
+            Query.prototype.lte = function(path, val) {
+                if (_.isNumber(path)) {
+                    val = path;
+                }
 
+                if (path && val) {
+                    this.expression.and(path + ' <= ' + val);
+                }
+
+                return this;
             };
 
             /**
              * @description Specifies a 'in' query condition.
              * @param  {String} path
              * @param  {Number} val
-             * @return {Query}     
+             * @return {Query}  
              */
             Query.prototype.in = function( /*path, val*/ ) {
 
@@ -250,35 +294,67 @@
              * @param  {(Object|String)} arg
              * @return {Query}   
              */
-            Query.prototype.select = function( /*arg*/ ) {
+            Query.prototype.select = function(arg) {
+                // harmoniza argument
+                if (_.isString(arg) || _.isArray(arg)) {
 
+                    return this.find(arg);
+                }
             };
 
             /**
              * @description Specifies arguments for an $and condition.
-             * @param  {Array} options
              * @return {Query}       
              */
-            Query.prototype.and = function( /*options*/ ) {
+            Query.prototype.and = function() {
 
+                /* jshint camelcase: false*/
+                this.expression.and_begin();
+                /*jshint camelcase: true*/
+
+                return this;
             };
 
             /**
              * @description Specifies arguments for an $or condition.
              * @param  {Array} array
-             * @return {Query}       
+             * @return {Query}  
              */
-            Query.prototype.or = function( /*array*/ ) {
+            Query.prototype.or = function() {
 
+                /* jshint camelcase: false*/
+                this.expression.or_begin();
+                /*jshint camelcase: true*/
+
+                return this;
             };
 
             /**
              * @description Specifies arguments for an $nor condition.
              * @param  {Array} array
-             * @return {Query}       
+             * @return {Query} 
              */
             Query.prototype.nor = function( /*array*/ ) {
 
+            };
+
+            /**
+             * @description Specifies arguments for not equal query condition
+             * @param  {String} path 
+             * @param  {Number} val 
+             * @return {Query}  
+             */
+            Query.prototype.ne = function(path, val) {
+                //harmonize arguments
+                if (_.isNumber(path)) {
+                    val = path;
+                }
+
+                if (path && val) {
+                    this.expression.and(path + ' <> ' + val);
+                }
+
+                return this;
             };
 
             /**
@@ -303,11 +379,29 @@
             /**
              * @description Specifies the complementary comparison value for
              *               paths specified with where()
+             * @param {String} path
              * @param  {Object} val
              * @return {Query}     
              */
-            Query.prototype.equals = function( /*val*/ ) {
+            Query.prototype.equals = function(path, val) {
 
+                if (_.isString(path) && val) {
+                    this.expression.and(path + ' = ' + val);
+                }
+
+                if (_.isPlainObject(path)) {
+
+                    this.and();
+
+                    _.forEach(path, function(value) {
+                        // all the conditions will be joined by 'AND' string
+                        this.expression.and(value);
+                    }.bind(this));
+
+                    this.expression.end();
+                }
+
+                return this;
             };
 
             /**
@@ -328,6 +422,8 @@
 
             };
 
+            //TODO implement the min,max, avg, sum
+
             /**
              * @description Specifies the number of documents to skip.
              * @param {Number} val
@@ -339,11 +435,24 @@
                 };
 
             /**
+             * @description  finalize the query conditions 
+             * @return {Query} this
+             */
+            Query.prototype._finalizeQuery = function() {
+                // check the expession condition if is still open
+                if (this.expression) {
+                    this.sql.where(this.expression);
+                }
+            };
+
+            /**
              * @description convert current query into its string presentation
              * @return {String} current query sql 
              */
             Query.prototype.toString = function() {
-                //return current query sql
+
+                this._finalizeQuery();
+
                 return this.sql.toString();
             };
 

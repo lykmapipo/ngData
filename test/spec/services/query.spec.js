@@ -15,6 +15,10 @@ describe('Query', function() {
                 },
                 code: {
                     type: String
+                },
+                age: {
+                    type: Number,
+                    defaultsTo: 20
                 }
             }
         });
@@ -58,6 +62,75 @@ describe('Query', function() {
             expect(query.toString()).to.equal('SELECT name, age FROM customers');
         }));
 
+    });
+
+    describe('Query#findById', function() {
+        it('should be able to select a record based on the given id');
+    });
+
+    describe('Query#where', function() {
+
+        it('should be able to build a simple where equal to condition', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find().where().equals('age', 20);
+
+            expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age = 20)');
+        }));
+
+        it('should be able to build a simple where greater than query condition', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find().where().gt('age', 20);
+
+            expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age > 20)');
+        }));
+
+        it('should be able to build a simple where greater or equal query condition', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find().where().gte('age', 20);
+            expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age >= 20)');
+        }));
+
+        it('should be able to build a simple where less than query condition', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find().where().lt('age', 20);
+            expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age < 20)');
+        }));
+
+        it('should be able to build a simple where less or equal query condition', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find().where().lte('age', 20);
+            expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age <= 20)');
+        }));
+
+        it('should be able to build a simple where not equal query condition', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find().where().ne('age', 20);
+            expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age <> 20)');
+        }));
+
+    });
+
+    describe('Query#select', function() {
+
+        it('should be able to build a simple select query', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find().where().select('name');
+            expect(query.toString()).to.equal('SELECT name FROM customers');
+        }));
+
+        it('should be able to build a multiple project select query', inject(function(Query) {
+            var query = new Query({
+                collection: User
+            }).find().where().select(['name', 'age']);
+            expect(query.toString()).to.equal('SELECT name, age FROM customers');
+        }));
     });
 
     it('should be able to select record based on criteria');
