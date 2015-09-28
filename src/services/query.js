@@ -92,7 +92,7 @@
             /**
              * @description Finds a single document by its _id field.
              *              findById(id) is equivalent to findOne({ id: id }).
-             * @param  {(Object|String|Number)}   id     value of `id` to query by
+             * @param  {(Object|String|Number)}   id   value of `id` to query by
              * @param  {Object}   projections optional fields to return
              * @param  {Object}   options     [optional]
              * @param  {Function} callback
@@ -117,7 +117,7 @@
             };
 
             /**
-             * @description Issues a mongodb findAndModify update command by a
+             * @description Issues findAndModify update command by a
              *              document's id field. findByIdAndUpdate(id, ...) is
              *              equivalent to findOneAndUpdate({ id: id }, ...).
              * @param  {Object}   id       value of `id` to query by
@@ -201,17 +201,54 @@
              * @param  {(Object|String)} arg [description]
              * @return {Query} 
              */
-            Query.prototype.sort = function( /*arg*/ ) {
+            Query.prototype.sort =
+                Query.prototype.order = function(arg) {
 
-            };
+                    for (var i = 0; arguments.length; i++) {
+                        if (_.isString(arguments[i])) {
+
+                            this.sql.order(arguments[i]);
+                        }
+                    }
+
+                    if (_.isPlainObject(arg)) {
+
+                        _.forEach(arg, function(value, key) {
+                            this.sql.order(key, value);
+                        }.bind(this));
+                    }
+                };
 
             /**
              * @description Specifies a 'greater than' query condition.
-             * @param  {String} path
+             * @param  {(String|Object)} path
              * @param  {Number} val
-             * @return {Query}     
+             * @return {Query}  
+             *  @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .gt({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .gt('age',20)   
              */
             Query.prototype.gt = function(path, val) {
+
+                // harmonize arguments
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' > ' + value);
+                    }.bind(this));
+                }
+
                 //harmonize arguments
                 if (_.isNumber(path)) {
                     val = path;
@@ -226,11 +263,34 @@
 
             /**
              * @description Specifies a 'greater or equal' query condition.
-             * @param  {String} path
+             * @param  {(String|Object)} path
              * @param  {Number} val
              * @return {Query}   
+             *  @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .gte({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .gte('age',20)
              */
             Query.prototype.gte = function(path, val) {
+
+                // harmonize arguments
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' >= ' + value);
+                    }.bind(this));
+                }
+
                 if (_.isNumber(path)) {
                     val = path;
                 }
@@ -247,8 +307,32 @@
              * @param  {String} path
              * @param  {Number} val
              * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .lt({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .lt('age',20)
              */
             Query.prototype.lt = function(path, val) {
+                //TODO implement different joiner
+
+                // harmonize arguments
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' < ' + value);
+                    }.bind(this));
+                }
+
                 if (_.isNumber(path)) {
                     val = path;
                 }
@@ -265,8 +349,31 @@
              * @param  {String} path
              * @param  {Number} val
              * @return {Query}  
+             *  @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .lte({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .lte('age',20)
              */
             Query.prototype.lte = function(path, val) {
+
+                // harmonize arguments
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' <= ' + value);
+                    }.bind(this));
+                }
+
                 if (_.isNumber(path)) {
                     val = path;
                 }
@@ -295,11 +402,13 @@
              * @return {Query}   
              */
             Query.prototype.select = function(arg) {
-                // harmoniza argument
+                // harmonize argument
                 if (_.isString(arg) || _.isArray(arg)) {
 
                     return this.find(arg);
                 }
+
+                return this;
             };
 
             /**
@@ -348,10 +457,18 @@
                 //harmonize arguments
                 if (_.isNumber(path)) {
                     val = path;
+                    path = undefined;
                 }
 
                 if (path && val) {
                     this.expression.and(path + ' <> ' + val);
+                }
+
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' <> ' + value);
+                    }.bind(this));
                 }
 
                 return this;
@@ -364,6 +481,7 @@
              */
             Query.prototype.count = function( /*criteria*/ ) {
 
+                return this;
             };
 
             /**
@@ -373,7 +491,10 @@
              * @return {Query}    
              */
             Query.prototype.distinct = function( /*fields, criteria*/ ) {
+                //TODO create a simple select query based on the fields
+                this.sql.distinct();
 
+                return this;
             };
 
             /**
@@ -390,15 +511,10 @@
                 }
 
                 if (_.isPlainObject(path)) {
-
-                    this.and();
-
-                    _.forEach(path, function(value) {
-                        // all the conditions will be joined by 'AND' string
-                        this.expression.and(value);
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' = ' + value);
                     }.bind(this));
-
-                    this.expression.end();
                 }
 
                 return this;
@@ -422,6 +538,7 @@
 
             };
 
+
             //TODO implement the min,max, avg, sum
 
             /**
@@ -435,8 +552,8 @@
                 };
 
             /**
-             * @description  finalize the query conditions 
-             * @return {Query} this
+             * @description  finalize the squel expression builder conditions 
+             * 
              */
             Query.prototype._finalizeQuery = function() {
                 // check the expession condition if is still open
