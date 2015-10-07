@@ -1,9 +1,8 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#and', function() {
 
     var User;
-
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
@@ -22,17 +21,6 @@ describe('Query', function() {
                 }
             }
         });
-    }));
-
-    it('should be injectable', inject(function(Query) {
-        var query = new Query({
-            collection: User
-        });
-
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
-
     }));
 
 });

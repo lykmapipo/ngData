@@ -45,6 +45,7 @@ describe('Query#find', function() {
             collection: User
         }).find(['name', 'age']);
 
+
         expect(query.toString()).to.equal('SELECT name, age FROM customers');
     }));
 

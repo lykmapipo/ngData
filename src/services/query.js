@@ -166,6 +166,31 @@
 
                 };
 
+
+            /**
+             * @description Specifies which document fields to include or
+             *              exclude (also known as the query "projection")
+             * @param  {(Object|String)} arg
+             * @return {Query}   
+             * @example
+             *     Customer
+             *         .select()
+             * 
+             *
+             * or 
+             *     Customer
+             *         .select(['name','age'])
+             */
+            Query.prototype.select = function(arg) {
+                // harmonize argument
+                if (_.isString(arg) || _.isArray(arg)) {
+
+                    return this.find(arg);
+                }
+
+                return this;
+            };
+
             /**
              * @description Specify the 'where' query conditions
              * @param  {String} path
@@ -187,24 +212,26 @@
             };
 
             /**
-             * @description Specifies the maximum number of records the query
-             *              will return. can not be used with distinct
-             * @param  {Number} val [description]
-             * @return {Query}  
-             */
-            Query.prototype.limit = function( /*val*/ ) {
-
-            };
-
-            /**
              * @description Sets the sort order
-             * @param  {(Object|String)} arg [description]
+             * @param  {(Object|String)} arg
              * @return {Query} 
+             * @example
+             *     Customer
+             *         .select()
+             *         .sort('name')
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .sort({
+             *              name: 'asc',
+             *              age : 'desc'
+             *          })   
              */
             Query.prototype.sort =
                 Query.prototype.order = function(arg) {
-
-                    for (var i = 0; arguments.length; i++) {
+                    // check for arguments provided
+                    for (var i = 0; i < arguments.length; i++) {
                         if (_.isString(arguments[i])) {
 
                             this.sql.order(arguments[i]);
@@ -214,9 +241,17 @@
                     if (_.isPlainObject(arg)) {
 
                         _.forEach(arg, function(value, key) {
-                            this.sql.order(key, value);
+                            // check for order by options
+                            if (value === 'asc') {
+                                this.sql.order(key, true);
+                            } else if (value === 'desc' || value === -1) {
+                                this.sql.order(key, false);
+                            }
+
                         }.bind(this));
                     }
+
+                    return this;
                 };
 
             /**
@@ -224,7 +259,7 @@
              * @param  {(String|Object)} path
              * @param  {Number} val
              * @return {Query}  
-             *  @example
+             * @example
              *     Customer
              *         .select()
              *         .where()
@@ -322,8 +357,8 @@
              *         .where()
              *         .lt('age',20)
              */
+
             Query.prototype.lt = function(path, val) {
-                //TODO implement different joiner
 
                 // harmonize arguments
                 if (_.isPlainObject(path) && !val) {
@@ -349,7 +384,7 @@
              * @param  {String} path
              * @param  {Number} val
              * @return {Query}  
-             *  @example
+             * @example
              *     Customer
              *         .select()
              *         .where()
@@ -390,26 +425,51 @@
              * @param  {String} path
              * @param  {Number} val
              * @return {Query}  
+             * @example
+             * Customer
+             *         .select()
+             *         .where()
+             *         .in({city: ['mbeya', 'arusha', 'singida']})
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .in({city: ['mbeya', 'arusha', 'singida']}, 5)
              */
-            Query.prototype.in = function( /*path, val*/ ) {
+            Query.prototype.in = function(path, val) {
 
-            };
+                if (path) {
 
-            /**
-             * @description Specifies which document fields to include or
-             *              exclude (also known as the query "projection")
-             * @param  {(Object|String)} arg
-             * @return {Query}   
-             */
-            Query.prototype.select = function(arg) {
-                // harmonize argument
-                if (_.isString(arg) || _.isArray(arg)) {
+                    _.forIn(path, function(value, key) {
+                        // string that contains the values 
+                        var values = '( ';
 
-                    return this.find(arg);
+                        if (_.isArray(value)) {
+
+                            for (var i = 0; i < value.length; i++) {
+
+                                if (i < value.length - 1) {
+                                    values += ('\"' + value[i] + '\"' + ',');
+                                } else {
+                                    values += ('\"' + value[i] + '\"' + ' )');
+                                }
+                            }
+                            this.expression.and(key + ' IN ' + values);
+                        }
+
+
+                    }.bind(this));
+                }
+
+                if (_.isNumber(val)) {
+
+                    this.sql.limit(val);
                 }
 
                 return this;
             };
+
 
             /**
              * @description Specifies arguments for an $and condition.
@@ -448,10 +508,62 @@
             };
 
             /**
+             * @description Specifies the complementary comparison value for
+             *               paths specified with where()
+             * @param {String} path
+             * @param  {Object} val
+             * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .equals({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .equals('age',20)  
+             *  
+             */
+            Query.prototype.equals = function(path, val) {
+
+                if (_.isString(path) && val) {
+                    this.expression.and(path + ' = ' + val);
+                }
+
+                if (_.isPlainObject(path)) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' = ' + value);
+                    }.bind(this));
+                }
+
+                return this;
+            };
+
+            /**
              * @description Specifies arguments for not equal query condition
              * @param  {String} path 
              * @param  {Number} val 
              * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .ne({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .ne('age',20)
              */
             Query.prototype.ne = function(path, val) {
                 //harmonize arguments
@@ -480,6 +592,7 @@
              * @return {Query} 
              */
             Query.prototype.count = function( /*criteria*/ ) {
+                // TODO check how to implement this
 
                 return this;
             };
@@ -489,6 +602,15 @@
              * @param  {String}   fields
              * @param  {(Object|Query)}   criteria
              * @return {Query}    
+             * @example
+             *     Customers
+             *         .select()
+             *         .distinct()
+             *         
+             * or 
+             *     Customer
+             *         .select()
+             *         .distinct()
              */
             Query.prototype.distinct = function( /*fields, criteria*/ ) {
                 //TODO create a simple select query based on the fields
@@ -498,23 +620,21 @@
             };
 
             /**
-             * @description Specifies the complementary comparison value for
-             *               paths specified with where()
-             * @param {String} path
-             * @param  {Object} val
-             * @return {Query}     
+             * @description Specifies the maximum number of records the query
+             *              will return. can not be used with distinct
+             * @param  {Number} val [description]
+             * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .limit(5)
+             *
              */
-            Query.prototype.equals = function(path, val) {
+            Query.prototype.limit = function(val) {
 
-                if (_.isString(path) && val) {
-                    this.expression.and(path + ' = ' + val);
-                }
+                if (val && _.isNumber(val)) {
 
-                if (_.isPlainObject(path)) {
-                    // reading object properties
-                    _.forEach(path, function(value, key) {
-                        this.expression.and(key + ' = ' + value);
-                    }.bind(this));
+                    this.sql.limit(val);
                 }
 
                 return this;
@@ -530,6 +650,30 @@
 
             };
 
+            //TODO implement the min,max, avg, sum
+
+            /**
+             * @description Specifies the number of documents to skip.
+             * @param {Number} val
+             * @return {Query} 
+             * @example
+             *     Customer
+             *         .select()
+             *         .offset(10)
+             *
+             */
+            Query.prototype.offset =
+                Query.prototype.skip = function(val) {
+
+                    if (val && _.isNumber(val)) {
+
+                        this.sql.offset(val);
+                    }
+
+                    return this;
+
+                };
+
             /**
              * @description Executes this query and returns a promise
              * @return {promise}
@@ -538,24 +682,11 @@
 
             };
 
-
-            //TODO implement the min,max, avg, sum
-
-            /**
-             * @description Specifies the number of documents to skip.
-             * @param {Number} val
-             * @return {Query} 
-             */
-            Query.prototype.offset =
-                Query.prototype.skip = function( /*val*/ ) {
-
-                };
-
             /**
              * @description  finalize the squel expression builder conditions 
              * 
              */
-            Query.prototype._finalizeQuery = function() {
+            Query.prototype._finalizeWhere = function() {
                 // check the expession condition if is still open
                 if (this.expression) {
                     this.sql.where(this.expression);
@@ -568,7 +699,7 @@
              */
             Query.prototype.toString = function() {
 
-                this._finalizeQuery();
+                this._finalizeWhere();
 
                 return this.sql.toString();
             };

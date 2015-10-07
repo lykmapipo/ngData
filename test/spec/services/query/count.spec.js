@@ -1,9 +1,8 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#count', function() {
 
     var User;
-
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
@@ -24,15 +23,16 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+    it.skip('should be able to create a count all select query when called without parameter', inject(function(Query) {
+
         var query = new Query({
             collection: User
-        });
+        }).select().where().gt({
+            age: 21
+        }).count();
 
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
+        //console.log(query.toString());
+        expect(query.toString()).to.be.equal('SELECT COUNT(*) FROM customers');
 
     }));
-
 });

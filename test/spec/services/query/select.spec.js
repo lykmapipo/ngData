@@ -26,7 +26,7 @@ describe('Query#select', function() {
     it('should be able to build a simple select query', inject(function(Query) {
         var query = new Query({
             collection: User
-        }).find().where().select('name');
+        }).select('name');
         expect(query.toString()).to.equal('SELECT name FROM customers');
     }));
 
