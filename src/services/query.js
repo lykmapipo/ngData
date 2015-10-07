@@ -36,6 +36,8 @@
 
             Query.prototype.collection;
 
+            Query.prototype.expression;
+
             Query.prototype._init = function() {
                 //instantiate SQL
                 this.sql = SQL[this.type]();
@@ -67,10 +69,12 @@
              * @return {Query}
              */
             Query.prototype.find = function(conditions, projections /*options*/ ) {
-                //harmonize argumets
+                //harmonize arguments
                 if (_.isArray(conditions) || _.isString(conditions)) {
                     projections = conditions;
                     conditions = undefined;
+                } else if (_.isPlainObject(conditions)) {
+                    //TODO check if the projections is a string or is an array
                 }
 
                 if (!this.sql && this.type === 'select') {
@@ -88,7 +92,7 @@
             /**
              * @description Finds a single document by its _id field.
              *              findById(id) is equivalent to findOne({ id: id }).
-             * @param  {(Object|String|Number)}   id     value of `id` to query by
+             * @param  {(Object|String|Number)}   id   value of `id` to query by
              * @param  {Object}   projections optional fields to return
              * @param  {Object}   options     [optional]
              * @param  {Function} callback
@@ -104,7 +108,7 @@
              * @description Issue a mongodb findAndModify remove command by a
              *               document's _id field. findByIdAndRemove(id, ...) is
              *               equivalent to findOneAndRemove({ id: id }, ...).
-             * @param  {(Object|String|Number)}   id      value of `id` to query by
+             * @param  {(Object|String|Number)}   id   value of `id` to query by
              * @param  {Object}   options
              * @return {Query}            
              */
@@ -113,7 +117,7 @@
             };
 
             /**
-             * @description Issues a mongodb findAndModify update command by a
+             * @description Issues findAndModify update command by a
              *              document's id field. findByIdAndUpdate(id, ...) is
              *              equivalent to findOneAndUpdate({ id: id }, ...).
              * @param  {Object}   id       value of `id` to query by
@@ -121,9 +125,10 @@
              * @param  {Object}   options
              * @return {Query}            
              */
-            Query.prototype.findByIdAndUpdate = function( /*id, update, options*/ ) {
+            Query.prototype.findByIdAndUpdate =
+                function( /*id, update, options*/ ) {
 
-            };
+                };
 
             /**
              * @description Find One document
@@ -132,9 +137,10 @@
              * @param  {Object}   options
              * @return {Query}               
              */
-            Query.prototype.findOne = function( /*conditions, projections, options*/ ) {
+            Query.prototype.findOne =
+                function( /*conditions, projections, options*/ ) {
 
-            };
+                };
 
             /**
              * @description Issue a findAndModify remove command
@@ -143,9 +149,10 @@
              * @param  {Function} callback
              * @return {Query}              
              */
-            Query.prototype.findOneAndRemove = function( /*conditions, options*/ ) {
+            Query.prototype.findOneAndRemove =
+                function( /*conditions, options*/ ) {
 
-            };
+                };
 
             /**
              * @description Issues a mongodb findAndModify update command.
@@ -154,8 +161,34 @@
              * @param  {Object}   options
              * @return {Query}    
              */
-            Query.prototype.findOneAndUpdate = function( /*conditions, update, options*/ ) {
+            Query.prototype.findOneAndUpdate =
+                function( /*conditions, update, options*/ ) {
 
+                };
+
+
+            /**
+             * @description Specifies which document fields to include or
+             *              exclude (also known as the query "projection")
+             * @param  {(Object|String)} arg
+             * @return {Query}   
+             * @example
+             *     Customer
+             *         .select()
+             * 
+             *
+             * or 
+             *     Customer
+             *         .select(['name','age'])
+             */
+            Query.prototype.select = function(arg) {
+                // harmonize argument
+                if (_.isString(arg) || _.isArray(arg)) {
+
+                    return this.find(arg);
+                }
+
+                return this;
             };
 
             /**
@@ -165,6 +198,9 @@
              * @return {Query}      
              */
             Query.prototype.where = function(path /*val*/ ) {
+
+                // instantiate expression object
+                this.expression = SQL.expr();
 
                 if (path) {
                     if (typeof(path === 'string')) {
@@ -176,109 +212,378 @@
             };
 
             /**
-             * @description Specifies the maximum number of records the query
-             *              will return. can not be used with distinct
-             * @param  {Number} val [description]
-             * @return {Query}     
-             */
-            Query.prototype.limit = function( /*val*/ ) {
-
-            };
-
-            /**
              * @description Sets the sort order
-             * @param  {(Object|String)} arg [description]
-             * @return {Query}    
+             * @param  {(Object|String)} arg
+             * @return {Query} 
+             * @example
+             *     Customer
+             *         .select()
+             *         .sort('name')
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .sort({
+             *              name: 'asc',
+             *              age : 'desc'
+             *          })   
              */
-            Query.prototype.sort = function( /*arg*/ ) {
+            Query.prototype.sort =
+                Query.prototype.order = function(arg) {
+                    // check for arguments provided
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (_.isString(arguments[i])) {
 
-            };
+                            this.sql.order(arguments[i]);
+                        }
+                    }
+
+                    if (_.isPlainObject(arg)) {
+
+                        _.forEach(arg, function(value, key) {
+                            // check for order by options
+                            if (value === 'asc') {
+                                this.sql.order(key, true);
+                            } else if (value === 'desc' || value === -1) {
+                                this.sql.order(key, false);
+                            }
+
+                        }.bind(this));
+                    }
+
+                    return this;
+                };
 
             /**
              * @description Specifies a 'greater than' query condition.
-             * @param  {String} path
+             * @param  {(String|Object)} path
              * @param  {Number} val
-             * @return {Query}      
+             * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .gt({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .gt('age',20)   
              */
-            Query.prototype.gt = function( /*path, val*/ ) {
+            Query.prototype.gt = function(path, val) {
 
+                // harmonize arguments
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' > ' + value);
+                    }.bind(this));
+                }
+
+                //harmonize arguments
+                if (_.isNumber(path)) {
+                    val = path;
+                }
+
+                if (path && val) {
+                    this.expression.and(path + ' > ' + val);
+                }
+
+                return this;
             };
 
             /**
              * @description Specifies a 'greater or equal' query condition.
-             * @param  {String} path
+             * @param  {(String|Object)} path
              * @param  {Number} val
-             * @return {Query}      
+             * @return {Query}   
+             *  @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .gte({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .gte('age',20)
              */
-            Query.prototype.gte = function( /*path, val*/ ) {
+            Query.prototype.gte = function(path, val) {
 
+                // harmonize arguments
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' >= ' + value);
+                    }.bind(this));
+                }
+
+                if (_.isNumber(path)) {
+                    val = path;
+                }
+
+                if (path && val) {
+                    this.expression.and(path + ' >= ' + val);
+                }
+
+                return this;
             };
 
             /**
              * @description Specifies a 'less than' query condition.
              * @param  {String} path
              * @param  {Number} val
-             * @return {Query}      
+             * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .lt({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .lt('age',20)
              */
-            Query.prototype.lt = function( /*path, val*/ ) {
 
+            Query.prototype.lt = function(path, val) {
+
+                // harmonize arguments
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' < ' + value);
+                    }.bind(this));
+                }
+
+                if (_.isNumber(path)) {
+                    val = path;
+                }
+
+                if (path && val) {
+                    this.expression.and(path + ' < ' + val);
+                }
+
+                return this;
             };
 
             /**
              * @description Specifies a 'less or equal' query condition.
              * @param  {String} path
              * @param  {Number} val
-             * @return {Query}      
+             * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .lte({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .lte('age',20)
              */
-            Query.prototype.lte = function( /*path, val*/ ) {
+            Query.prototype.lte = function(path, val) {
 
+                // harmonize arguments
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' <= ' + value);
+                    }.bind(this));
+                }
+
+                if (_.isNumber(path)) {
+                    val = path;
+                }
+
+                if (path && val) {
+                    this.expression.and(path + ' <= ' + val);
+                }
+
+                return this;
             };
 
             /**
              * @description Specifies a 'in' query condition.
              * @param  {String} path
              * @param  {Number} val
-             * @return {Query}     
+             * @return {Query}  
+             * @example
+             * Customer
+             *         .select()
+             *         .where()
+             *         .in({city: ['mbeya', 'arusha', 'singida']})
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .in({city: ['mbeya', 'arusha', 'singida']}, 5)
              */
-            Query.prototype.in = function( /*path, val*/ ) {
+            Query.prototype.in = function(path, val) {
 
+                if (path) {
+
+                    _.forIn(path, function(value, key) {
+                        // string that contains the values 
+                        var values = '( ';
+
+                        if (_.isArray(value)) {
+
+                            for (var i = 0; i < value.length; i++) {
+
+                                if (i < value.length - 1) {
+                                    values += ('\"' + value[i] + '\"' + ',');
+                                } else {
+                                    values += ('\"' + value[i] + '\"' + ' )');
+                                }
+                            }
+                            this.expression.and(key + ' IN ' + values);
+                        }
+
+
+                    }.bind(this));
+                }
+
+                if (_.isNumber(val)) {
+
+                    this.sql.limit(val);
+                }
+
+                return this;
             };
 
-            /**
-             * @description Specifies which document fields to include or
-             *              exclude (also known as the query "projection")
-             * @param  {(Object|String)} arg
-             * @return {Query}   
-             */
-            Query.prototype.select = function( /*arg*/ ) {
-
-            };
 
             /**
              * @description Specifies arguments for an $and condition.
-             * @param  {Array} options
              * @return {Query}       
              */
-            Query.prototype.and = function( /*options*/ ) {
+            Query.prototype.and = function() {
 
+                /* jshint camelcase: false*/
+                this.expression.and_begin();
+                /*jshint camelcase: true*/
+
+                return this;
             };
 
             /**
              * @description Specifies arguments for an $or condition.
              * @param  {Array} array
-             * @return {Query}       
+             * @return {Query}  
              */
-            Query.prototype.or = function( /*array*/ ) {
+            Query.prototype.or = function() {
 
+                /* jshint camelcase: false*/
+                this.expression.or_begin();
+                /*jshint camelcase: true*/
+
+                return this;
             };
 
             /**
              * @description Specifies arguments for an $nor condition.
              * @param  {Array} array
-             * @return {Query}       
+             * @return {Query} 
              */
             Query.prototype.nor = function( /*array*/ ) {
 
+            };
+
+            /**
+             * @description Specifies the complementary comparison value for
+             *               paths specified with where()
+             * @param {String} path
+             * @param  {Object} val
+             * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .equals({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .equals('age',20)  
+             *  
+             */
+            Query.prototype.equals = function(path, val) {
+
+                if (_.isString(path) && val) {
+                    this.expression.and(path + ' = ' + val);
+                }
+
+                if (_.isPlainObject(path)) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' = ' + value);
+                    }.bind(this));
+                }
+
+                return this;
+            };
+
+            /**
+             * @description Specifies arguments for not equal query condition
+             * @param  {String} path 
+             * @param  {Number} val 
+             * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .ne({
+             *                 age:20,
+             *                  height: 140
+             *             })
+             *
+             * or 
+             *     Customer
+             *         .select()
+             *         .where()
+             *         .ne('age',20)
+             */
+            Query.prototype.ne = function(path, val) {
+                //harmonize arguments
+                if (_.isNumber(path)) {
+                    val = path;
+                    path = undefined;
+                }
+
+                if (path && val) {
+                    this.expression.and(path + ' <> ' + val);
+                }
+
+                if (_.isPlainObject(path) && !val) {
+                    // reading object properties
+                    _.forEach(path, function(value, key) {
+                        this.expression.and(key + ' <> ' + value);
+                    }.bind(this));
+                }
+
+                return this;
             };
 
             /**
@@ -287,7 +592,9 @@
              * @return {Query} 
              */
             Query.prototype.count = function( /*criteria*/ ) {
+                // TODO check how to implement this
 
+                return this;
             };
 
             /**
@@ -295,19 +602,42 @@
              * @param  {String}   fields
              * @param  {(Object|Query)}   criteria
              * @return {Query}    
+             * @example
+             *     Customers
+             *         .select()
+             *         .distinct()
+             *         
+             * or 
+             *     Customer
+             *         .select()
+             *         .distinct()
              */
             Query.prototype.distinct = function( /*fields, criteria*/ ) {
+                //TODO create a simple select query based on the fields
+                this.sql.distinct();
 
+                return this;
             };
 
             /**
-             * @description Specifies the complementary comparison value for
-             *               paths specified with where()
-             * @param  {Object} val
-             * @return {Query}     
+             * @description Specifies the maximum number of records the query
+             *              will return. can not be used with distinct
+             * @param  {Number} val [description]
+             * @return {Query}  
+             * @example
+             *     Customer
+             *         .select()
+             *         .limit(5)
+             *
              */
-            Query.prototype.equals = function( /*val*/ ) {
+            Query.prototype.limit = function(val) {
 
+                if (val && _.isNumber(val)) {
+
+                    this.sql.limit(val);
+                }
+
+                return this;
             };
 
             /**
@@ -320,6 +650,30 @@
 
             };
 
+            //TODO implement the min,max, avg, sum
+
+            /**
+             * @description Specifies the number of documents to skip.
+             * @param {Number} val
+             * @return {Query} 
+             * @example
+             *     Customer
+             *         .select()
+             *         .offset(10)
+             *
+             */
+            Query.prototype.offset =
+                Query.prototype.skip = function(val) {
+
+                    if (val && _.isNumber(val)) {
+
+                        this.sql.offset(val);
+                    }
+
+                    return this;
+
+                };
+
             /**
              * @description Executes this query and returns a promise
              * @return {promise}
@@ -329,21 +683,24 @@
             };
 
             /**
-             * @description Specifies the number of documents to skip.
-             * @param {Number} val
-             * @return {Query} 
+             * @description  finalize the squel expression builder conditions 
+             * 
              */
-            Query.prototype.offset =
-                Query.prototype.skip = function( /*val*/ ) {
-
-                };
+            Query.prototype._finalizeWhere = function() {
+                // check the expession condition if is still open
+                if (this.expression) {
+                    this.sql.where(this.expression);
+                }
+            };
 
             /**
              * @description convert current query into its string presentation
              * @return {String} current query sql 
              */
             Query.prototype.toString = function() {
-                //return current query sql
+
+                this._finalizeWhere();
+
                 return this.sql.toString();
             };
 

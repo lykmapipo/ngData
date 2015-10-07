@@ -1,9 +1,8 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#distinct', function() {
 
     var User;
-
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
@@ -24,15 +23,12 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+    it('should be able to create a select distinct query', inject(function(Query) {
         var query = new Query({
             collection: User
-        });
-
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
-
+        }).select(['name', 'age', 'gender']).distinct().where().gt('age', 20);
+        expect(query.toString()).to.equal('SELECT DISTINCT name, age, gender FROM customers WHERE (age > 20)');
     }));
+
 
 });

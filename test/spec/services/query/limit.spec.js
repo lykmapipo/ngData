@@ -1,9 +1,8 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#limit', function() {
 
     var User;
-
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
@@ -24,15 +23,13 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+    it('should be able to add a limit condition to a query', inject(function(Query) {
+
         var query = new Query({
             collection: User
-        });
+        }).select().limit(5);
 
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
-
+        expect(query.toString()).to.be.equal('SELECT * FROM customers LIMIT 5');
     }));
 
 });
