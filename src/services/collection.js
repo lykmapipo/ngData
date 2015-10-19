@@ -10,7 +10,7 @@
 
             /**
              * @description Collection
-             * @param {Object}
+             * @param {Object} options
              */
             function Collection(options) {
                 this.name = options.name;

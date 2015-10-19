@@ -10,7 +10,7 @@
 
     angular
         .module('ngData')
-        .factory('Query', function(SQL) {
+        .factory('Query', function(SQL, conditionBuilder) {
 
             /**
              * @description Query functional constructor
@@ -67,6 +67,19 @@
              * @param  {Object}   options     [optional]
              * @param  {Function} callback
              * @return {Query}
+             * @example
+             *     Customer
+             *         .find({
+             *                 name:'john',
+             *                 age:{$gt:30}
+             *                 })
+             *     or
+             *     Customer
+             *         .find({
+             *                 name:'john',
+             *                 age:{$gt:30}},
+             *                 [name,accounts]
+             *                 )
              */
             Query.prototype.find = function(conditions, projections /*options*/ ) {
                 //harmonize arguments
@@ -74,7 +87,7 @@
                     projections = conditions;
                     conditions = undefined;
                 } else if (_.isPlainObject(conditions)) {
-                    //TODO check if the projections is a string or is an array
+                    this.expression = conditionBuilder(conditions);
                 }
 
                 if (!this.sql && this.type === 'select') {
@@ -112,8 +125,13 @@
              * @param  {Object}   options
              * @return {Query}            
              */
-            Query.prototype.findByIdAndDelete = function( /*id, options*/ ) {
+            Query.prototype.findByIdAndRemove = function( /*id, options*/ ) {
 
+                if (!this.sql && this.type === 'delete') {
+                    this.sql = SQL.delete().from(this.collection.tableName);
+                }
+
+                return this;
             };
 
             /**
@@ -519,7 +537,7 @@
              *         .where()
              *         .equals({
              *                 age:20,
-             *                  height: 140
+             *                 height: 140
              *             })
              *
              * or 
@@ -683,7 +701,9 @@
             };
 
             /**
-             * @description  finalize the squel expression builder conditions 
+             * @description  finalize the squel expression builder conditions
+             *               it is called before the query is converted to 
+             *               string 
              * 
              */
             Query.prototype._finalizeWhere = function() {
