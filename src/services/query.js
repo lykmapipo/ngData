@@ -214,17 +214,36 @@
              * @param  {String} path
              * @param  {Object} val  [optional]
              * @return {Query}      
+             * @example
+             *     Customer
+             *         .find()
+             *         .where({
+             *                 name:'john',
+             *                 age:20
+             *               })
+             *  or
+             *      Customer
+             *         .select()
+             *         .where({
+             *                 name:'john',
+             *                 age:20
+             *               })
+             *
+             * or
+             *     Customer
+             *         .select()
+             *         .where({
+             *                 name:'john',
+             *                 age:{$gt:20}
+             *                )
              */
-            Query.prototype.where = function(path /*val*/ ) {
+            Query.prototype.where = function(path) {
 
                 // instantiate expression object
                 this.expression = SQL.expr();
 
-                if (path) {
-                    if (typeof(path === 'string')) {
-                        this.select = this.select.where(path);
-                    }
-                }
+                this.expression = conditionBuilder(path, this.expression);
+
 
                 return this;
             };

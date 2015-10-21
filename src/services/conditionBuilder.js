@@ -13,73 +13,166 @@
         .module('ngData')
         .factory('conditionBuilder', function(SQL) {
 
-            var self = this;
+            var expression;
 
-            var builder = function(conditions, expression) {
+            /**
+             * check the joiner specified by the condition object and call upon
+             * condition builder function to build the condition expression
+             * @param  {Object} conditions 
+             */
+            function _join(conditions) {
+                // initialize default joiner
+                var joiner = 'and';
 
-                // var joiner = joiner || ' AND ';
-                if (expression) {
-                    self.expression = expression;
-                } else {
-                    self.expression = SQL.expr();
-                }
-
-                if (conditions && _.isPlainObject(conditions)) {
+                if (_.has(conditions, '$or') || _.has(conditions, '$and')) {
 
                     _.forEach(conditions, function(value, key) {
 
-                        if (_.isObject(value)) {
-                            // condition is the one specified in the condition
-                            // object
+                        // default joiner if it is not specified
 
-                            _.forEach(value, function(val, condition) {
-                                // building condition expression
-                                if (condition === '$gt') {
-                                    self.expression.and(key + ' > ' + val);
-                                } else if (condition === '$gte') {
-                                    self.expression.and(key + ' >= ' + val);
-                                } else if (condition === '$lt') {
-                                    self.expression.and(key + ' < ' + val);
-                                } else if (condition === '$lte') {
-                                    self.expression.and(key + ' <= ' + val);
-                                } else if (condition === '$ne') {
-                                    self.expression.and(key + ' <> ' + val);
-                                } else if (condition === '$in') {
-                                    var values = '( ';
 
-                                    if (_.isArray(val)) {
+                        if (key === '$or') {
+                            joiner = 'or';
 
-                                        for (var i = 0; i < val.length; i++) {
-
-                                            if (i < val.length - 1) {
-                                                values +=
-                                                    ('\"' + val[i] + '\"' + ',');
-                                            } else {
-                                                values +=
-                                                    ('\"' + val[i] + '\"' + ' )');
-                                            }
-                                        }
-                                        this.expression.
-                                        and(key + ' IN ' + values);
-                                    }
-                                }
-                            }.bind(self));
-
-                        } else {
-                            //  this build equal condition 
-                            self.expression.and(key + ' = ' + value);
+                            if (_.isArray(value)) {
+                                _.forEach(value, function(val) {
+                                    _buildSqlCondition(val, joiner);
+                                });
+                            }
+                        } else if (key === '$and') {
+                            joiner = 'and';
+                            if (_.isArray(value)) {
+                                _.forEach(value, function(val) {
+                                    _buildSqlCondition(val, joiner);
+                                });
+                            }
                         }
-
-                    }.bind(self));
-
+                    });
+                } else {
+                    _buildSqlCondition(conditions, joiner);
                 }
 
-                return self.expression;
-            };
+            }
 
-            // var joiner = joiner || ' AND ';
+            /**
+             * build sql condition when given condition object and joiner
+             * @param  {Object} conditionObject 
+             * @param  {String} joiner          this is the join string that 
+             *                                  will be used to join conditions
+             */
+            function _buildSqlCondition(conditionObject, joiner) {
 
-            return builder;
+                if (conditionObject && _.isPlainObject(conditionObject)) {
+
+                    _.forEach(conditionObject, function(value, key) {
+                        // check for primitive value and if it is an object 
+                        // then we look inside for key value
+                        if (_.isPlainObject(value)) {
+                            _.forEach(value, function(val, condition) {
+                                // initialize the values for IN condition
+                                var values = '( ';
+                                // initialize the variable for for loop
+                                var i;
+
+                                if (joiner === 'or') {
+                                    if (condition === '$gt') {
+                                        expression.or(key + ' > ' + val);
+                                    } else if (condition === '$gte') {
+                                        expression.or(key + ' >= ' + val);
+                                    } else if (condition === '$lt') {
+                                        expression.or(key + ' < ' + val);
+                                    } else if (condition === '$lte') {
+                                        expression.or(key + ' <= ' + val);
+                                    } else if (condition === '$ne') {
+                                        expression.or(key + ' <> ' + val);
+                                    } else if (condition === '$in') {
+
+                                        if (_.isArray(val)) {
+
+                                            for (i = 0; i < val.length; i++) {
+
+                                                if (i < val.length - 1) {
+                                                    values +=
+                                                        ('\"' + val[i] + '\"' + ',');
+                                                } else {
+                                                    values +=
+                                                        ('\"' + val[i] + '\"' + ' )');
+                                                }
+                                            }
+                                            expression.
+                                            or(key + ' IN ' + values);
+                                        }
+                                    }
+
+                                    // conditions for AND joiner
+                                } else {
+                                    if (condition === '$gt') {
+                                        expression.and(key + ' > ' + val);
+                                    } else if (condition === '$gte') {
+                                        expression.and(key + ' >= ' + val);
+                                    } else if (condition === '$lt') {
+                                        expression.and(key + ' < ' + val);
+                                    } else if (condition === '$lte') {
+                                        expression.and(key + ' <= ' + val);
+                                    } else if (condition === '$ne') {
+                                        expression.and(key + ' <> ' + val);
+                                    } else if (condition === '$in') {
+
+                                        if (_.isArray(val)) {
+
+                                            for (i = 0; i < val.length; i++) {
+
+                                                if (i < val.length - 1) {
+                                                    values +=
+                                                        ('\"' + val[i] + '\"' + ',');
+                                                } else {
+                                                    values +=
+                                                        ('\"' + val[i] + '\"' + ' )');
+                                                }
+                                            }
+                                            expression.
+                                            and(key + ' IN ' + values);
+                                        }
+                                    }
+
+                                }
+
+                            });
+                            // for primitive values 
+                        } else {
+                            if (joiner === 'or') {
+                                expression.or(key + ' = ' + value);
+                            } else {
+                                expression.and(key + ' = ' + value);
+                            }
+
+                        }
+
+                    });
+
+                }
+            }
+
+            /**
+             * [buildSqlExpression description]
+             * @param  {[type]} conditions condition object specified in find or
+             *                             where condition
+             * @param  {[type]} sqlExpr    sql expression object
+             * @return {Object}            SQL.expr() which will be used by find
+             *                             and where condition to build the 
+             *                             conditions
+             */
+            function buildSqlExpression(conditions, sqlExpr) {
+
+                expression = sqlExpr || SQL.expr();
+
+                _join(conditions);
+
+                return expression;
+            }
+
+
+            return buildSqlExpression;
         });
 
 }());

@@ -75,5 +75,21 @@ describe('Query#find', function() {
         expect(query.toString()).to.equal('SELECT name, age FROM customers WHERE (name = john AND age > 30)');
     }));
 
+    it('should be able to find records given joiner and conditions objects', inject(function(Query) {
+        var query = new Query({
+            collection: User
+        }).find({
+            $or: [{
+                name: 'john'
+            }, {
+                age: {
+                    $gt: 30
+                }
+            }]
+        });
+
+        expect(query.toString()).to.equal('SELECT * FROM customers WHERE (name = john OR age > 30)');
+    }));
+
 
 });
