@@ -15,10 +15,23 @@
 
         })
         .run(function($ngData) {
+            $ngData.model('Book', {
+                tableName: 'books',
+                properties: {
+                    name: String,
+                    author: Object,
+                    isbn: {
+                        type: String,
+                        required: true
+                    }
+                }
+            });
+
             $ngData.initialize().then(function(results) {
                 console.log(results);
             }).catch(function(error) {
                 console.log(error);
             });
+
         });
 }());
