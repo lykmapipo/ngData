@@ -23,34 +23,64 @@
             function _join(conditions) {
                 // initialize default joiner
                 var joiner = 'and';
+                //check if two joiners are used in conditions
+                var isDoubleJoined = false;
 
                 if (_.has(conditions, '$or') || _.has(conditions, '$and')) {
+
 
                     _.forEach(conditions, function(value, key) {
 
                         // default joiner if it is not specified
 
+                        if (_.has(conditions, '$or') && _.has(conditions, '$and')) {
+                            isDoubleJoined = true;
+                        }
 
                         if (key === '$or') {
                             joiner = 'or';
 
+                            if (isDoubleJoined) {
+                                /* jshint camelcase: false*/
+                                expression.and_begin();
+                            }
+
                             if (_.isArray(value)) {
                                 _.forEach(value, function(val) {
                                     _buildSqlCondition(val, joiner);
                                 });
                             }
+
+                            if (isDoubleJoined) {
+                                expression.end();
+                            }
+
                         } else if (key === '$and') {
                             joiner = 'and';
+
+                            if (isDoubleJoined) {
+                                expression.and_begin();
+                                /* jshint camelcase: true*/
+                            }
+
                             if (_.isArray(value)) {
                                 _.forEach(value, function(val) {
                                     _buildSqlCondition(val, joiner);
                                 });
                             }
+
+                            if (isDoubleJoined) {
+                                expression.end();
+                            }
+
                         }
+
                     });
+
                 } else {
                     _buildSqlCondition(conditions, joiner);
                 }
+
 
             }
 
