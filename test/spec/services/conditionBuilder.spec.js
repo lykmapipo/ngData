@@ -125,7 +125,7 @@ describe('ConditionBuilder', function() {
 
         };
 
-        expect(conditionBuilder(condition).toString()).to.equal('age > 20 OR name = john AND height = 200 AND gender = M');
+        expect(conditionBuilder(condition).toString()).to.equal('(age > 20 OR name = john) AND (height = 200 AND gender = M)');
     }));
 
 });
