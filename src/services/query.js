@@ -134,6 +134,7 @@
                 return this;
             };
 
+
             /**
              * @description Issues findAndModify update command by a
              *              document's id field. findByIdAndUpdate(id, ...) is
@@ -209,6 +210,7 @@
                 return this;
             };
 
+
             /**
              * @description Specify the 'where' query conditions
              * @param  {String} path
@@ -247,6 +249,7 @@
 
                 return this;
             };
+
 
             /**
              * @description Sets the sort order
@@ -291,6 +294,7 @@
                     return this;
                 };
 
+
             /**
              * @description Specifies a 'greater than' query condition.
              * @param  {(String|Object)} path
@@ -333,6 +337,7 @@
                 return this;
             };
 
+
             /**
              * @description Specifies a 'greater or equal' query condition.
              * @param  {(String|Object)} path
@@ -373,6 +378,7 @@
 
                 return this;
             };
+
 
             /**
              * @description Specifies a 'less than' query condition.
@@ -416,6 +422,7 @@
                 return this;
             };
 
+
             /**
              * @description Specifies a 'less or equal' query condition.
              * @param  {String} path
@@ -456,6 +463,7 @@
 
                 return this;
             };
+
 
             /**
              * @description Specifies a 'in' query condition.
@@ -521,6 +529,7 @@
                 return this;
             };
 
+
             /**
              * @description Specifies arguments for an $or condition.
              * @param  {Array} array
@@ -535,6 +544,7 @@
                 return this;
             };
 
+
             /**
              * @description Specifies arguments for an $nor condition.
              * @param  {Array} array
@@ -543,6 +553,7 @@
             Query.prototype.nor = function( /*array*/ ) {
 
             };
+
 
             /**
              * @description Specifies the complementary comparison value for
@@ -581,6 +592,7 @@
 
                 return this;
             };
+
 
             /**
              * @description Specifies arguments for not equal query condition
@@ -623,6 +635,7 @@
                 return this;
             };
 
+
             /**
              * @description Specifying this query as a count query.
              * @param  {Object}   criteria
@@ -633,6 +646,7 @@
 
                 return this;
             };
+
 
             /**
              * @description Declares or executes a distinct() operation.
@@ -656,6 +670,7 @@
                 return this;
             };
 
+
             /**
              * @description Specifies the maximum number of records the query
              *              will return. can not be used with distinct
@@ -676,6 +691,7 @@
 
                 return this;
             };
+
 
             /**
              * @description Specifies an $exists condition
@@ -711,13 +727,38 @@
 
                 };
 
+
             /**
-             * @description Executes this query and returns a promise
+             * @description Executes this query and resolve with a promise
              * @return {promise}
              */
-            Query.prototype.then = function() {
+            Query.prototype.then = function( /*resolve, reject*/ ) {
+                this._finalizeWhere();
 
+                var promise = this.sql.then();
+
+                promise = promise.then(function(result) {
+                    return SQL.fetchAll(result);
+                });
+                promise = promise.then.apply(promise, arguments);
+
+                return promise;
             };
+
+
+            /**
+             * @description Executes this query and reject with a promise
+             * @return {promise}
+             */
+            Query.prototype.catch = function( /*reject*/ ) {
+                this._finalizeWhere();
+
+                var promise = this.then();
+                promise = promise.catch.apply(promise, arguments);
+
+                return promise;
+            };
+
 
             /**
              * @description  finalize the squel expression builder conditions
@@ -731,6 +772,7 @@
                     this.sql.where(this.expression);
                 }
             };
+
 
             /**
              * @description convert current query into its string presentation
