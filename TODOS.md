@@ -7,6 +7,13 @@
 - [ ] cast data to db type when inserting
 - [ ] cast data to js type when fetch from db
 
+# Migration
+- [ ] Drop unused collection
+
+
+# Indexing
+- [ ] Support other indexing than `(primary, unique)`
+
 # Queries
 
 ```js

@@ -4,12 +4,15 @@
     /**
      * @ngdoc module
      * @name Schema
-     * @description schema definition and builder
+     * @description schema utilities and builder
      */
     angular
         .module('ngData')
         .factory('Schema', function($q, DataTypes, $database, SQL) {
+
+            //reference schema factory
             var Schema = {};
+
 
             /**
              * @function
@@ -18,21 +21,47 @@
              * @param {String|Constructor} type valid JS type constructor or name
              * @return {String} valid SQL type or default to TEXT if non found
              * @private
+             * @see DataTypes
+             * @example
+             *         Number will be converted to REAL
+             *         String will be converted to TEXT
+             *         etc
              */
             Schema.castToSQLType = function(type) {
                 type = type.name || type;
                 return _.get(DataTypes, type, 'TEXT');
             };
 
-            Schema.normalizeProperty = function(key, properties) {
+
+            /**
+             * @description normalize given property to use object property 
+             *              definition
+             * @param  {Object|String} property        property definition
+             * @param  {Object} properties schema properties definition
+             * @return {Object}            normalized property definition
+             * @example
+             *         This property definition
+             *         {
+             *             name: String
+             *         }
+             *
+             *         Will be normalized to
+             *         {
+             *             name:{
+             *                 type:String
+             *             }
+             *         }
+             */
+            Schema.normalizeProperty = function(property, properties) {
                 var _property = {};
-                if (!_.isPlainObject(properties[key])) {
-                    _property.type = properties[key];
+                if (!_.isPlainObject(properties[property])) {
+                    _property.type = properties[property];
                 } else {
-                    _property = properties[key];
+                    _property = properties[property];
                 }
                 return _property;
             };
+
 
             /**
              * @function
@@ -40,6 +69,26 @@
              * @param  {Object} properties valid JSON schema properties
              * @return {String}     valid SQL DDL
              * @private
+             * @example
+             *         The following schema properties definition
+             *         {
+             *           firstName: {
+             *               type: String,
+             *               unique: true,
+             *               defaultsTo: 'Doe'
+             *           },
+             *           lastName: {
+             *               type: String
+             *           },
+             *           ssn: {
+             *               type: String,
+             *               primaryKey: true,
+             *               index: true
+             *           }
+             *          }
+             *          
+             *          Will get converted to the following SQL
+             *          'firstName TEXT UNIQUE DEFAULT Doe, lastName TEXT, ssn TEXT PRIMARY KEY'
              */
             Schema.propertiesDDL = function(properties) {
                 var ddl = '';
@@ -64,7 +113,7 @@
                         property.primaryKey ? 'PRIMARY KEY' : '', // primary key
                         property.unique ? 'UNIQUE' : '', // unique constraint
                         property.defaultsTo ? 'DEFAULT "' + property.defaultsTo + '"' : ''
-                    ].join(' ').trim();
+                    ].join(' ').trim().replace(/\s+/g, ' ');
 
                     ddl += str + ', ';
                 });
@@ -131,40 +180,6 @@
 
 
             /**
-             * @function
-             * @description drop a schema database table
-             * @param {String} table name of schema
-             * @return {Promise} promise
-             * @private
-             */
-            Schema.dropTable = function(table) {
-                // TODO escape table name
-
-                // prepare drop query
-                var query = 'DROP TABLE ' + table;
-
-                // run the query
-                return $database.query(query);
-            };
-
-
-            /**
-             * @function
-             * @description drop a schema tempotrary database table
-             * @param {String} table name of schema
-             * @return {Promise} promise
-             * @private
-             */
-            Schema.dropTemporaryTable = function(table) {
-                //obtain temporary table name
-                table = table + '_t';
-
-                // run the query
-                return Schema.dropTable(table);
-            };
-
-
-            /**
              * @description create schema table
              * @param  {String} table      name of the table
              * @param  {Object} properties JSON schema
@@ -178,7 +193,7 @@
 
                 //Build query
                 var query =
-                    'CREATE TABLE ' + table + ' (' + _schema + ')';
+                    'CREATE TABLE IF NOT EXISTS ' + table + ' (' + _schema + ')';
 
                 // run the query
                 return $database.query(query);
@@ -187,17 +202,19 @@
 
 
             /**
-             * @description create schema temporary table
+             * @description drop schema table
              * @param  {String} table      name of the table
-             * @param  {Object} properties JSON schema
              * @return {Promise}
              */
-            Schema.createTemporaryTable = function(table, properties) {
-                //obtain temporary table name
-                table = table + '_t';
+            Schema.dropTable = function(table) {
+                //TODO escape table name
+
+                //Build query
+                var query =
+                    'DROP TABLE IF NOT EXISTS ' + table;
 
                 // run the query
-                return Schema.createTable(table, properties);
+                return $database.query(query);
 
             };
 
@@ -295,7 +312,7 @@
                     return error;
                 }
 
-                //TODO make use of transaction
+                //prepare schema DDL
                 var columns = Schema.propertiesDDL(properties);
 
                 //queries
@@ -307,39 +324,58 @@
 
                 var selectData = 'SELECT * FROM "' + table + '"';
 
-                con
-                    .transaction(
-                        //perform table schema upgrade under transaction
-                        function(tx) {
-                            // try to create table if not exists
-                            tx.executeSql(createTable);
+                con.transaction(
+                    //perform table schema upgrade under transaction
+                    function(tx) {
+                        // try to create table if not exists
+                        tx.executeSql(createTable, [], function(tx1 /*,result*/ ) {
 
                             //select data from existing table
-                            tx.executeSql(selectData, [], function(tx, result) {
-                                console.log(Schema.copyData(SQL.fetchAll(result)));
-                            }, errorHandler);
+                            tx1.executeSql(selectData, [], function(tx2, result) {
 
-                            //drop existing table
-                            tx.executeSql(dropTable);
+                                //dump existing data
+                                var all = SQL.fetchAll(result);
+                                var dumps = Schema.copyData(all, properties);
 
-                            //create newly table
-                            tx.executeSql(createTable);
+                                //drop existing table
+                                tx2.executeSql(dropTable, [], function(tx3 /*,result*/ ) {
 
-                            //insert data
+                                    //create newly table
+                                    tx3.executeSql(createTable, [], function(tx4 /*, result*/ ) {
 
-                            if (_error) {
-                                q.reject(_error);
-                            } else {
-                                q.resolve(1);
-                            }
-                        },
-                        //handle transaction error
-                        function(tx, error) {
-                            if (!_error) {
-                                errorHandler(error);
-                            }
-                            q.reject(_error);
-                        });
+                                        //re-insert dump                                           
+                                        _.forEach(dumps, function(model) {
+                                            if (_.isPlainObject(model)) {
+                                                var query =
+                                                    SQL.insert()
+                                                    .into(table)
+                                                    .values(model).toString();
+
+                                                tx4.executeSql(query);
+                                            }
+
+                                        });
+
+                                        //resolve
+                                        if (_error) {
+                                            q.reject(_error);
+                                        } else {
+                                            q.resolve(table + ' migrated successfully');
+                                        }
+
+                                    }, errorHandler); //tx3
+                                }, errorHandler); //tx2
+                            }, errorHandler); //tx1
+                        }, errorHandler); //tx
+                    },
+
+                    //handle transaction error
+                    function(tx, error) {
+                        if (!_error) {
+                            errorHandler(error);
+                        }
+                        q.reject(_error);
+                    });
 
                 return q.promise;
             };

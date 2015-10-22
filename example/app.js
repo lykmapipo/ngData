@@ -18,6 +18,10 @@
             $ngData.model('Book', {
                 tableName: 'books',
                 properties: {
+                    id: {
+                        type: String,
+                        defaultsTo: '44'
+                    },
                     name: String,
                     author: Object,
                     isbn: {

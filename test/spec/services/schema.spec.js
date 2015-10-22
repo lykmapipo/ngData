@@ -6,6 +6,7 @@ describe('Schema', function() {
         return 8000;
     };
 
+    var table = 'users';
     var defaultsTo = faker.name.firstName();
 
     var properties = {
@@ -46,7 +47,7 @@ describe('Schema', function() {
         var ddl = Schema.propertiesDDL(properties);
 
         var expectedDDL =
-            'firstName TEXT  UNIQUE DEFAULT "' + defaultsTo + '", lastName TEXT, ssn TEXT PRIMARY KEY';
+            'firstName TEXT UNIQUE DEFAULT "' + defaultsTo + '", lastName TEXT, ssn TEXT PRIMARY KEY';
 
         expect(ddl).to.exist;
         expect(ddl).to.equal(expectedDDL);
@@ -111,5 +112,28 @@ describe('Schema', function() {
         expect(data[0].interests).to.exist;
 
     }));
+
+    beforeEach(function(done) {
+        inject(function($rootScope, Schema) {
+
+            Schema
+                .alter(table, properties)
+                .then(function(result) {
+
+                    expect(result).to.exist;
+                    expect(result).to.be.equal(table + ' migrated successfully');
+
+                    done(null, result);
+                })
+                .catch(function(error) {
+                    done(error);
+                });
+
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+
+        });
+    });
 
 });

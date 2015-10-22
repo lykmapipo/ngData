@@ -86,8 +86,6 @@
                         .alter(collection.tableName, collection.definition.properties);
                 });
 
-                console.log(migrations);
-
                 return $q.all(migrations);
 
             };
