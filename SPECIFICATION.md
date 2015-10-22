@@ -1,5 +1,9 @@
 # Specification
 
+## Table naming convection
+- [ ] All temporary table will have `_t` suffix
+- [ ] Table will use `collection name` implicitly else `tableName` provided explicitly 
+
 ## Schema change algorithm
 - [ ] create a temporary table
 - [ ] copy all data to temporary table
@@ -8,6 +12,20 @@
 - [ ] copy data from temporary table
 - [ ] drop temporary table
 - [ ] what if schema name change?
+
+## Schema change algorithm 2
+- [ ] create table if not exists
+- [ ] select all data from existing table
+- [ ] copy data from existing table
+- [ ] drop existing table
+- [ ] create new table
+- [ ] insert all copied data
+
+## Data copying algrithm
+- [ ] select existing data
+- [ ] obtain current properties
+- [ ] adding missing values to existing data
+- [ ] remove unwanted data from existing data
 
 $collection
 $model

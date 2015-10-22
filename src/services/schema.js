@@ -201,6 +201,7 @@
 
             };
 
+
             /**
              * @function
              * @description update existing data to comply with the new table structure
@@ -211,7 +212,7 @@
              */
             Schema.copyData = function(data, properties) {
                 return _.map(data, function(model) {
-                    //prepare missing data
+                    //prepare missing properties data
                     var missing = _.omit(properties, _.keys(model));
                     var additional = {};
 
@@ -258,9 +259,19 @@
                     });
 
                     //merge additional with original data
-                    return _.merge(model, additional);
+                    var data = _.merge(model, additional);
+
+                    //remove unwanted properties
+                    _.forEach(_.keys(data), function(key) {
+                        if (!_.has(properties, key)) {
+                            data = _.omit(data, key);
+                        }
+                    });
+
+                    return data;
                 });
             };
+
 
             /**
              * @description alter schema table structure in case of any changes
@@ -269,59 +280,64 @@
              * @return {Promise}
              */
             Schema.alter = function(table, properties) {
-                console.log(table);
-                console.log(properties);
                 var q = $q.defer();
                 $database.connect();
                 var con = $database.connection;
+
+                //error processor
                 var _error;
 
                 function errorHandler(tx, error) {
-                    _error = new Error(error.message);
+                    var message = 'Fail to migrate ' + table;
+                    message = error && error.message ? error.message : message;
+
+                    _error = new Error(message);
                     return error;
                 }
 
                 //TODO make use of transaction
-                var tt = table + '_t';
-                var n = Schema.propertiesDDL(properties);
+                var columns = Schema.propertiesDDL(properties);
 
                 //queries
-                var drtt = 'DROP TABLE IF EXISTS "' + tt + '"';
-                var ret = 'ALTER TABLE "' + table + '" RENAME TO "' + tt + '"';
-                var crt = 'CREATE TABLE "' + table + '" (' + n + ')';
-                var sftt = 'SELECT * FROM "' + tt + '"';
+                var dropTable =
+                    'DROP TABLE IF EXISTS "' + table + '"';
+
+                var createTable =
+                    'CREATE TABLE IF NOT EXISTS "' + table + '" (' + columns + ')';
+
+                var selectData = 'SELECT * FROM "' + table + '"';
 
                 con
-                    .transaction(function(tx) {
-                            // drop temporary table if exists
-                            tx.executeSql(drtt, [], function(tx /*, r1*/ ) {
-                                // create temporary table
-                                tx.executeSql(ret, [], function(tx /*, r2*/ ) {
-                                    //re-create table based on new schema
-                                    tx.executeSql(crt, [], function(tx /*, r3*/ ) {
-                                        //select data from temporary table
-                                        tx.executeSql(sftt, [], function(tx, r4) {
-                                            //copy data if exist
-                                            var data = SQL.fetchAll(r4);
+                    .transaction(
+                        //perform table schema upgrade under transaction
+                        function(tx) {
+                            // try to create table if not exists
+                            tx.executeSql(createTable);
 
-                                            //prepare data
-                                            data = Schema.copyData(data, properties);
-
-
-                                            //execute all inserts
-                                            _.forEach(data, function(model) {
-                                                var query = SQL.insert().into(table).values(model).toString();
-                                                tx.executeSql(query, angular.noop, errorHandler);
-                                            });
-
-                                            q.resolve(data);
-
-                                        }, errorHandler);
-                                    }, errorHandler);
-                                }, errorHandler);
+                            //select data from existing table
+                            tx.executeSql(selectData, [], function(tx, result) {
+                                console.log(Schema.copyData(SQL.fetchAll(result)));
                             }, errorHandler);
+
+                            //drop existing table
+                            tx.executeSql(dropTable);
+
+                            //create newly table
+                            tx.executeSql(createTable);
+
+                            //insert data
+
+                            if (_error) {
+                                q.reject(_error);
+                            } else {
+                                q.resolve(1);
+                            }
                         },
-                        function( /*tx, error*/ ) {
+                        //handle transaction error
+                        function(tx, error) {
+                            if (!_error) {
+                                errorHandler(error);
+                            }
                             q.reject(_error);
                         });
 

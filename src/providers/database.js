@@ -66,6 +66,8 @@
                                 self.description, self.size
                             );
                     }
+
+                    return self.connection;
                 };
 
 
