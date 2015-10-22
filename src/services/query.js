@@ -737,6 +737,8 @@
 
                 var promise = this.sql.then();
 
+                //TODO check query type
+                //select,create,delete,upate
                 promise = promise.then(function(result) {
                     return SQL.fetchAll(result);
                 });
