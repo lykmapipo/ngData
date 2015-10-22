@@ -6,7 +6,9 @@
         .controller('BookCtrl', function($scope, Book) {
 
             $scope.index = function(offset, limit) {
-                return Book.find().limit(limit).offset(offset);
+                Book.find().limit(limit).offset(offset).then(function(books) {
+                    $scope.books = books;
+                });
             };
 
             $scope.book = Book.new();
@@ -27,6 +29,7 @@
                 return book.delete();
             };
 
+            $scope.index();
 
         });
 }());

@@ -84,6 +84,7 @@
 
             }
 
+
             /**
              * build sql condition when given condition object and joiner
              * @param  {Object} conditionObject 
@@ -182,6 +183,7 @@
 
                 }
             }
+
 
             /**
              * [buildSqlExpression description]
