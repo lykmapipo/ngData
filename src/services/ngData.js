@@ -41,12 +41,11 @@
      */
     angular
         .module('ngData')
-        .factory('$ngData', function(Collection, Schema, $q) {
+        .factory('$ngData', function($database, Collection, $q) {
             var $ngData = {};
 
             //models map registry
             $ngData.models = {};
-
 
             /**
              * @description register a new model into ngData and compile it
@@ -78,11 +77,14 @@
              * @description initialize ngData
              */
             $ngData.initialize = function() {
-                //1. scan for models
+                //1. scan for models schema and register them
+                _.forEach($database.models(), function(schema) {
+                    $ngData.model(schema.name, schema);
+                });
 
                 //2. apply migration
                 var migrations = _.map(_.values($ngData.models), function(collection) {
-                    return Schema
+                    return $database
                         .alter(collection.tableName, collection.definition.properties);
                 });
 

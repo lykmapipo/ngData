@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#ne', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,12 +26,17 @@ describe('Query#ne', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
 
     it('should be able to build a simple where not equal query condition', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().ne('age', 20);
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age <> 20)');
     }));
@@ -34,7 +44,7 @@ describe('Query#ne', function() {
 
     it('should be able to build a not equal condition given condition object', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().ne({
             age: 20,
             height: 40

@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#equals', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,11 +26,16 @@ describe('Query#equals', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
     it('should be able to build a simple where equal to condition', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().equals('age', 20);
 
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age = 20)');
@@ -34,7 +44,7 @@ describe('Query#equals', function() {
 
     it('should be able to build equals condition given condition object', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().equals({
             age: 20,
             height: 40

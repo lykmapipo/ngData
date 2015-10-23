@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#distinct', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,11 +26,16 @@ describe('Query#distinct', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
     it('should be able to create a select distinct query', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select(['name', 'age', 'gender']).distinct().where().gt('age', 20);
         expect(query.toString()).to.equal('SELECT DISTINCT name, age, gender FROM customers WHERE (age > 20)');
     }));

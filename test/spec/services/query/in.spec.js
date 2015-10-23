@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#in', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,11 +26,16 @@ describe('Query#in', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
     it('should be able to create in condition given criteria', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().where().in({
             city: ['mwanza', 'arusha', 'singida']
         });
@@ -35,7 +45,7 @@ describe('Query#in', function() {
 
     it('should be able to create in condition given criteria and limit value', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().where().in({
             city: ['mwanza', 'arusha', 'singida']
         }, 5);

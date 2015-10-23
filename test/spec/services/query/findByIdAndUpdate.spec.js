@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#findByIdAndUpdate', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,6 +26,11 @@ describe('Query#findByIdAndUpdate', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
 });

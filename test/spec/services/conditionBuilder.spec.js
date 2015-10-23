@@ -12,17 +12,6 @@ describe('ConditionBuilder', function() {
         expect(builder).to.exists;
     }));
 
-    it('should be able to build expression given  plain condition object and sql expression',
-        inject(function(conditionBuilder, SQL) {
-            var condition = {
-                name: 'john',
-                age: 20
-            };
-
-            expect(conditionBuilder(condition, SQL.expr()).toString())
-                .to.equal('name = john AND age = 20');
-        }));
-
     it('should be able to build expression given  plain condition object',
         inject(function(conditionBuilder) {
             var condition = {

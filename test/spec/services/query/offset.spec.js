@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#offset', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,12 +26,17 @@ describe('Query#offset', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
     it('should be able to add a limit condition to a query', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().offset(10);
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers OFFSET 10');

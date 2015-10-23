@@ -7,6 +7,7 @@
 
             $scope.index = function(offset, limit) {
                 Book.find().limit(limit).offset(offset).then(function(books) {
+                    console.log(books);
                     $scope.books = books;
                 });
             };

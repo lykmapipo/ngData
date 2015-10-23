@@ -10,8 +10,8 @@
 
     angular
         .module('ngData')
-        .factory('Query', function(SQL, conditionBuilder) {
-
+        .factory('Query', function($database, conditionBuilder) {
+            var SQL = $database.sql;
             /**
              * @description Query functional constructor
              * @param {Object} options 
@@ -64,24 +64,17 @@
              * @description find documents
              * @param  {Object}   conditions
              * @param  {Array}   projections [optional fields to return]
-             * @param  {Object}   options     [optional]
-             * @param  {Function} callback
              * @return {Query}
              * @example
              *     Customer
              *         .find({
              *                 name:'john',
-             *                 age:{$gt:30}
+             *                 age:{
+             *                         $gt:30
+             *                     }
              *                 })
-             *     or
-             *     Customer
-             *         .find({
-             *                 name:'john',
-             *                 age:{$gt:30}},
-             *                 [name,accounts]
-             *                 )
              */
-            Query.prototype.find = function(conditions, projections /*options*/ ) {
+            Query.prototype.find = function(conditions, projections) {
                 //harmonize arguments
                 if (_.isArray(conditions) || _.isString(conditions)) {
                     projections = conditions;

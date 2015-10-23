@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Collection', function() {
-    var User;
+    var Customer;
+    var databaseProvider;
 
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -14,17 +19,26 @@ describe('Collection', function() {
                 },
                 code: {
                     type: String
+                },
+                age: {
+                    type: Number,
+                    defaultsTo: 20
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+        
     }));
 
     describe('Collection#new', function() {
 
         it('should be able to instantiate new model instance', inject(function() {
 
-            expect(User.new).to.exist;
-            var user = User.new();
+            expect(Customer.new).to.exist;
+            var user = Customer.new();
 
             expect(user).to.exist;
             expect(user).to.have.ownProperty('name');
@@ -39,7 +53,7 @@ describe('Collection', function() {
                 code: faker.random.uuid()
             };
 
-            var user = User.new(_user);
+            var user = Customer.new(_user);
 
             expect(user.name).to.be.equal(_user.name);
             expect(user.code).to.be.equal(_user.code);
@@ -50,21 +64,21 @@ describe('Collection', function() {
 
     describe('Collection#create', function() {
         it('should be an instance of query', inject(function(Query) {
-            var query = User.create();
+            var query = Customer.create();
             expect(query).to.be.an.instanceof(Query);
         }));
     });
 
     describe('Collection#remove', function() {
         it('should be an instance of query', inject(function(Query) {
-            var query = User.remove();
+            var query = Customer.remove();
             expect(query).to.be.an.instanceof(Query);
         }));
     });
 
     describe('Collection#update', function() {
         it('should be an instance of query', inject(function(Query) {
-            var query = User.update();
+            var query = Customer.update();
             expect(query).to.be.an.instanceof(Query);
         }));
     });

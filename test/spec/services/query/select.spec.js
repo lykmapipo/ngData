@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#select', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,25 +26,30 @@ describe('Query#select', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
     it('should be able to build a simple select query', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select('name');
         expect(query.toString()).to.equal('SELECT name FROM customers');
     }));
 
     it('should be able to build a multiple projections select query', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select(['name', 'age', 'gender']);
         expect(query.toString()).to.equal('SELECT name, age, gender FROM customers');
     }));
 
     it('should be able to build a simple select query chain with where conditions', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select(['name', 'age', 'gender']).where().gt('age', 27).equals('gender', 'male');
         expect(query.toString()).to.equal('SELECT name, age, gender FROM customers WHERE (age > 27 AND gender = male)');
     }));

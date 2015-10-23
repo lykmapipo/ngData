@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#where', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,11 +26,16 @@ describe('Query#where', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
     it('should be able to return a query given condition object', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where({
             name: 'benson',
             age: 20
@@ -58,7 +68,7 @@ describe('Query#where', function() {
         };
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where(condition);
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (age > 20 OR name = john OR height >= 206 OR weight < 60 OR lives IN ( "arusha","mbeya","iringa" ))');
@@ -88,7 +98,7 @@ describe('Query#where', function() {
         };
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().where(condition);
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (age > 20 OR name = john OR height >= 206 OR weight < 60 OR lives IN ( "arusha","mbeya","iringa" ))');

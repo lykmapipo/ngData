@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#sort', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,20 +26,17 @@ describe('Query#sort', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
-
-    // it('should be to build simple ascending order by query condition', inject(function(Query) {
-    //     var query = new Query({
-    //         collection: User
-    //     }).select().sort('name');
-
-    //     //     expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC');
-    // }));
 
     it('should be able to build a simple ascending order by query condition', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().sort('name');
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC');
@@ -43,7 +45,7 @@ describe('Query#sort', function() {
     it('should be able to build an ascending order query for multiple arguments', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().sort('name', 'age', 'height');
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC, age ASC, height ASC');
@@ -52,7 +54,7 @@ describe('Query#sort', function() {
     it('should be able to build a order by query depending on the object provided', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().sort({
             name: 'desc',
             age: 'asc',

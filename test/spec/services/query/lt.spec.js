@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#lt', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,18 +26,23 @@ describe('Query#lt', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
     it('should be able to build a simple where less than query condition', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().lt('age', 20);
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age < 20)');
     }));
 
     it('should be able to build a less than condition given condition object', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().lt({
             age: 20,
             height: 40

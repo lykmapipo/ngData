@@ -11,7 +11,8 @@
 
     angular
         .module('ngData')
-        .factory('conditionBuilder', function(SQL) {
+        .factory('conditionBuilder', function($database) {
+            var SQL = $database.sql;
 
             var expression;
 

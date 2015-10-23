@@ -1,12 +1,17 @@
 'use strict';
 
 describe('Query#count', function() {
+    var Customer;
+    var databaseProvider;
 
-    var User;
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        databaseProvider.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -21,12 +26,17 @@ describe('Query#count', function() {
                 }
             }
         });
+
+        //compile model
+        $ngData.initialize();
+        Customer = $ngData.model('Customer');
+
     }));
 
     it.skip('should be able to create a count all select query when called without parameter', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().where().gt({
             age: 21
         }).count();
