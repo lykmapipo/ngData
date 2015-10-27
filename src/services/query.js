@@ -87,7 +87,7 @@
                     projections = conditions;
                     conditions = undefined;
                 } else if (_.isPlainObject(conditions)) {
-                    this.expression = conditionBuilder(conditions);
+                    this.where(conditions);
                 }
 
                 if (!this.sql && this.type === 'select') {
@@ -241,11 +241,7 @@
              */
             Query.prototype.where = function(path) {
 
-                // instantiate expression object
-                this.expression = SQL.expr();
-
-                this.expression = conditionBuilder(path, this.expression);
-
+                this.expression = conditionBuilder(path);
 
                 return this;
             };

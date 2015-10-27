@@ -13,6 +13,7 @@
 
 # Indexing
 - [ ] Support other indexing than `(primary, unique)`
+- [ ] 
 
 # Queries
 
