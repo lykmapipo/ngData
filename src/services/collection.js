@@ -66,8 +66,16 @@
                     docs = [docs];
                 }
 
+
                 var query = _.map(docs, function(doc) {
-                    
+
+                    // return new Query({
+                    //     collection: this,
+                    //     type: 'insert'
+                    // }).create(doc).then(function(id) {
+                    //     return this.findById(id);
+                    // }.bind(this));
+
                     return new Query({
                         collection: this,
                         type: 'insert'
@@ -153,12 +161,12 @@
             Collection.prototype.find = function(conditions, projections) {
 
                 var query = new Query({
-                        collection: this
+                        collection: this,
+                        type: 'select'
                     })
                     .find(conditions, projections)
                     .then(function(instances) {
                         console.log(instances);
-
                         //map instances to model
                         if (instances) {
                             instances = _.map(instances, function(instance) {
@@ -171,6 +179,27 @@
 
                 return query;
             };
+
+
+            Collection.prototype.findById = function(id, projections) {
+
+                var query = new Query({
+                        collection: this
+                    })
+                    .findById(id, projections)
+                    .then(function(instance) {
+
+                        //map instance to model
+                        if (instance) {
+                            instance = new Model(instance);
+                        }
+
+                        return instance;
+                    });
+
+                return query;
+            };
+
 
             return Collection;
         });

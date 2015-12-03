@@ -111,12 +111,12 @@
                     conditions = undefined;
                 }
 
-                if (_.isPlainObject(conditions)) {
-                    this.where(conditions);
-                }
-
                 if (!this.sql && this.type === 'select') {
                     this.sql = SQL.select().from(this.collection.tableName);
+                }
+
+                if (conditions && _.isPlainObject(conditions)) {
+                    this.where(conditions);
                 }
 
                 if (projections) {
@@ -166,6 +166,7 @@
                         id: id
                     }, projections)
                     .then(function(instances) {
+                        console.log(instances);
                         //return single instance
                         return _.first(instances);
                     });

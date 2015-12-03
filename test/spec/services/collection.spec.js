@@ -38,7 +38,6 @@ describe('Collection', function() {
         });
     });
 
-    //TODO clean up
     beforeEach(function(done) {
 
         inject(function($rootScope) {
@@ -57,12 +56,15 @@ describe('Collection', function() {
 
     });
 
+
     describe('Collection#new', function() {
 
         it('should be able to instantiate new model instance', inject(function() {
 
             expect(User.new).to.exist;
             var user = User.new();
+
+            console.log(User.properties);
 
             expect(user).to.exist;
             expect(user).to.have.ownProperty('name');
@@ -125,6 +127,51 @@ describe('Collection', function() {
         it('should be able to update documents', inject(function() {
             expect(User.update).to.be.a('function');
         }));
+    });
+
+    describe('Collection#find', function() {
+        beforeEach(function(done) {
+
+            inject(function($rootScope) {
+                var users = [{
+                    name: faker.name.firstName(),
+                    code: Math.ceil(Math.random() * 999)
+                }];
+
+                User.create(users).then(function(response) {
+                    done(null, response);
+                });
+
+                //wait for propagation
+                setTimeout(function() {
+                    $rootScope.$apply();
+                }, 50);
+
+            });
+
+        });
+
+        it('should be able to find documents', inject(function() {
+            expect(User.find).to.be.a('function');
+        }));
+
+        it('should be able to find documents', function(done) {
+            inject(function($rootScope) {
+
+                User.find().then(function(users) {
+                    console.log(users);
+                    done(null, users);
+                }).catch(function(error) {
+                    // console.log(error);
+                    done(error);
+                });
+
+                //wait for propagation
+                setTimeout(function() {
+                    $rootScope.$apply();
+                }, 50);
+            });
+        });
     });
 
     it('should be able to update the record in the database without returning them');

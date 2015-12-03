@@ -21,7 +21,7 @@
                 this._init();
             }
 
-            
+
             /**
              * @description initial model
              * @private
@@ -29,8 +29,9 @@
             Model.prototype._init = function() {
                 _.forEach(_.keys(this.properties), function(property) {
 
-                    this[property] =
-                        _.get(this.properties, property).defaultsTo;
+                    var value = _.get(this.properties, property);
+
+                    this[property] = value ? value.defaultsTo : undefined;
 
                 }.bind(this));
             };
@@ -48,7 +49,7 @@
 
             };
 
-            
+
             /**
              * @description remove the instance
              * @return {Promise}
@@ -67,7 +68,7 @@
                     return _.pick(this, _.keys(this.properties));
                 };
 
-            
+
             /**
              * @description return json representation of a model instance
              * @return {Object}

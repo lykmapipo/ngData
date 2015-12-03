@@ -20,6 +20,7 @@
 
             //real data types
             'Number': 'REAL',
+            'Integer': 'INTEGER',
 
             //text data types
             'Date': 'TEXT',
