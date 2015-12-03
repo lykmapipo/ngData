@@ -4,13 +4,11 @@
     /**
      * @ngdoc module
      * @name Query
-     * @description query builder based on squel
-     * @see https://hiddentao.github.io/squel/
      */
 
     angular
         .module('ngData')
-        .factory('Query', function(SQL, conditionBuilder) {
+        .factory('Query', function(SQL, $where) {
 
             /**
              * @description Query functional constructor
@@ -241,7 +239,7 @@
              */
             Query.prototype.where = function(path) {
 
-                this.expression = conditionBuilder(path);
+                this.expression = $where(path);
 
                 return this;
             };

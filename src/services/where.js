@@ -4,14 +4,14 @@
     /**
      * @ngdoc module
      * @name ngData.ConditionBuilder
-     * @description build where conditions in ngData
+     * @description build where conditions from mongodb query object
      * @return {Function} condition builder function that is build the 
      * the sql condition expression and return it
      */
 
     angular
         .module('ngData')
-        .factory('conditionBuilder', function(SQL) {
+        .factory('$where', function(SQL) {
 
             function join(joiner, condition, key, value) {
                 //this refer to expression context
@@ -89,7 +89,7 @@
 
 
             /**
-             * @description build SQL query from mongodb query object
+             * @description convert SQL query from mongodb query object
              * @param  {Object} conditions
              */
             function mongoQueryToSQL(expression, conditions) {
@@ -185,15 +185,12 @@
 
 
             /**
-             * [buildSqlExpression description]
-             * @param  {[type]} conditions condition object specified in find or
-             *                             where condition
-             * @param  {[type]} expression    sql expression object
-             * @return {Object}            SQL.expr() which will be used by find
-             *                             and where condition to build the 
-             *                             conditions
+             * @description convert mongodb query object to SQL query
+             * @param  {Object} conditions valid mongodb query object
+             * @param  {[Object]} expression an instance squell expression
+             * @return {Object} an instance of squel expression
              */
-            function buildSqlExpression(conditions, expression) {
+            function where(conditions, expression) {
 
                 expression = expression || SQL.expr();
 
@@ -203,7 +200,7 @@
             }
 
 
-            return buildSqlExpression;
+            return where;
         });
 
 }());

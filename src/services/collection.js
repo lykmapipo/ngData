@@ -68,7 +68,7 @@
                     type: 'insert'
                 });
 
-                //TODO retur error if no doc provided
+                //TODO return error if no doc provided
 
                 //TODO batch create
                 //execute creates in parallel
