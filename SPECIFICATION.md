@@ -1,5 +1,8 @@
 # Specification
 
+## Setup and Workflow
+- config models
+
 ## Table naming convection
 - [ ] All temporary table will have `_t` suffix
 - [ ] Table will use `collection name` implicitly else `tableName` provided explicitly 

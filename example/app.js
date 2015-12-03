@@ -31,8 +31,6 @@
                 }
             });
 
-            console.log($ngData.models.Book);
-
             $ngData.initialize().then(function(results) {
                 console.log(results);
             }).catch(function(error) {

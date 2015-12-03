@@ -9,9 +9,8 @@
      */
     angular
         .module('ngData', [
-            'ngCordova',
             'bt.jsonValidator',
             'platanus.inflector'
         ]);
-        
+
 }());

@@ -10,9 +10,9 @@
      * @example <caption>registering a new model</caption>
      * angular
      *  .module('<moduleName>')
-     *  .factory('Customer', function($ngData){
+     *  .run(function($ngData) {
      *      //create $ngData model
-     *      var Customer = $ngData.model('User',{
+     *      var Customer = $ngData.model('Customer',{
      *              tableName:'customers',
      *              timestamp:true,
      *              properties:{
@@ -32,9 +32,10 @@
      *                  }
      *              }
      *          });
-     *
-     *      //return created model
-     *      return Customer;
+     *  })
+     *  .factory('Customer', function($ngData){
+     *      //return created model or extend it
+     *      return $ngData.model('Customer');
      *  });
      *
      * @public
@@ -74,6 +75,7 @@
                 }
             };
 
+            
             /**
              * @description initialize ngData
              */
@@ -81,10 +83,13 @@
                 //1. scan for models
 
                 //2. apply migration
-                var migrations = _.map(_.values($ngData.models), function(collection) {
-                    return Schema
-                        .alter(collection.tableName, collection.definition.properties);
-                });
+                var migrations =
+                    _.map(_.values($ngData.models), function(collection) {
+                        return Schema.alter(
+                            collection.tableName,
+                            collection.definition.properties
+                        );
+                    });
 
                 return $q.all(migrations);
 
