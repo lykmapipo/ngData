@@ -1,32 +1,61 @@
 'use strict';
 
 describe('Collection', function() {
+    this.timeout = function() {
+        return 10000;
+    };
+
     var User;
 
     beforeEach(module('ngData'));
 
-    beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
-            properties: {
-                name: {
-                    type: String,
-                    defaultsTo: faker.name.findName()
-                },
-                code: {
-                    type: String
+    beforeEach(function(done) {
+
+        inject(function($ngData, $rootScope) {
+            User = $ngData.model('Customer', {
+                properties: {
+                    name: {
+                        type: String,
+                        defaultsTo: faker.name.findName()
+                    },
+                    code: {
+                        type: String
+                    }
                 }
-            }
+            });
+
+            $ngData.initialize().then(function(response) {
+                done(null, response);
+            }).catch(function(error) {
+                done(error);
+            });
+
+            //wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+
+        });
+    });
+
+    //TODO clean up
+    beforeEach(function(done) {
+
+        inject(function($rootScope) {
+            User.remove().then(function(response) {
+                done(null, response);
+            }).catch(function(error) {
+                done(error);
+            });
+
+            //wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 100);
+
         });
 
-        // $ngData.initialize().then(function(response) {
-        //     console.log('response:' + response);
-        // }).catch(function(error) {
-        //     console.log('error:' + error);
-        // });
-
-        // //wait for propagation
-        // $rootScope.$apply();
-    }));
+    });
 
     describe('Collection#new', function() {
 
@@ -62,21 +91,28 @@ describe('Collection', function() {
             expect(User.create).to.be.a('function');
         }));
 
-        it('should be able to create a new record and save it into the database', inject(function($rootScope) {
-            var user = {
-                name: faker.name.firstName(),
-                code: Math.ceil(Math.random() * 999)
-            };
+        it('should be able to create a new record and save it into the database', function(done) {
 
-            User.create(user).then(function(response) {
-                console.log('response:' + response);
-            }).catch(function(error) {
-                console.log('error:' + error);
+            inject(function($rootScope) {
+                var user = {
+                    name: faker.name.firstName(),
+                    code: Math.ceil(Math.random() * 999)
+                };
+
+                User.create(user).then(function(response) {
+                    console.log(response);
+                    done(null, response);
+                }).catch(function(error) {
+                    done(error);
+                });
+
+                //wait for propagation
+                setTimeout(function() {
+                    $rootScope.$apply();
+                }, 50);
             });
 
-            //wait for propagation
-            $rootScope.$apply();
-        }));
+        });
     });
 
     describe('Collection#remove', function() {

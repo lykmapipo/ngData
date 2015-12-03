@@ -68,6 +68,15 @@
                     //extend definition with model name
                     definition.name = name;
 
+                    //add id property if not exists
+                    definition.properties =
+                        _.merge(definition.properties, {
+                            id: {
+                                type: Number,
+                                autoIncrement: true
+                            }
+                        });
+
                     //instantiate a collection with definetion
                     $ngData.models[name] = new Collection(definition);
 
@@ -75,7 +84,7 @@
                 }
             };
 
-            
+
             /**
              * @description initialize ngData
              */

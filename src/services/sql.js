@@ -14,6 +14,7 @@
             //by cloning/copying a global squel
             var sql = angular.copy(squel);
 
+
             //extend insert queries with `values(Array|Object)` builder
             sql.cls.Insert.prototype.values = function(values) {
 
@@ -43,15 +44,18 @@
 
             //extend select with ability to pass array fields
             sql.cls.Select.prototype.columns = function(fields) {
-                //normalize fields to array
-                if (_.isString(fields)) {
-                    fields = fields.split(' ');
+                //is multiple field selection
+                if (_.isArray(fields)) {
+                    //iterate over all fields
+                    _.forEach(fields, function(field) {
+                        this.field(field);
+                    }.bind(this));
                 }
 
-                //iterate over all fields
-                _.forEach(fields, function(field) {
-                    this.field(field);
-                }.bind(this));
+                //is single field selection
+                else {
+                    this.field(fields);
+                }
 
                 return this;
 

@@ -83,6 +83,7 @@ describe('$ngData', function() {
             setTimeout(function() {
                 $rootScope.$apply();
             }, 50);
+
         });
     });
 

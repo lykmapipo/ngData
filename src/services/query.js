@@ -60,6 +60,23 @@
 
 
             /**
+             * @description create a new doc in the database
+             * @param  {doc} doc valid document to create
+             * @return {Query} an instance of Query
+             */
+            Query.prototype.create = function(doc) {
+
+                if (!this.sql && this.type === 'insert') {
+                    this.sql = SQL.insert().into(this.collection.tableName);
+                }
+
+                this.sql.values(doc);
+
+                return this;
+            };
+
+
+            /**
              * @description find documents
              * @param  {Object}   conditions valid mongodb query object
              * @param  {[Array|String]}   projections optional fields to return
@@ -121,7 +138,7 @@
                     this.sql = SQL.delete().from(this.collection.tableName);
                 }
 
-                if (conditions) {
+                if (conditions && _.isPlainObject(conditions)) {
                     this.where(conditions);
                 }
 
@@ -769,13 +786,22 @@
             Query.prototype.then = function( /*resolve, reject*/ ) {
                 this.finalize();
 
+                var type = this.type;
+
                 var promise = this.sql.then();
 
                 //TODO check query type
                 //select,create,delete,upate
                 promise = promise.then(function(result) {
-                    return SQL.fetchAll(result);
+                    if (type === 'select') {
+                        result = SQL.fetchAll(result);
+                    }
+                    if (type === 'insert') {
+                        result = result.insertId;
+                    }
+                    return result;
                 });
+
                 promise = promise.then.apply(promise, arguments);
 
                 return promise;
