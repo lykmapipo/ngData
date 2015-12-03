@@ -2,15 +2,18 @@ ngData (WIP)
 ============
 [![Build Status](https://travis-ci.org/lykmapipo/ngData.svg?branch=master)](https://travis-ci.org/lykmapipo/ngData)
 
-Simple and minimal WebSQL and cordova SQLite ORM for [ionic]() and [angular]()
+Simple and minimal WebSQL and cordova SQLite ORM for [ionic](https://github.com/driftyco/ionic) and [angular](https://github.com/angular/angular)
 
 
 ## Testing
+
 * Clone this repository
+
 * Install all development dependencies
 ```sh
 $ npm install && bower install
 ```
+
 * Then run test
 ```sh
 $ npm test
@@ -32,9 +35,6 @@ Fork this repo and push in your ideas. Do not forget to add a bit of test(s) of 
 - [JSON Schema](http://json-schema.org/)
 - [JSON Schema Core](http://json-schema.org/latest/json-schema-core.html)
 - [JSON Schema Validation](http://json-schema.org/latest/json-schema-validation.html)
-
-## TODO
-- [ ] Add SQL query logging
 
 ## Licence
 
