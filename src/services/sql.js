@@ -43,18 +43,15 @@
 
             //extend select with ability to pass array fields
             sql.cls.Select.prototype.columns = function(fields) {
-                //is multiple field selection
-                if (_.isArray(fields)) {
-                    //iterate over all fields
-                    _.forEach(fields, function(field) {
-                        this.field(field);
-                    }.bind(this));
+                //normalize fields to array
+                if (_.isString(fields)) {
+                    fields = fields.split(' ');
                 }
 
-                //is single field selection
-                else {
-                    this.field(fields);
-                }
+                //iterate over all fields
+                _.forEach(fields, function(field) {
+                    this.field(field);
+                }.bind(this));
 
                 return this;
 

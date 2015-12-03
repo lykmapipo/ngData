@@ -3,7 +3,8 @@
 
     /**
      * @ngdoc module
-     * @name Query
+     * @name ngData.Query
+     * @description query builder
      */
 
     angular
@@ -11,7 +12,7 @@
         .factory('Query', function(SQL, $where) {
 
             /**
-             * @description Query functional constructor
+             * @constructor
              * @param {Object} options 
              */
             function Query(options) {
@@ -60,31 +61,40 @@
 
             /**
              * @description find documents
-             * @param  {Object}   conditions
-             * @param  {Array}   projections [optional fields to return]
-             * @param  {Object}   options     [optional]
-             * @param  {Function} callback
-             * @return {Query}
+             * @param  {Object}   conditions valid mongodb query object
+             * @param  {[Array|String]}   projections optional fields to return
+             * @return {Query} an instance of Query
              * @example
              *     Customer
              *         .find({
              *                 name:'john',
-             *                 age:{$gt:30}
+             *                 age:{
+             *                         $gt:30
+             *                     }
              *                 })
+             *                 .then(function(customers){
+             *                     ...
+             *                 }).catch(function(error){
+             *                     ...
+             *                 });
              *     or
+             *     
              *     Customer
              *         .find({
              *                 name:'john',
-             *                 age:{$gt:30}},
-             *                 [name,accounts]
-             *                 )
+             *                 age:{
+             *                         $gt:30
+             *                     }
+             *                },[name,accounts])
              */
-            Query.prototype.find = function(conditions, projections /*options*/ ) {
+            Query.prototype.find = function(conditions, projections) {
                 //harmonize arguments
                 if (_.isArray(conditions) || _.isString(conditions)) {
                     projections = conditions;
                     conditions = undefined;
-                } else if (_.isPlainObject(conditions)) {
+                }
+
+                if (_.isPlainObject(conditions)) {
                     this.where(conditions);
                 }
 
@@ -101,33 +111,45 @@
 
 
             /**
-             * @description Finds a single document by its _id field.
-             *              findById(id) is equivalent to findOne({ id: id }).
-             * @param  {(Object|String|Number)}   id   value of `id` to query by
+             * @description find a single document by its id field
+             * @param  {String|Number}   id   value of `id` to query by
              * @param  {Object}   projections optional fields to return
-             * @param  {Object}   options     [optional]
-             * @param  {Function} callback
-             * @return {Query}               
+             * @return {Promise}  an instance of promise
+             * @example
+             *     Customer
+             *         .findById(12)
+             *         .then(function(customer){
+             *             ...
+             *         })
+             *         .catch(function(error){
+             *             ...
+             *         });           
              */
-            Query.prototype.findById = function(id, projections, options) {
+            Query.prototype.findById = function(id, projections) {
                 return this.find({
-                    id: id
-                }, projections, options);
+                        id: id
+                    }, projections)
+                    .then(function(instances) {
+                        //return single instance
+                        return _.first(instances);
+                    });
             };
 
+
             /**
-             * @description Issue a mongodb findAndModify remove command by a
-             *               document's _id field. findByIdAndRemove(id, ...) is
-             *               equivalent to findOneAndRemove({ id: id }, ...).
-             * @param  {(Object|String|Number)}   id   value of `id` to query by
-             * @param  {Object}   options
-             * @return {Query}            
+             * @description find and remove a document by its id
+             * @param  {String|Number)}   id   value of `id` to query by
+             * @return {Promise} an instance of promise            
              */
-            Query.prototype.findByIdAndRemove = function( /*id, options*/ ) {
+            Query.prototype.findByIdAndRemove = function(id) {
 
                 if (!this.sql && this.type === 'delete') {
                     this.sql = SQL.delete().from(this.collection.tableName);
                 }
+
+                this.where({
+                    id: id
+                });
 
                 return this;
             };
@@ -142,22 +164,22 @@
              * @param  {Object}   options
              * @return {Query}            
              */
-            Query.prototype.findByIdAndUpdate =
-                function( /*id, update, options*/ ) {
+            Query.prototype.findByIdAndUpdate = function( /*id, update, options*/ ) {
 
-                };
+            };
+
 
             /**
-             * @description Find One document
+             * @description find One document
              * @param  {Object}   conditions
              * @param  {Object}   projections [ optional fields to return ]
              * @param  {Object}   options
              * @return {Query}               
              */
-            Query.prototype.findOne =
-                function( /*conditions, projections, options*/ ) {
+            Query.prototype.findOne = function( /*conditions, projections, options*/ ) {
 
-                };
+            };
+
 
             /**
              * @description Issue a findAndModify remove command
@@ -166,10 +188,10 @@
              * @param  {Function} callback
              * @return {Query}              
              */
-            Query.prototype.findOneAndRemove =
-                function( /*conditions, options*/ ) {
+            Query.prototype.findOneAndRemove = function( /*conditions, options*/ ) {
 
-                };
+            };
+
 
             /**
              * @description Issues a mongodb findAndModify update command.
@@ -178,14 +200,13 @@
              * @param  {Object}   options
              * @return {Query}    
              */
-            Query.prototype.findOneAndUpdate =
-                function( /*conditions, update, options*/ ) {
+            Query.prototype.findOneAndUpdate = function( /*conditions, update, options*/ ) {
 
-                };
+            };
 
 
             /**
-             * @description Specifies which document fields to include or
+             * @description specifies which document fields to include or
              *              exclude (also known as the query "projection")
              * @param  {(Object|String)} arg
              * @return {Query}   
@@ -246,7 +267,7 @@
 
 
             /**
-             * @description Sets the sort order
+             * @description sets the sort order
              * @param  {(Object|String)} arg
              * @return {Query} 
              * @example
@@ -290,7 +311,7 @@
 
 
             /**
-             * @description Specifies a 'greater than' query condition.
+             * @description specifies a 'greater than' query condition.
              * @param  {(String|Object)} path
              * @param  {Number} val
              * @return {Query}  
@@ -333,7 +354,7 @@
 
 
             /**
-             * @description Specifies a 'greater or equal' query condition.
+             * @description specifies a 'greater or equal' query condition.
              * @param  {(String|Object)} path
              * @param  {Number} val
              * @return {Query}   
@@ -375,7 +396,7 @@
 
 
             /**
-             * @description Specifies a 'less than' query condition.
+             * @description specifies a 'less than' query condition.
              * @param  {String} path
              * @param  {Number} val
              * @return {Query}  
@@ -418,7 +439,7 @@
 
 
             /**
-             * @description Specifies a 'less or equal' query condition.
+             * @description specifies a 'less or equal' query condition.
              * @param  {String} path
              * @param  {Number} val
              * @return {Query}  
@@ -460,7 +481,7 @@
 
 
             /**
-             * @description Specifies a 'in' query condition.
+             * @description specifies a 'in' query condition.
              * @param  {String} path
              * @param  {Number} val
              * @return {Query}  
@@ -511,7 +532,7 @@
 
 
             /**
-             * @description Specifies arguments for an $and condition.
+             * @description specifies arguments for an $and condition.
              * @return {Query}       
              */
             Query.prototype.and = function() {
@@ -525,7 +546,7 @@
 
 
             /**
-             * @description Specifies arguments for an $or condition.
+             * @description specifies arguments for an $or condition.
              * @param  {Array} array
              * @return {Query}  
              */
@@ -540,7 +561,7 @@
 
 
             /**
-             * @description Specifies arguments for an $nor condition.
+             * @description specifies arguments for an $nor condition.
              * @param  {Array} array
              * @return {Query} 
              */
@@ -550,7 +571,7 @@
 
 
             /**
-             * @description Specifies the complementary comparison value for
+             * @description specifies the complementary comparison value for
              *               paths specified with where()
              * @param {String} path
              * @param  {Object} val
@@ -589,7 +610,7 @@
 
 
             /**
-             * @description Specifies arguments for not equal query condition
+             * @description specifies arguments for not equal query condition
              * @param  {String} path 
              * @param  {Number} val 
              * @return {Query}  
@@ -666,7 +687,7 @@
 
 
             /**
-             * @description Specifies the maximum number of records the query
+             * @description specifies the maximum number of records the query
              *              will return. can not be used with distinct
              * @param  {Number} val [description]
              * @return {Query}  
@@ -688,7 +709,7 @@
 
 
             /**
-             * @description Specifies an $exists condition
+             * @description specifies an $exists condition
              * @param  {String} path
              * @param  {Number} val
              * @return {Query}      
@@ -700,7 +721,7 @@
             //TODO implement the min,max, avg, sum
 
             /**
-             * @description Specifies the number of documents to skip.
+             * @description specifies the number of documents to skip.
              * @param {Number} val
              * @return {Query} 
              * @example
@@ -757,26 +778,15 @@
 
 
             /**
-             * @description  finalize the squel expression builder conditions
-             *               it is called before the query is converted to 
-             *               string 
-             * 
+             * @description convert current query into its string presentation
+             * @return {String} current query as sql DML 
              */
-            Query.prototype._finalizeWhere = function() {
+            Query.prototype.toString = function() {
+
                 // check the expession condition if is still open
                 if (this.expression) {
                     this.sql.where(this.expression);
                 }
-            };
-
-
-            /**
-             * @description convert current query into its string presentation
-             * @return {String} current query sql 
-             */
-            Query.prototype.toString = function() {
-
-                this._finalizeWhere();
 
                 return this.sql.toString();
             };

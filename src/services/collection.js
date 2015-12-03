@@ -114,7 +114,7 @@
 
 
             /**
-             * @description Removes documents from the collection.
+             * @description removes documents from the collection.
              * @param  {Object}   conditions
              * @return {Query}
              */
@@ -130,6 +130,10 @@
             };
 
 
+            /**
+             * @description 
+             * @return {[type]} [description]
+             */
             Collection.prototype.find = function() {
                 return new Query({
                     collection: this

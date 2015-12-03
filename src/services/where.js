@@ -3,7 +3,7 @@
 
     /**
      * @ngdoc module
-     * @name ngData.ConditionBuilder
+     * @name ngData.$where
      * @description build where conditions from mongodb query object
      * @return {Function} condition builder function that is build the 
      * the sql condition expression and return it
