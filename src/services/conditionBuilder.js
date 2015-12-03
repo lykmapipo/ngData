@@ -13,102 +13,73 @@
         .module('ngData')
         .factory('conditionBuilder', function(SQL) {
 
+            function join(joiner, condition, key, value) {
+                //this refer to expression context
+                /*jshint validthis:true*/
+
+                //harminize condition joiner
+                //default to and
+                joiner = joiner || 'and';
+
+                //obtain condition function
+                var fn = this[joiner];
+
+                if (condition === '$gt') {
+                    fn.call(this, key + ' > ' + value);
+                } else if (condition === '$gte') {
+                    fn.call(this, key + ' >= ' + value);
+                } else if (condition === '$lt') {
+                    fn.call(this, key + ' < ' + value);
+                } else if (condition === '$lte') {
+                    fn.call(this, key + ' <= ' + value);
+                } else if (condition === '$ne') {
+                    fn.call(this, key + ' <> ' + value);
+                } else if (condition === '$eq') {
+                    fn.call(this, key + ' = ' + value);
+                } else if (condition === '$in') {
+
+                    if (!_.isArray(value)) {
+                        value = [value];
+                    }
+
+                    //TODO what if IN operator used in other type than string
+                    value = _.map(value, function(val) {
+                        return ['"', val, '"'].join('');
+                    }).join(',');
+
+                    value = ['(', value, ')'].join('');
+
+                    fn.call(this, key + ' IN ' + value);
+                }
+            }
+
+
             /**
-             * build sql condition when given condition object and joiner
-             * @param  {Object} conditionObject 
-             * @param  {String} joiner          this is the join string that 
-             *                                  will be used to join conditions
+             * @description build sql condition from given condition and joiner
+             * @param  {Object} conditions a valid condition object
+             * @param  {String} joiner valid query join string
+             * @return {Object} an sql expression
              */
-            function _buildSqlCondition(expression, conditionObject, joiner) {
+            function _buildSqlCondition(expression, conditions, joiner) {
 
-                if (conditionObject && _.isPlainObject(conditionObject)) {
+                if (conditions && _.isPlainObject(conditions)) {
 
-                    _.forEach(conditionObject, function(value, key) {
-                        // check for primitive value and if it is an object 
-                        // then we look inside for key value
+                    _.forEach(conditions, function(value, key) {
+                        // if it is a plain object 
+                        // look inside for key value
                         if (_.isPlainObject(value)) {
                             _.forEach(value, function(val, condition) {
-                                // initialize the values for IN condition
-                                var values = '( ';
-                                // initialize the variable for for loop
-                                var i;
-
-                                if (joiner === 'or') {
-                                    if (condition === '$gt') {
-                                        expression.or(key + ' > ' + val);
-                                    } else if (condition === '$gte') {
-                                        expression.or(key + ' >= ' + val);
-                                    } else if (condition === '$lt') {
-                                        expression.or(key + ' < ' + val);
-                                    } else if (condition === '$lte') {
-                                        expression.or(key + ' <= ' + val);
-                                    } else if (condition === '$ne') {
-                                        expression.or(key + ' <> ' + val);
-                                    } else if (condition === '$eq') {
-                                        expression.or(key + ' = ' + val);
-                                    } else if (condition === '$in') {
-
-                                        if (_.isArray(val)) {
-
-                                            for (i = 0; i < val.length; i++) {
-
-                                                if (i < val.length - 1) {
-                                                    values +=
-                                                        ('\"' + val[i] + '\"' + ',');
-                                                } else {
-                                                    values +=
-                                                        ('\"' + val[i] + '\"' + ' )');
-                                                }
-                                            }
-                                            expression.
-                                            or(key + ' IN ' + values);
-                                        }
-                                    }
-
-                                    // conditions for AND joiner
-                                } else {
-                                    if (condition === '$gt') {
-                                        expression.and(key + ' > ' + val);
-                                    } else if (condition === '$gte') {
-                                        expression.and(key + ' >= ' + val);
-                                    } else if (condition === '$lt') {
-                                        expression.and(key + ' < ' + val);
-                                    } else if (condition === '$lte') {
-                                        expression.and(key + ' <= ' + val);
-                                    } else if (condition === '$ne') {
-                                        expression.and(key + ' <> ' + val);
-                                    } else if (condition === '$eq') {
-                                        expression.and(key + ' = ' + val);
-                                    } else if (condition === '$in') {
-
-                                        if (_.isArray(val)) {
-
-                                            for (i = 0; i < val.length; i++) {
-
-                                                if (i < val.length - 1) {
-                                                    values +=
-                                                        ('\"' + val[i] + '\"' + ',');
-                                                } else {
-                                                    values +=
-                                                        ('\"' + val[i] + '\"' + ' )');
-                                                }
-                                            }
-                                            expression.
-                                            and(key + ' IN ' + values);
-                                        }
-                                    }
-
-                                }
-
+                                join.call(expression, joiner, condition, key, val);
                             });
-                            // for primitive values to object
-                        } else {
+                        }
+
+                        //else handle primitive values to object
+                        else {
                             if (joiner === 'or') {
                                 expression.or(key + ' = ' + value);
                             } else {
                                 expression.and(key + ' = ' + value);
                             }
-
                         }
 
                     });
@@ -118,13 +89,13 @@
 
 
             /**
-             * join the conditions in the given condition object based on the 
-             * specified joiners in the condition object
+             * @description build SQL query from mongodb query object
              * @param  {Object} conditions
              */
-            function _join(expression, conditions) {
+            function mongoQueryToSQL(expression, conditions) {
                 // default expression joiner
                 var joiner = 'and';
+
                 // enclosing parenthes in order to obey algebra's laws
                 var orEnclose = false;
                 var andEnclose = false;
@@ -142,6 +113,7 @@
                             if (_.has(conditions, '$or') && _.keysIn(conditions).length > 1) {
                                 orEnclose = true;
                             }
+
                             /*jshint camelcase: false*/
                             if (orEnclose) {
                                 expression.or_begin();
@@ -150,6 +122,7 @@
                             if (andEnclose) {
                                 expression.and_begin();
                             }
+
                             /* jshint camelcase: true*/
                             _.forEach(value, function(val) {
                                 //check if the inner objects are still joiners
@@ -190,6 +163,7 @@
                                     _buildSqlCondition(expression, val);
                                 }
                             });
+
                             // close the parenthes for the conditons
                             if (orEnclose || andEnclose) {
                                 expression.end();
@@ -202,7 +176,9 @@
                             _buildSqlCondition(expression, conditionObject);
                         }
                     });
-                } else {
+                }
+                //continue with simple conditions
+                else {
                     _buildSqlCondition(expression, conditions);
                 }
             }
@@ -221,11 +197,7 @@
 
                 expression = expression || SQL.expr();
 
-                // _outerJoin(conditions);
-
-                // _innerJoin(conditions);
-
-                _join(expression, conditions);
+                mongoQueryToSQL(expression, conditions);
 
                 return expression;
             }

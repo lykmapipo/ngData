@@ -53,7 +53,7 @@ describe('ConditionBuilder', function() {
             };
 
             expect(conditionBuilder(condition).toString()).to
-                .be.equal('age > 20 AND name = john AND height >= 206 AND weight < 60 AND lives IN ( "arusha","mbeya","iringa" )');
+                .be.equal('age > 20 AND name = john AND height >= 206 AND weight < 60 AND lives IN ("arusha","mbeya","iringa")');
         }));
 
     it('should be able to build expression given $or as a condition joiner', inject(function(conditionBuilder) {
@@ -79,7 +79,7 @@ describe('ConditionBuilder', function() {
                 }
             }]
         };
-        expect(conditionBuilder(condition).toString()).to.equal('age > 20 OR name = john OR height >= 206 OR weight < 60 OR lives IN ( "arusha","mbeya","iringa" )');
+        expect(conditionBuilder(condition).toString()).to.equal('age > 20 OR name = john OR height >= 206 OR weight < 60 OR lives IN ("arusha","mbeya","iringa")');
     }));
 
     it('should be able to build expression when $and is given as condition joiner', inject(function(conditionBuilder) {
@@ -105,7 +105,7 @@ describe('ConditionBuilder', function() {
             }]
         };
 
-        expect(conditionBuilder(condition).toString()).to.equal('age > 20 AND name = john AND height >= 206 AND weight < 60 AND lives IN ( "arusha","mbeya","iringa" )');
+        expect(conditionBuilder(condition).toString()).to.equal('age > 20 AND name = john AND height >= 206 AND weight < 60 AND lives IN ("arusha","mbeya","iringa")');
     }));
 
     it('should be able to build expression joined when given $or joiner and  $eq conditions outside the $or joiner', inject(function(conditionBuilder) {
