@@ -21,6 +21,7 @@
                 this._init();
             }
 
+            
             /**
              * @description initial model
              * @private
@@ -47,6 +48,7 @@
 
             };
 
+            
             /**
              * @description remove the instance
              * @return {Promise}
@@ -65,6 +67,7 @@
                     return _.pick(this, _.keys(this.properties));
                 };
 
+            
             /**
              * @description return json representation of a model instance
              * @return {Object}

@@ -14,6 +14,7 @@
             //by cloning/copying a global sql
             var sql = angular.copy(squel);
 
+            
             //extend insert queries with `values(Array|Object)` builder
             sql.cls.Insert.prototype.values = function(values) {
 
@@ -27,6 +28,7 @@
                 return this;
             };
 
+            
             //extend update set to support object values
             sql.cls.Update.prototype.sets = function(field, value) {
 
@@ -39,6 +41,7 @@
                 return this;
             };
 
+            
             //extend select with ability to pass array fields
             sql.cls.Select.prototype.columns = function(fields) {
                 //is multiple field selection
@@ -58,6 +61,7 @@
 
             };
 
+            
             //extending local sql with then executor
             sql.cls.QueryBuilder.prototype.then = function( /*resolve, reject*/ ) {
 
@@ -69,6 +73,7 @@
                 return promise;
             };
 
+            
             //extending local sql with catch executor
             sql.cls.QueryBuilder.prototype.catch = function( /*reject*/ ) {
                 var promise = this.then();
@@ -76,10 +81,11 @@
                 return promise;
             };
 
+            
             /**
              * @description process `SQLResultSetRowList` to obtain data
              * @param  {SQLResultSetRowList} result [description]
-             * @return {Object|Array}        [description]
+             * @return {Object|Array}
              */
             sql.fetch = function(result) {
                 var output = null;
@@ -98,7 +104,7 @@
             /**
              * @description process `SQLResultSetRowList` to obtain data
              * @param  {SQLResultSetRowList} result [description]
-             * @return {Object|Array}        [description]
+             * @return {Object|Array}
              */
             sql.fetchAll = function(result) {
                 var output = [];

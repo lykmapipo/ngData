@@ -9,33 +9,33 @@
      *
      * @example <caption>registering a new model</caption>
      * angular
-     * 	.module('<moduleName>')
-     * 	.factory('Customer', function($ngData){
-     * 		//create $ngData model
-     * 		var Customer = $ngData.model('User',{
-     * 				tableName:'customers',
-     * 				timestamp:true,
-     * 				properties:{
-     * 					name:{
-     * 						type:String,
-     * 						required:true
-     * 					},
-     * 					code:String,
-     * 					email:{
-     * 						type:String,
-     * 						email:true,
-     * 						required:true
-     * 					},
-     * 					joinedAt:{
-     * 						type:Date,
-     * 						defaultsTo: new Date()
-     * 					}
-     * 				}
-     * 			});
+     *  .module('<moduleName>')
+     *  .factory('Customer', function($ngData){
+     *      //create $ngData model
+     *      var Customer = $ngData.model('User',{
+     *              tableName:'customers',
+     *              timestamp:true,
+     *              properties:{
+     *                  name:{
+     *                      type:String,
+     *                      required:true
+     *                  },
+     *                  code:String,
+     *                  email:{
+     *                      type:String,
+     *                      email:true,
+     *                      required:true
+     *                  },
+     *                  joinedAt:{
+     *                      type:Date,
+     *                      defaultsTo: new Date()
+     *                  }
+     *              }
+     *          });
      *
-     * 		//return created model
-     * 		return Customer;
-     * 	});
+     *      //return created model
+     *      return Customer;
+     *  });
      *
      * @public
      */
@@ -83,7 +83,7 @@
                 //2. apply migration
                 var migrations = _.map(_.values($ngData.models), function(collection) {
                     return Schema
-                        .alter(collection.tableName, collection.properties);
+                        .alter(collection.tableName, collection.definition.properties);
                 });
 
                 return $q.all(migrations);

@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" ng-app="ngBooks">
 
 <head>
     <meta charset="utf-8">
@@ -16,10 +16,13 @@
     <!-- endbuild -->
 </head>
 
-<body ng-app="ngBooks" ng-controller="BookCtrl">
+<body ng-controller="BookCtrl">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
+    <div ng-repeat="book in books">
+        <div>{{book.author}}</div>
+    </div>
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/angular/angular.js"></script>

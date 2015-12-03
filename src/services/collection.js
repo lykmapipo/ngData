@@ -129,6 +129,13 @@
 
             };
 
+
+            Collection.prototype.find = function() {
+                return new Query({
+                    collection: this
+                }).find();
+            };
+
             return Collection;
         });
 }());
