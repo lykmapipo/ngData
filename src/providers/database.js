@@ -21,7 +21,6 @@
             //database connection reference
             self.connection = null;
 
-
             //provider implementation
             self.$get = function($q, $window) {
                 var DB = {};
