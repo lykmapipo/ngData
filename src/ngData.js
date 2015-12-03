@@ -4,8 +4,8 @@
     /**
      * @ngdoc module
      * @name ngData
-     * @description Simple WEBSQL and cordova SQLITE ORM 
-     *              for ionic and angular applications
+     * @description Simple and minimal WebSQL and cordova SQLite ORM 
+     *              for ionic and angular
      */
     angular
         .module('ngData', [
@@ -13,5 +13,5 @@
             'bt.jsonValidator',
             'platanus.inflector'
         ]);
-
+        
 }());

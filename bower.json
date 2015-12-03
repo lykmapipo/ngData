@@ -1,7 +1,7 @@
 {
     "name": "ngdata",
     "version": "0.1.0",
-    "description": "Simple WEBSQL and cordova SQLITE ORM for ionic and angular applications",
+    "description": "Simple and minimal WebSQL and cordova SQLite ORM for ionic and angular",
     "homepage": "https://github.com/lykmapipo/ngData",
     "main": [
         "dist/ngData.js"
@@ -11,6 +11,7 @@
     ],
     "keywords": [
         "angular",
+        "ionic",
         "orm",
         "model",
         "collection",
@@ -38,7 +39,6 @@
         "squel": "~4.1.1"
     },
     "devDependencies": {
-        "angular": "~1.4.5",
         "angular-mocks": "~1.4.5",
         "faker": "Faker#~3.0.1"
     },
