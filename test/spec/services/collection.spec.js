@@ -17,6 +17,15 @@ describe('Collection', function() {
                 }
             }
         });
+
+        // $ngData.initialize().then(function(response) {
+        //     console.log('response:' + response);
+        // }).catch(function(error) {
+        //     console.log('error:' + error);
+        // });
+
+        // //wait for propagation
+        // $rootScope.$apply();
     }));
 
     describe('Collection#new', function() {
@@ -49,27 +58,38 @@ describe('Collection', function() {
     });
 
     describe('Collection#create', function() {
-        it('should be an instance of query', inject(function(Query) {
-            var query = User.create();
-            expect(query).to.be.an.instanceof(Query);
+        it('should be able to create documents', inject(function() {
+            expect(User.create).to.be.a('function');
+        }));
+
+        it('should be able to create a new record and save it into the database', inject(function($rootScope) {
+            var user = {
+                name: faker.name.firstName(),
+                code: Math.ceil(Math.random() * 999)
+            };
+
+            User.create(user).then(function(response) {
+                console.log('response:' + response);
+            }).catch(function(error) {
+                console.log('error:' + error);
+            });
+
+            //wait for propagation
+            $rootScope.$apply();
         }));
     });
 
     describe('Collection#remove', function() {
-        it('should be an instance of query', inject(function(Query) {
-            var query = User.remove();
-            expect(query).to.be.an.instanceof(Query);
+        it('should be able to remove documents', inject(function() {
+            expect(User.remove).to.be.a('function');
         }));
     });
 
     describe('Collection#update', function() {
-        it('should be an instance of query', inject(function(Query) {
-            var query = User.update();
-            expect(query).to.be.an.instanceof(Query);
+        it('should be able to update documents', inject(function() {
+            expect(User.update).to.be.a('function');
         }));
     });
-
-    it('should be able to create a new record and save it into the database');
 
     it('should be able to update the record in the database without returning them');
 

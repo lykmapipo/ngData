@@ -111,6 +111,25 @@
 
 
             /**
+             * @description declare and/or execute this query as a remove() operation.
+             * @param  {[type]} conditions valid mongodb query condition
+             * @return {Query} an instance of Query
+             */
+            Query.prototype.remove = function(conditions) {
+
+                if (!this.sql && this.type === 'delete') {
+                    this.sql = SQL.delete().from(this.collection.tableName);
+                }
+
+                if (conditions) {
+                    this.where(conditions);
+                }
+
+                return this;
+            };
+
+
+            /**
              * @description find a single document by its id field
              * @param  {String|Number}   id   value of `id` to query by
              * @param  {Object}   projections optional fields to return
@@ -748,7 +767,7 @@
              * @return {promise}
              */
             Query.prototype.then = function( /*resolve, reject*/ ) {
-                this._finalizeWhere();
+                this.finalize();
 
                 var promise = this.sql.then();
 
@@ -768,12 +787,23 @@
              * @return {promise}
              */
             Query.prototype.catch = function( /*reject*/ ) {
-                this._finalizeWhere();
+                this.finalize();
 
                 var promise = this.then();
                 promise = promise.catch.apply(promise, arguments);
 
                 return promise;
+            };
+
+
+            Query.prototype.finalize = function() {
+
+                // check the expession condition if is still open
+                if (this.expression) {
+                    this.sql.where(this.expression);
+                }
+
+                return this;
             };
 
 
@@ -783,10 +813,7 @@
              */
             Query.prototype.toString = function() {
 
-                // check the expession condition if is still open
-                if (this.expression) {
-                    this.sql.where(this.expression);
-                }
+                this.finalize();
 
                 return this.sql.toString();
             };

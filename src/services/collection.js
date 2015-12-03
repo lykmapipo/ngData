@@ -6,7 +6,7 @@
      */
     angular
         .module('ngData')
-        .factory('Collection', function(Model, inflector, Query) {
+        .factory('Collection', function($q, inflector, Model, Query) {
 
             /**
              * @description Collection
@@ -95,7 +95,7 @@
              * @param  {Object}   options
              * @param  {Function} callback
              */
-            Collection.prototype.update = function(conditions, doc /*, options*/ ) {
+            Collection.prototype.update = function(conditions, doc) {
 
                 var query = new Query({
                     collection: this,
@@ -115,29 +115,58 @@
 
             /**
              * @description removes documents from the collection.
-             * @param  {Object}   conditions
-             * @return {Query}
+             * @param  {[Object]}   conditions
+             * @return {Promise} which resolve with collection of models instance
+             *                         removed
              */
-            Collection.prototype.remove = function( /*conditions*/ ) {
+            Collection.prototype.remove = function(conditions) {
 
-                var query = new Query({
+                var find = this.find(conditions);
+
+                var remove = new Query({
                     collection: this,
                     type: 'delete'
                 });
 
-                return query;
+                if (conditions && _.isPlainObject(conditions)) {
+                    remove = remove.where(conditions);
+                }
+
+                //find documents and then delete
+                return find.then(function(instances) {
+                    return remove.then(function( /*response*/ ) {
+                        return instances;
+                    });
+                });
 
             };
 
 
             /**
-             * @description 
-             * @return {[type]} [description]
+             * @description find documents
+             * @param  {Object}   conditions valid mongodb query object
+             * @param  {[Array|String]}   projections optional fields to return
+             * @return {Promise} which resolve with collection of models instance
              */
-            Collection.prototype.find = function() {
-                return new Query({
-                    collection: this
-                }).find();
+            Collection.prototype.find = function(conditions, projections) {
+
+                var query = new Query({
+                        collection: this
+                    })
+                    .find(conditions, projections)
+                    .then(function(instances) {
+
+                        //map instances to model
+                        if (instances) {
+                            instances = _.map(instances, function(instance) {
+                                return new Model(instance);
+                            });
+                        }
+
+                        return instances;
+                    });
+
+                return query;
             };
 
             return Collection;

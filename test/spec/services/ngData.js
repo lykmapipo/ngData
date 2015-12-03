@@ -1,6 +1,9 @@
 'use strict';
 
 describe('$ngData', function() {
+    this.timeout = function() {
+        return 8000;
+    };
 
     // load the ngData module
     beforeEach(module('ngData'));
@@ -51,6 +54,36 @@ describe('$ngData', function() {
 
     });
 
-    it('should be able to initialize database schema');
+    it('should be able to initialize database schema', function(done) {
+        inject(function($ngData, $rootScope) {
+            $ngData.model('Customer', {
+                properties: {
+                    name: {
+                        type: String,
+                        defaultsTo: faker.name.findName()
+                    },
+                    code: {
+                        type: String
+                    }
+                }
+            });
+
+            $ngData.initialize().then(function(result) {
+
+                    expect(result).to.exist;
+                    expect(result[0]).to.be.equal('customers migrated successfully');
+
+                    done(null, result);
+                })
+                .catch(function(error) {
+                    done(error);
+                });
+
+            // wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+        });
+    });
 
 });
