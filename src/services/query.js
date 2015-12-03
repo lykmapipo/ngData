@@ -12,9 +12,11 @@
         .module('ngData')
         .factory('Query', function($database, conditionBuilder) {
             var SQL = $database.sql;
+
             /**
-             * @description Query functional constructor
-             * @param {Object} options 
+             * @description query constructor used for building queries
+             * @param {Object} options
+             * @private
              */
             function Query(options) {
                 // harmonize options
@@ -77,7 +79,8 @@
             Query.prototype.find = function(conditions, projections) {
                 //harmonize arguments
                 if (_.isArray(conditions) || _.isString(conditions)) {
-                    projections = conditions;
+                    projections = _.isArray(conditions) ? conditions : conditions.split(' ');
+                    console.log(projections);
                     conditions = undefined;
                 } else if (_.isPlainObject(conditions)) {
                     this.expression = conditionBuilder(conditions);
@@ -187,9 +190,9 @@
              * @example
              *     Customer
              *         .select()
-             * 
-             *
+             *         
              * or 
+             * 
              *     Customer
              *         .select(['name','age'])
              */

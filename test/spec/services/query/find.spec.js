@@ -42,7 +42,7 @@ describe('Query#find', function() {
 
     }));
 
-    it('should return a select query with given single projections', inject(function(Query) {
+    it('should be able to build select query with given single projections', inject(function(Query) {
         var query = new Query({
             collection: Customer
         }).find('name');
@@ -50,13 +50,19 @@ describe('Query#find', function() {
         expect(query.toString()).to.equal('SELECT name FROM customers');
     }));
 
-    it('should return a select query with given multiple projections', inject(function(Query) {
+    it('should be able to build select query with given multiple projections', inject(function(Query) {
         var query = new Query({
             collection: Customer
         }).find(['name', 'age']);
 
-
         expect(query.toString()).to.equal('SELECT name, age FROM customers');
+
+        query = new Query({
+            collection: Customer
+        }).find('name code age');
+
+        expect(query.toString()).to.equal('SELECT name, code, age FROM customers');
+
     }));
 
     it('should be able to find records based on given conditions', inject(function(Query) {
