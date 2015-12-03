@@ -13,7 +13,7 @@
         .module('ngData')
         .factory('$where', function(SQL) {
 
-            function join(joiner, condition, key, value) {
+            function buildSQLCondition(joiner, condition, key, value) {
                 //this refer to expression context
                 /*jshint validthis:true*/
 
@@ -60,7 +60,7 @@
              * @param  {String} joiner valid query join string
              * @return {Object} an sql expression
              */
-            function _buildSqlCondition(expression, conditions, joiner) {
+            function _where(expression, conditions, joiner) {
 
                 if (conditions && _.isPlainObject(conditions)) {
 
@@ -69,7 +69,7 @@
                         // look inside for key value
                         if (_.isPlainObject(value)) {
                             _.forEach(value, function(val, condition) {
-                                join.call(expression, joiner, condition, key, val);
+                                buildSQLCondition.call(expression, joiner, condition, key, val);
                             });
                         }
 
@@ -92,7 +92,7 @@
              * @description convert SQL query from mongodb query object
              * @param  {Object} conditions
              */
-            function mongoQueryToSQL(expression, conditions) {
+            function $where(expression, conditions) {
                 // default expression joiner
                 var joiner = 'and';
 
@@ -134,7 +134,7 @@
                                             expression.or_begin();
                                             /* jshint camelcase: true*/
                                             _.forEach(v, function(obj) {
-                                                _buildSqlCondition(expression, obj);
+                                                _where(expression, obj);
                                             });
                                             expression.end();
 
@@ -144,23 +144,23 @@
                                             expression.and_begin();
                                             /* jshint camelcase: true*/
                                             _.forEach(v, function(obj) {
-                                                _buildSqlCondition(expression, obj, joiner);
+                                                _where(expression, obj, joiner);
                                             });
                                             expression.end();
                                         } else {
                                             joiner = 'and';
                                             var conditionObject = {};
                                             conditionObject[k] = v;
-                                            _buildSqlCondition(expression, conditionObject, joiner);
+                                            _where(expression, conditionObject, joiner);
                                         }
                                     });
 
 
                                 } else if (key === '$or') {
                                     joiner = 'or';
-                                    _buildSqlCondition(expression, val, joiner);
+                                    _where(expression, val, joiner);
                                 } else {
-                                    _buildSqlCondition(expression, val);
+                                    _where(expression, val);
                                 }
                             });
 
@@ -173,13 +173,13 @@
                             //harmonize primitive types to object
                             var conditionObject = {};
                             conditionObject[key] = value;
-                            _buildSqlCondition(expression, conditionObject);
+                            _where(expression, conditionObject);
                         }
                     });
                 }
                 //continue with simple conditions
                 else {
-                    _buildSqlCondition(expression, conditions);
+                    _where(expression, conditions);
                 }
             }
 
@@ -194,11 +194,10 @@
 
                 expression = expression || SQL.expr();
 
-                mongoQueryToSQL(expression, conditions);
+                $where(expression, conditions);
 
                 return expression;
             }
-
 
             return where;
         });
