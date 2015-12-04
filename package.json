@@ -28,14 +28,15 @@
         "jshint-stylish": "^1.0.0",
         "karma": "^0.12.31",
         "karma-chai": "^0.1.0",
-        "karma-chrome-launcher": "^0.2.0",
+        "karma-chrome-launcher": "^0.2.2",
         "karma-mocha": "^0.1.10",
         "karma-mocha-reporter": "^0.3.2",
-        "karma-phantomjs-launcher": "^0.1.4",
-        "karma-phantomjs-shim": "^1.1.1",
-        "load-grunt-tasks": "^3.1.0",
-        "mocha": "^2.1.0",
-        "time-grunt": "^1.0.0"
+        "karma-phantomjs-launcher": "^0.2.1",
+        "karma-phantomjs-shim": "^1.1.2",
+        "load-grunt-tasks": "^3.3.0",
+        "mocha": "^2.3.4",
+        "phantomjs": "^1.9.19",
+        "time-grunt": "^1.2.2"
     },
     "scripts": {
         "test": "grunt test"

@@ -86,13 +86,15 @@
                     //ensure database connection exists
                     DB.connect();
 
+                    bindings = bindings || [];
+
                     var q = $q.defer();
 
                     self.connection.transaction(function(tx) {
-                        tx.executeSql(query, bindings, function(tx, result) {
+                        tx.executeSql(query, bindings, function(_tx, result) {
                                 q.resolve(result);
                             },
-                            function(transaction, error) {
+                            function(__tx, error) {
                                 q.reject(error);
                             });
                     });

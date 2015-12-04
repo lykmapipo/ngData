@@ -118,12 +118,10 @@
                     type: 'update'
                 });
 
-                //set updated values
-                query.sql.sets(doc);
+                //set update conditions and fields
+                query = query.update(conditions, doc);
 
-
-                //TODO build condition
-                //TODO return update response after execution
+                //TODO return updated instances after execution
 
                 return query;
             };
