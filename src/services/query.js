@@ -168,7 +168,7 @@
 
                 //set values
                 if (doc && _.isPlainObject(doc)) {
-                    this.sql.values(doc);
+                    this.sql.sets(doc);
                 }
 
                 return this;

@@ -6,13 +6,13 @@ describe('Collection#find', function() {
     };
 
     //fixtures
-    var customers = [{
-        name: faker.name.firstName(),
-        code: Math.ceil(Math.random() * 999)
-    }, {
-        name: faker.name.firstName(),
-        code: Math.ceil(Math.random() * 999)
-    }];
+    // var customers = [{
+    //     name: faker.name.firstName(),
+    //     code: Math.ceil(Math.random() * 999)
+    // }, {
+    //     name: faker.name.firstName(),
+    //     code: Math.ceil(Math.random() * 999)
+    // }];
 
     //customer model
     var Customer;
@@ -48,46 +48,47 @@ describe('Collection#find', function() {
         });
     });
 
-    beforeEach(function(done) {
+    // beforeEach(function(done) {
 
-        inject(function($rootScope) {
-            Customer.remove().then(function(response) {
-                done(null, response);
-            }).catch(function(error) {
-                done(error);
-            });
+    //     inject(function($rootScope) {
+    //         Customer.remove().then(function(response) {
+    //             done(null, response);
+    //         }).catch(function(error) {
+    //             done(error);
+    //         });
 
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-            }, 50);
+    //         //wait for propagation
+    //         setTimeout(function() {
+    //             $rootScope.$apply();
+    //         }, 50);
 
-        });
+    //     });
 
-    });
+    // });
 
 
-    beforeEach(function(done) {
+    // beforeEach(function(done) {
 
-        inject(function($rootScope) {
+    //     inject(function($rootScope) {
 
-            Customer
-                .create(customers[1])
-                .then(function(response) {
-                    done(null, response);
-                })
-                .catch(function(error) {
-                    done(error);
-                });
+    //         Customer
+    //             .create(customers[1])
+    //             .then(function(response) {
+    //                 done(null, response);
+    //             })
+    //             .catch(function(error) {
+    //                 console.log(error);
+    //                 done(error);
+    //             });
 
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-            }, 50);
+    //         //wait for propagation
+    //         setTimeout(function() {
+    //             $rootScope.$apply();
+    //         }, 50);
 
-        });
+    //     });
 
-    });
+    // });
 
 
     it('should be able to find documents', inject(function() {
@@ -100,8 +101,6 @@ describe('Collection#find', function() {
             Customer
                 .find()
                 .then(function(_customers_) {
-
-                    console.log(_customers_[0]);
 
                     expect(_customers_).to.have.length.above(0);
                     expect(_customers_[0].id).to.exist;

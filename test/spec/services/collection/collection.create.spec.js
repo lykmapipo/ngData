@@ -48,23 +48,23 @@ describe('Collection#create', function() {
         });
     });
 
-    beforeEach(function(done) {
+    // beforeEach(function(done) {
 
-        inject(function($rootScope) {
-            Customer.remove().then(function(response) {
-                done(null, response);
-            }).catch(function(error) {
-                done(error);
-            });
+    //     inject(function($rootScope) {
+    //         Customer.remove().then(function(response) {
+    //             done(null, response);
+    //         }).catch(function(error) {
+    //             done(error);
+    //         });
 
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-            }, 50);
+    //         //wait for propagation
+    //         setTimeout(function() {
+    //             $rootScope.$apply();
+    //         }, 50);
 
-        });
+    //     });
 
-    });
+    // });
 
     it('should be able to create documents', inject(function() {
         expect(Customer.create).to.be.a('function');

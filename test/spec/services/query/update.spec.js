@@ -26,7 +26,8 @@ describe('Query#update', function() {
 
     it('should be able to create an update query', inject(function(Query) {
         var query = new Query({
-            collection: Customer
+            collection: Customer,
+            type: 'update'
         });
 
         query = query.update({
@@ -35,7 +36,8 @@ describe('Query#update', function() {
             code: '7464'
         });
 
-        console.log(query.toString());
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("UPDATE customers SET code = '7464' WHERE (id = 1)");
     }));
 
 

@@ -38,23 +38,23 @@ describe('Collection#remove', function() {
         });
     });
 
-    beforeEach(function(done) {
+    // beforeEach(function(done) {
 
-        inject(function($rootScope) {
-            Customer.remove().then(function(response) {
-                done(null, response);
-            }).catch(function(error) {
-                done(error);
-            });
+    //     inject(function($rootScope) {
+    //         Customer.remove().then(function(response) {
+    //             done(null, response);
+    //         }).catch(function(error) {
+    //             done(error);
+    //         });
 
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-            }, 50);
+    //         //wait for propagation
+    //         setTimeout(function() {
+    //             $rootScope.$apply();
+    //         }, 50);
 
-        });
+    //     });
 
-    });
+    // });
 
     it('should be able to remove documents', inject(function() {
         expect(Customer.remove).to.be.a('function');

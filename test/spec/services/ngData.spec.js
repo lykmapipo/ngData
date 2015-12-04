@@ -48,7 +48,7 @@ describe('$ngData', function() {
             });
 
             expect(Customer.tableName).to.exist;
-            expect(Customer.tableName).to.be.equal('users');
+            expect(Customer.tableName).to.be.equal('customers');
 
         }));
 

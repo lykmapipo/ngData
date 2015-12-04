@@ -211,7 +211,7 @@
 
                 //Build query
                 var query =
-                    'DROP TABLE IF NOT EXISTS ' + table;
+                    'DROP TABLE IF EXISTS ' + table;
 
                 // run the query
                 return $database.query(query);
