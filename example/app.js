@@ -22,7 +22,8 @@
                     author: Object,
                     isbn: {
                         type: String,
-                        required: true
+                        required: true,
+                        unique: true
                     }
                 }
             });

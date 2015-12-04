@@ -160,46 +160,25 @@
              */
             Collection.prototype.find = function(conditions, projections) {
 
-                var collection = this;
-
                 var query = new Query({
-                        collection: this,
-                        type: 'select'
-                    })
-                    .find(conditions, projections)
-                    .then(function(instances) {
-
-                        //map instances to model
-                        if (instances) {
-                            instances = _.map(instances, function(instance) {
-                                return new Model(collection, instance);
-                            });
-                        }
-
-                        return instances;
-                    });
+                    collection: this,
+                    type: 'select'
+                }).find(conditions, projections);
 
                 return query;
             };
 
 
             Collection.prototype.findById = function(id, projections) {
-                var collection = this;
 
                 var query = new Query({
-                        collection: this,
-                        type: 'select'
-                    })
-                    .findById(id, projections)
-                    .then(function(instance) {
+                    collection: this,
+                    type: 'select'
+                });
 
-                        //map instance to model
-                        if (instance) {
-                            instance = new Model(collection, instance);
-                        }
-
-                        return instance;
-                    });
+                query = query.findOne({
+                    id: id
+                }, projections);
 
                 return query;
             };

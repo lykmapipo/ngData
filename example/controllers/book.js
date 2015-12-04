@@ -29,6 +29,14 @@
                 return book.delete();
             };
 
+            $scope.create({
+                name: 'Happy Angular',
+                author: 'Angular Developers',
+                isbn: 'ANG-135'
+            }).then(function(book) {
+                console.log(book);
+            });
+
             $scope.index();
 
         });

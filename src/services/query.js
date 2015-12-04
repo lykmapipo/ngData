@@ -9,7 +9,7 @@
 
     angular
         .module('ngData')
-        .factory('Query', function(SQL, $where) {
+        .factory('Query', function(SQL, $where, Model) {
 
             /**
              * @constructor
@@ -39,6 +39,8 @@
 
             //referencing sql where clause
             Query.prototype.expression;
+
+            Query.prototype.single = false;
 
             Query.prototype._init = function() {
                 //instantiate SQL
@@ -175,31 +177,6 @@
             };
 
 
-            /**
-             * @description find a single document by its id field
-             * @param  {String|Number}   id   value of `id` to query by
-             * @param  {Object}   projections optional fields to return
-             * @return {Promise}  an instance of promise
-             * @example
-             *     Customer
-             *         .findById(12)
-             *         .then(function(customer){
-             *             ...
-             *         })
-             *         .catch(function(error){
-             *             ...
-             *         });           
-             */
-            Query.prototype.findById = function(id, projections) {
-                return this.find({
-                        id: id
-                    }, projections)
-                    .then(function(instances) {
-                        //return single instance
-                        return _.first(instances);
-                    });
-            };
-
 
             /**
              * @description find and remove a document by its id
@@ -235,14 +212,25 @@
 
 
             /**
-             * @description find One document
-             * @param  {Object}   conditions
-             * @param  {Object}   projections [ optional fields to return ]
-             * @param  {Object}   options
-             * @return {Query}               
+             * @description find a single document using given conditions
+             * @param  {Object}   conditions   valid mongodb query object
+             * @param  {Object}   projections optional fields to return
+             * @return {Promise}  an instance of promise
+             * @example
+             *     Customer
+             *         .findOne(<conditions>,<projections>)
+             *         .then(function(customer){
+             *             ...
+             *         })
+             *         .catch(function(error){
+             *             ...
+             *         });           
              */
-            Query.prototype.findOne = function( /*conditions, projections, options*/ ) {
+            Query.prototype.findOne = function(conditions, projections) {
+                //set result size required
+                this.single = true;
 
+                return this.find(conditions, projections).limit(1).offset(0);
             };
 
 
@@ -813,17 +801,40 @@
              * @return {promise}
              */
             Query.prototype.then = function( /*resolve, reject*/ ) {
+                //finalize query
                 this.finalize();
 
                 var type = this.type;
+                var single = this.single;
+                var collection = this.collection;
 
                 var promise = this.sql.then();
 
                 //TODO check query type
                 //select,create,delete,upate
                 promise = promise.then(function(result) {
+                    //handle select query
                     if (type === 'select') {
                         result = SQL.fetchAll(result);
+
+                        result = result || [];
+
+                        if (result) {
+
+                            //map results to model
+                            result = _.map(result, function(instance) {
+                                return new Model(collection, instance);
+                            });
+
+                            //compact result
+                            result = _.compact(result);
+
+                            if (single) {
+                                result = _.first(result);
+                            }
+
+                        }
+
                     }
                     if (type === 'insert') {
                         result = result.insertId;

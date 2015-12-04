@@ -1,19 +1,20 @@
 'use strict';
 
-describe('Collection#update', function() {
+describe('Collection#findById', function() {
     this.timeout = function() {
         return 10000;
     };
 
     //fixtures
-    var customers = [{
-        name: faker.name.firstName(),
-        code: Math.ceil(Math.random() * 999)
-    }, {
-        name: faker.name.firstName(),
-        code: Math.ceil(Math.random() * 999)
-    }];
+    // var customers = [{
+    //     name: faker.name.firstName(),
+    //     code: Math.ceil(Math.random() * 999)
+    // }, {
+    //     name: faker.name.firstName(),
+    //     code: Math.ceil(Math.random() * 999)
+    // }];
 
+    //customer model
     var Customer;
 
     beforeEach(module('ngData'));
@@ -21,7 +22,6 @@ describe('Collection#update', function() {
     beforeEach(function(done) {
 
         inject(function($ngData, $rootScope) {
-
             Customer = $ngData.model('Customer', {
                 properties: {
                     name: {
@@ -67,27 +67,48 @@ describe('Collection#update', function() {
     // });
 
 
-    it('should be able to remove documents', inject(function() {
-        expect(Customer.remove).to.be.a('function');
+    // beforeEach(function(done) {
+
+    //     inject(function($rootScope) {
+
+    //         Customer
+    //             .create(customers[1])
+    //             .then(function(response) {
+    //                 done(null, response);
+    //             })
+    //             .catch(function(error) {
+    //                 console.log(error);
+    //                 done(error);
+    //             });
+
+    //         //wait for propagation
+    //         setTimeout(function() {
+    //             $rootScope.$apply();
+    //         }, 50);
+
+    //     });
+
+    // });
+
+
+    it('should be able to find a document by id', inject(function() {
+        expect(Customer.findById).to.be.a('function');
     }));
 
-    it('should be able to update documents', function(done) {
+    it('should be able to find a document by its id', function(done) {
         inject(function($rootScope) {
 
             Customer
-                .update({
-                    id: 1
-                }, customers[1])
-                .then(function(response) {
+                .findById(1)
+                .then(function(_customer_) {
 
-                    console.log(response.rowsAffected);
-                    console.log(response.rows);
+                    expect(_customer_.id).to.exist;
+                    expect(_customer_.name).to.exist;
+                    expect(_customer_.code).to.exist;
 
-                    done(null, response);
-
+                    done(null, _customer_);
                 })
                 .catch(function(error) {
-                    console.log(error.message);
                     done(error);
                 });
 

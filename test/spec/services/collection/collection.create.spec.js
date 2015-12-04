@@ -77,7 +77,7 @@ describe('Collection#create', function() {
             Customer
                 .create(customers[0])
                 .then(function(customer) {
-
+                    
                     expect(customer.id).to.exist;
                     expect(customer.name).to.equal(customers[0].name);
                     expect(customer.code).to.equal(customers[0].code);
