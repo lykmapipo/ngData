@@ -5,14 +5,14 @@ describe('Collection', function() {
         return 10000;
     };
 
-    var User;
+    var Customer;
 
     beforeEach(module('ngData'));
 
     beforeEach(function(done) {
 
         inject(function($ngData, $rootScope) {
-            User = $ngData.model('Customer', {
+            Customer = $ngData.model('Customer', {
                 properties: {
                     name: {
                         type: String,
@@ -41,7 +41,7 @@ describe('Collection', function() {
     beforeEach(function(done) {
 
         inject(function($rootScope) {
-            User.remove().then(function(response) {
+            Customer.remove().then(function(response) {
                 done(null, response);
             }).catch(function(error) {
                 done(error);
@@ -50,7 +50,7 @@ describe('Collection', function() {
             //wait for propagation
             setTimeout(function() {
                 $rootScope.$apply();
-            }, 100);
+            }, 50);
 
         });
 
@@ -61,10 +61,8 @@ describe('Collection', function() {
 
         it('should be able to instantiate new model instance', inject(function() {
 
-            expect(User.new).to.exist;
-            var user = User.new();
-
-            console.log(User.properties);
+            expect(Customer.new).to.exist;
+            var user = Customer.new();
 
             expect(user).to.exist;
             expect(user).to.have.ownProperty('name');
@@ -79,7 +77,7 @@ describe('Collection', function() {
                 code: faker.random.uuid()
             };
 
-            var user = User.new(_user);
+            var user = Customer.new(_user);
 
             expect(user.name).to.be.equal(_user.name);
             expect(user.code).to.be.equal(_user.code);
@@ -90,7 +88,7 @@ describe('Collection', function() {
 
     describe('Collection#create', function() {
         it('should be able to create documents', inject(function() {
-            expect(User.create).to.be.a('function');
+            expect(Customer.create).to.be.a('function');
         }));
 
         it('should be able to create a new record and save it into the database', function(done) {
@@ -101,7 +99,7 @@ describe('Collection', function() {
                     code: Math.ceil(Math.random() * 999)
                 };
 
-                User.create(user).then(function(response) {
+                Customer.create(user).then(function(response) {
                     console.log(response);
                     done(null, response);
                 }).catch(function(error) {
@@ -119,13 +117,13 @@ describe('Collection', function() {
 
     describe('Collection#remove', function() {
         it('should be able to remove documents', inject(function() {
-            expect(User.remove).to.be.a('function');
+            expect(Customer.remove).to.be.a('function');
         }));
     });
 
     describe('Collection#update', function() {
         it('should be able to update documents', inject(function() {
-            expect(User.update).to.be.a('function');
+            expect(Customer.update).to.be.a('function');
         }));
     });
 
@@ -138,7 +136,7 @@ describe('Collection', function() {
                     code: Math.ceil(Math.random() * 999)
                 }];
 
-                User.create(users).then(function(response) {
+                Customer.create(users).then(function(response) {
                     done(null, response);
                 });
 
@@ -152,13 +150,13 @@ describe('Collection', function() {
         });
 
         it('should be able to find documents', inject(function() {
-            expect(User.find).to.be.a('function');
+            expect(Customer.find).to.be.a('function');
         }));
 
         it('should be able to find documents', function(done) {
             inject(function($rootScope) {
 
-                User.find().then(function(users) {
+                Customer.find().then(function(users) {
                     console.log(users);
                     done(null, users);
                 }).catch(function(error) {

@@ -20,6 +20,9 @@
                     inflector.pluralize(options.name.toLowerCase());
 
                 this.definition = options;
+
+                this.properties = this.definition.properties;
+
             }
 
             //table back this collection
@@ -28,26 +31,20 @@
             //name of collection
             Collection.prototype.name;
 
-            //model definition
+            //collection definition/schema
             Collection.prototype.definition;
+
+            //collection properties
+            Collection.prototype.properties;
 
 
             /**
              * @description initialize new model without persist it
              * @return {Object}      new model instance
              */
-            Collection.prototype.new = function(data) {
+            Collection.prototype.new = function(values) {
                 //instantiate new model
-                var model = new Model(this.definition.properties);
-
-                //set data
-                if (data && _.isPlainObject(data)) {
-                    _.forEach(data, function(value, key) {
-                        if (_.has(model, key)) {
-                            model[key] = value;
-                        }
-                    });
-                }
+                var model = new Model(this, values);
 
                 //return model instance
                 return model;
@@ -160,17 +157,19 @@
              */
             Collection.prototype.find = function(conditions, projections) {
 
+                var collection = this;
+
                 var query = new Query({
                         collection: this,
                         type: 'select'
                     })
                     .find(conditions, projections)
                     .then(function(instances) {
-                        console.log(instances);
+
                         //map instances to model
                         if (instances) {
                             instances = _.map(instances, function(instance) {
-                                return new Model(instance);
+                                return new Model(collection, instance);
                             });
                         }
 
@@ -182,6 +181,7 @@
 
 
             Collection.prototype.findById = function(id, projections) {
+                var collection = this;
 
                 var query = new Query({
                         collection: this
@@ -191,7 +191,7 @@
 
                         //map instance to model
                         if (instance) {
-                            instance = new Model(instance);
+                            instance = new Model(collection, instance);
                         }
 
                         return instance;

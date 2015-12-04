@@ -118,8 +118,6 @@
                     ddl += str + ', ';
                 });
 
-                console.log(ddl);
-
                 // Remove trailing seperator/trim
                 return ddl.slice(0, -2);
             };

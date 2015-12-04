@@ -96,7 +96,7 @@
                     _.map(_.values($ngData.models), function(collection) {
                         return Schema.alter(
                             collection.tableName,
-                            collection.definition.properties
+                            collection.properties
                         );
                     });
 

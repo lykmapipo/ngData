@@ -11,34 +11,35 @@
         .factory('Model', function() {
 
             /**
-             * @description Model constructor
+             * @constructor
+             * @param {Collection} collection valid ngData collection for this
+             *                                model
+             * @param {[Object]} values key value pair data to set into instance
+             *                          properties
              */
-            function Model(properties) {
-                if (properties) {
-                    this.properties = properties;
-                }
-                //initialize model
-                this._init();
-            }
+            function Model(collection, values) {
+                //reference to model collection
+                this.collection = collection;
 
-
-            /**
-             * @description initial model
-             * @private
-             */
-            Model.prototype._init = function() {
-                _.forEach(_.keys(this.properties), function(property) {
+                //initialize model properties
+                //and set default properties
+                _.forEach(_.keys(this.collection.properties), function(property) {
 
                     var value = _.get(this.properties, property);
 
                     this[property] = value ? value.defaultsTo : undefined;
 
                 }.bind(this));
-            };
 
-
-            //model properties
-            Model.prototype.properties;
+                //assign instance properties thier value
+                if (values && _.isPlainObject(values)) {
+                    _.forEach(values, function(value, key) {
+                        if (_.has(this, key)) {
+                            this[key] = value;
+                        }
+                    }.bind(this));
+                }
+            }
 
 
             /**

@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ConditionBuilder', function() {
+describe('$where', function() {
 
     beforeEach(module('ngData'));
 

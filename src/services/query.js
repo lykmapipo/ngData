@@ -166,7 +166,6 @@
                         id: id
                     }, projections)
                     .then(function(instances) {
-                        console.log(instances);
                         //return single instance
                         return _.first(instances);
                     });
