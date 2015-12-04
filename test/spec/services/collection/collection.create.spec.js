@@ -1,11 +1,20 @@
 'use strict';
 
-describe('Model', function() {
-
+describe('Collection#create', function() {
     this.timeout = function() {
         return 10000;
     };
 
+    //fixtures
+    var customers = [{
+        name: faker.name.firstName(),
+        code: Math.ceil(Math.random() * 999)
+    }, {
+        name: faker.name.firstName(),
+        code: Math.ceil(Math.random() * 999)
+    }];
+
+    //customer model
     var Customer;
 
     beforeEach(module('ngData'));
@@ -57,39 +66,35 @@ describe('Model', function() {
 
     });
 
-    it('should be injectable', inject(function(Model) {
-
-        expect(Model).to.exist;
-
-        var model = new Model(Customer);
-
-        expect(model.save).to.exist;
-        expect(model.remove).to.exist;
-        expect(model.toObject).to.exist;
-        expect(model.toString).to.exist;
-        expect(model.toJSON).to.exist;
-
+    it('should be able to create documents', inject(function() {
+        expect(Customer.create).to.be.a('function');
     }));
 
-    it('should  be able to save the new model instance', inject(function(Model) {
-        var customer = {
-            name: faker.name.firstName(),
-            code: Math.ceil(Math.random() * 999)
-        };
+    it('should be able to create a new record and save it into the database', function(done) {
 
-        var model = new Model(Customer, customer);
+        inject(function($rootScope) {
 
-        expect(model.save).to.exist;
-        expect(model.remove).to.exist;
-        expect(model.toObject).to.exist;
-        expect(model.toString).to.exist;
-        expect(model.toJSON).to.exist;
+            Customer
+                .create(customers[0])
+                .then(function(customer) {
 
-    }));
+                    expect(customer.id).to.exist;
+                    expect(customer.name).to.equal(customers[0].name);
+                    expect(customer.code).to.equal(customers[0].code);
 
-    it('should be able to remove the model instance');
+                    done(null, customer);
+                })
+                .catch(function(error) {
+                    done(error);
+                });
 
-    it('should be able to parse the model instance to string');
+            //wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+        });
 
-    it('should be able to parse the model instance to JSON');
+    });
+
+    it('should be able to create a new records and save them into the database');
 });

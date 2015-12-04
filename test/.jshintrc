@@ -31,9 +31,6 @@
         "it": false,
         "faker": false,
         "_": false,
-        "Knex": false,
-        "knex": false,
-        "squel": false,
-        "bluebird": false
+        "squel": false
     }
 }

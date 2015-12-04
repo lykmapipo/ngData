@@ -1,7 +1,6 @@
 'use strict';
 
-describe('Model', function() {
-
+describe('Collection#update', function() {
     this.timeout = function() {
         return 10000;
     };
@@ -57,39 +56,9 @@ describe('Model', function() {
 
     });
 
-    it('should be injectable', inject(function(Model) {
 
-        expect(Model).to.exist;
-
-        var model = new Model(Customer);
-
-        expect(model.save).to.exist;
-        expect(model.remove).to.exist;
-        expect(model.toObject).to.exist;
-        expect(model.toString).to.exist;
-        expect(model.toJSON).to.exist;
-
+    it('should be able to remove documents', inject(function() {
+        expect(Customer.remove).to.be.a('function');
     }));
 
-    it('should  be able to save the new model instance', inject(function(Model) {
-        var customer = {
-            name: faker.name.firstName(),
-            code: Math.ceil(Math.random() * 999)
-        };
-
-        var model = new Model(Customer, customer);
-
-        expect(model.save).to.exist;
-        expect(model.remove).to.exist;
-        expect(model.toObject).to.exist;
-        expect(model.toString).to.exist;
-        expect(model.toJSON).to.exist;
-
-    }));
-
-    it('should be able to remove the model instance');
-
-    it('should be able to parse the model instance to string');
-
-    it('should be able to parse the model instance to JSON');
 });

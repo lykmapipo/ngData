@@ -23,6 +23,8 @@
 
                 this.properties = this.definition.properties;
 
+                //initialize collection
+                this._init();
             }
 
             //table back this collection
@@ -39,6 +41,18 @@
 
 
             /**
+             * @function
+             * @description collection initialization logics
+             * @private
+             */
+            Collection.prototype._init = function() {
+                //deduce if collection use autoIncrement primary key
+                var id = this.properties.id;
+                this.autoPK = id && id.autoIncrement;
+            };
+
+
+            /**
              * @description initialize new model without persist it
              * @return {Object}      new model instance
              */
@@ -52,49 +66,40 @@
 
 
             /**
-             * @description Shortcut for creating a new Document that is
-             *              automatically saved to the db if valid.
-             * @param {(Object|Array)} docs
+             * @description shortcut for creating a new document that is
+             *              automatically saved to the database if valid.
+             * @param {Object} doc
              * @return {type}
              */
-            Collection.prototype.create = function(docs) {
+            Collection.prototype.create = function(doc) {
 
-                if (!_.isArray(docs)) {
-                    docs = [docs];
-                }
+                //TODO validate doc before save
+                //TODO check if id is autoIncrement
+                var query = new Query({
+                    collection: this,
+                    type: 'insert'
+                });
 
+                query = query.create(doc);
 
-                var query = _.map(docs, function(doc) {
+                query = query.then(function(id) {
+                    //extend model with the returned id
+                    if (this.autoPK) {
+                        doc.id = id;
+                    }
 
-                    // return new Query({
-                    //     collection: this,
-                    //     type: 'insert'
-                    // }).create(doc).then(function(id) {
-                    //     return this.findById(id);
-                    // }.bind(this));
-
-                    return new Query({
-                        collection: this,
-                        type: 'insert'
-                    }).create(doc);
+                    return new Model(this, doc);
 
                 }.bind(this));
 
 
-                //TODO return error if no doc provided
-
-                //TODO batch create
-                //execute creates in parallel
-
-                //handle single create
-
+                //TODO batch create 
+                //TODO execute creates in parallel
 
                 //TODO execute query
                 //TODO fetch created model if primary key is auto increment
 
-                //return model instance
-
-                return $q.all(query);
+                return query;
             };
 
 
@@ -184,7 +189,8 @@
                 var collection = this;
 
                 var query = new Query({
-                        collection: this
+                        collection: this,
+                        type: 'select'
                     })
                     .findById(id, projections)
                     .then(function(instance) {
