@@ -2,11 +2,12 @@
 
 describe('Query#then', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,

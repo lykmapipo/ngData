@@ -2,11 +2,12 @@
 
 describe('Query#gte', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -25,14 +26,14 @@ describe('Query#gte', function() {
 
     it('should be able to build a simple where greater or equal query condition', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().gte('age', 20);
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age >= 20)');
     }));
 
     it('should be able to build a greater or equal condition given condition object', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().gte({
             age: 20,
             height: 40

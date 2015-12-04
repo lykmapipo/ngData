@@ -2,11 +2,12 @@
 
 describe('Query#where', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -25,7 +26,7 @@ describe('Query#where', function() {
 
     it('should be able to return a query given condition object', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where({
             name: 'benson',
             age: 20
@@ -58,7 +59,7 @@ describe('Query#where', function() {
         };
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where(condition);
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (age > 20 OR name = john OR height >= 206 OR weight < 60 OR lives IN ("arusha","mbeya","iringa"))');
@@ -88,7 +89,7 @@ describe('Query#where', function() {
         };
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().where(condition);
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (age > 20 OR name = john OR height >= 206 OR weight < 60 OR lives IN ("arusha","mbeya","iringa"))');

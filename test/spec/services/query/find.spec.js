@@ -2,11 +2,12 @@
 
 describe('Query#find', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -25,7 +26,7 @@ describe('Query#find', function() {
 
     it('should be able to build simple select query', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find();
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers');
@@ -34,7 +35,7 @@ describe('Query#find', function() {
 
     it('should return a select query with given single projections', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find('name');
 
         expect(query.toString()).to.equal('SELECT name FROM customers');
@@ -42,7 +43,7 @@ describe('Query#find', function() {
 
     it('should return a select query with given multiple projections', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find(['name', 'age']);
 
 
@@ -51,7 +52,7 @@ describe('Query#find', function() {
 
     it('should be able to find records based on given conditions', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find({
             name: 'john',
             age: {
@@ -64,7 +65,7 @@ describe('Query#find', function() {
 
     it('should be able to find records on given conditions and projections', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find({
             name: 'john',
             age: {
@@ -77,7 +78,7 @@ describe('Query#find', function() {
 
     it('should be able to find records given joiner and conditions objects', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find({
             $or: [{
                 name: 'john'

@@ -2,11 +2,12 @@
 
 describe('Query#distinct', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -25,9 +26,11 @@ describe('Query#distinct', function() {
 
     it('should be able to create a select distinct query', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select(['name', 'age', 'gender']).distinct().where().gt('age', 20);
+
         expect(query.toString()).to.equal('SELECT DISTINCT name, age, gender FROM customers WHERE (age > 20)');
+
     }));
 
 

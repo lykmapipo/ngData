@@ -20,18 +20,18 @@ describe('$ngData', function() {
             expect($ngData.model).to.exist;
             expect($ngData.model).to.be.a('function');
 
-            var User = $ngData.model('User', {
+            var Customer = $ngData.model('Customer', {
                 tableName: 'users',
                 properties: {
                     firstName: String
                 }
             });
 
-            expect(User).to.exist;
-            expect(User.tableName).to.exist;
-            expect(User.name).to.exist;
-            expect(User.definition).to.exist;
-            expect($ngData.model('User')).to.exist;
+            expect(Customer).to.exist;
+            expect(Customer.tableName).to.exist;
+            expect(Customer.name).to.exist;
+            expect(Customer.definition).to.exist;
+            expect($ngData.model('Customer')).to.exist;
 
         }));
 
@@ -39,7 +39,7 @@ describe('$ngData', function() {
             expect($ngData.model).to.exist;
             expect($ngData.model).to.be.a('function');
 
-            var User = $ngData.model('User', {
+            var Customer = $ngData.model('Customer', {
                 properties: {
                     firstName: {
                         type: String
@@ -47,8 +47,8 @@ describe('$ngData', function() {
                 }
             });
 
-            expect(User.tableName).to.exist;
-            expect(User.tableName).to.be.equal('users');
+            expect(Customer.tableName).to.exist;
+            expect(Customer.tableName).to.be.equal('users');
 
         }));
 

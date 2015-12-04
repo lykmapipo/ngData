@@ -2,12 +2,12 @@
 
 describe('Query', function() {
 
-    var User;
+    var Customer;
 
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -26,7 +26,7 @@ describe('Query', function() {
 
     it('should be injectable', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         });
 
         expect(query).to.exist;

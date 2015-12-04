@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Query#limit', function() {
+describe('Query#update', function() {
 
     var Customer;
 
@@ -24,13 +24,19 @@ describe('Query#limit', function() {
         });
     }));
 
-    it('should be able to add a limit condition to a query', inject(function(Query) {
-
+    it('should be able to create an update query', inject(function(Query) {
         var query = new Query({
             collection: Customer
-        }).select().limit(5);
+        });
 
-        expect(query.toString()).to.be.equal('SELECT * FROM customers LIMIT 5');
+        query = query.update({
+            id: 1
+        }, {
+            code: '7464'
+        });
+
+        console.log(query.toString());
     }));
+
 
 });

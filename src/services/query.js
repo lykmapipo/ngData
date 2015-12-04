@@ -31,10 +31,13 @@
 
             }
 
+            //refernce to current sql query to be issued
             Query.prototype.sql;
 
+            //reference to collection instatiating new query
             Query.prototype.collection;
 
+            //referencing sql where clause
             Query.prototype.expression;
 
             Query.prototype._init = function() {
@@ -140,6 +143,32 @@
 
                 if (conditions && _.isPlainObject(conditions)) {
                     this.where(conditions);
+                }
+
+                return this;
+            };
+
+
+            /**
+             * @description Declare and/or execute this query as an update() operation
+             * @param  {[type]} conditions valid mongodb query condition
+             * @param {Object} doc valid object to use in update
+             * @return {Query} an instance of Query
+             */
+            Query.prototype.update = function(conditions, doc) {
+
+                if (!this.sql && this.type === 'update') {
+                    this.sql = SQL.update().table(this.collection.tableName);
+                }
+
+                //set conditions
+                if (conditions && _.isPlainObject(conditions)) {
+                    this.where(conditions);
+                }
+
+                //set values
+                if (doc && _.isPlainObject(doc)) {
+                    this.sql.values(doc);
                 }
 
                 return this;

@@ -2,11 +2,12 @@
 
 describe('Query#ne', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -26,7 +27,7 @@ describe('Query#ne', function() {
 
     it('should be able to build a simple where not equal query condition', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().ne('age', 20);
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age <> 20)');
     }));
@@ -34,7 +35,7 @@ describe('Query#ne', function() {
 
     it('should be able to build a not equal condition given condition object', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).find().where().ne({
             age: 20,
             height: 40

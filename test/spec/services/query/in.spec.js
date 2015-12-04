@@ -2,11 +2,12 @@
 
 describe('Query#in', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -25,7 +26,7 @@ describe('Query#in', function() {
 
     it('should be able to create in condition given criteria', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().where().in({
             city: ['mwanza', 'arusha', 'singida']
         });
@@ -35,7 +36,7 @@ describe('Query#in', function() {
 
     it('should be able to create in condition given criteria and limit value', inject(function(Query) {
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().where().in({
             city: ['mwanza', 'arusha', 'singida']
         }, 5);

@@ -99,14 +99,16 @@ describe('Collection#find', function() {
 
             Customer
                 .find()
-                .then(function(users) {
+                .then(function(_customers_) {
 
-                    expect(users).to.have.length.above(0);
-                    expect(users[0].id).to.exist;
-                    expect(users[0].name).to.exist;
-                    expect(users[0].code).to.exist;
+                    console.log(_customers_[0]);
 
-                    done(null, users);
+                    expect(_customers_).to.have.length.above(0);
+                    expect(_customers_[0].id).to.exist;
+                    expect(_customers_[0].name).to.exist;
+                    expect(_customers_[0].code).to.exist;
+
+                    done(null, _customers_);
                 })
                 .catch(function(error) {
                     done(error);

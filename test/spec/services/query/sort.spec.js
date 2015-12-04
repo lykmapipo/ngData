@@ -2,11 +2,12 @@
 
 describe('Query#sort', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -25,7 +26,7 @@ describe('Query#sort', function() {
 
     // it('should be to build simple ascending order by query condition', inject(function(Query) {
     //     var query = new Query({
-    //         collection: User
+    //         collection: Customer
     //     }).select().sort('name');
 
     //     //     expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC');
@@ -34,7 +35,7 @@ describe('Query#sort', function() {
     it('should be able to build a simple ascending order by query condition', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().sort('name');
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC');
@@ -43,7 +44,7 @@ describe('Query#sort', function() {
     it('should be able to build an ascending order query for multiple arguments', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().sort('name', 'age', 'height');
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC, age ASC, height ASC');
@@ -52,7 +53,7 @@ describe('Query#sort', function() {
     it('should be able to build a order by query depending on the object provided', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().sort({
             name: 'desc',
             age: 'asc',

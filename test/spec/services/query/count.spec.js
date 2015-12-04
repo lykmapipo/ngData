@@ -2,11 +2,12 @@
 
 describe('Query#count', function() {
 
-    var User;
+    var Customer;
+
     beforeEach(module('ngData'));
 
     beforeEach(inject(function($ngData) {
-        User = $ngData.model('Customer', {
+        Customer = $ngData.model('Customer', {
             properties: {
                 name: {
                     type: String,
@@ -26,12 +27,11 @@ describe('Query#count', function() {
     it.skip('should be able to create a count all select query when called without parameter', inject(function(Query) {
 
         var query = new Query({
-            collection: User
+            collection: Customer
         }).select().where().gt({
             age: 21
         }).count();
 
-        //console.log(query.toString());
         expect(query.toString()).to.be.equal('SELECT COUNT(*) FROM customers');
 
     }));
