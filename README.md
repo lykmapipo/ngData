@@ -4,6 +4,10 @@ ngData (WIP)
 
 Simple and minimal WebSQL and cordova SQLite ORM for [ionic](https://github.com/driftyco/ionic) and [angular](https://github.com/angular/angular)
 
+## Istallation
+```sh
+$ bower install ng-data --save
+```
 
 ## Testing
 
