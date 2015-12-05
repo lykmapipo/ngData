@@ -6,7 +6,6 @@
      * @name ngData.Query
      * @description query builder
      */
-
     angular
         .module('ngData')
         .factory('Query', function(SQL, $where, Model) {
@@ -64,6 +63,9 @@
             };
 
 
+            //creators
+
+
             /**
              * @description create a new doc in the database
              * @param  {doc} doc valid document to create
@@ -81,86 +83,8 @@
             };
 
 
-            /**
-             * @description declare and/or execute this query as a remove() operation.
-             * @param  {[type]} conditions valid mongodb query condition
-             * @return {Query} an instance of Query
-             */
-            Query.prototype.remove = function(conditions) {
-
-                if (!this.sql && this.type === 'delete') {
-                    this.sql = SQL.delete().from(this.collection.tableName);
-                }
-
-                if (conditions && _.isPlainObject(conditions)) {
-                    this.where(conditions);
-                }
-
-                return this;
-            };
-
-
-            /**
-             * @description Declare and/or execute this query as an update() operation
-             * @param  {[type]} conditions valid mongodb query condition
-             * @param {Object} doc valid object to use in update
-             * @return {Query} an instance of Query
-             */
-            Query.prototype.update = function(conditions, doc) {
-
-                if (!this.sql && this.type === 'update') {
-                    this.sql = SQL.update().table(this.collection.tableName);
-                }
-
-                //set conditions
-                if (conditions && _.isPlainObject(conditions)) {
-                    this.where(conditions);
-                }
-
-                //set values
-                if (doc && _.isPlainObject(doc)) {
-                    this.sql.sets(doc);
-                }
-
-                return this;
-            };
-
-
-
-            /**
-             * @description find and remove a document by its id
-             * @param  {String|Number)}   id   value of `id` to query by
-             * @return {Promise} an instance of promise            
-             */
-            Query.prototype.findByIdAndRemove = function(id) {
-
-                if (!this.sql && this.type === 'delete') {
-                    this.sql = SQL.delete().from(this.collection.tableName);
-                }
-
-                this.where({
-                    id: id
-                });
-
-                return this;
-            };
-
-
-            /**
-             * @description Issues findAndModify update command by a
-             *              document's id field. findByIdAndUpdate(id, ...) is
-             *              equivalent to findOneAndUpdate({ id: id }, ...).
-             * @param  {Object}   id       value of `id` to query by
-             * @param  {Object}   update
-             * @param  {Object}   options
-             * @return {Query}            
-             */
-            Query.prototype.findByIdAndUpdate = function( /*id, update, options*/ ) {
-
-            };
-
-
             //finders
+
 
             /**
              * @description find documents
@@ -258,6 +182,56 @@
              */
             Query.prototype.findOneAndUpdate = function( /*conditions, update, options*/ ) {
 
+            };
+
+
+            //removers
+
+
+            /**
+             * @function
+             * @description declare and/or execute this query as a remove() operation
+             * @param  {[type]} conditions valid mongodb query condition
+             * @return {Query} an instance of Query
+             */
+            Query.prototype.remove = function(conditions) {
+
+                if (!this.sql && this.type === 'delete') {
+                    this.sql = SQL.delete().from(this.collection.tableName);
+                }
+
+                if (conditions && _.isPlainObject(conditions)) {
+                    this.where(conditions);
+                }
+
+                return this;
+            };
+
+
+            /**
+             * @function
+             * @description declare and/or execute this query as an update() operation
+             * @param  {[type]} conditions valid mongodb query condition
+             * @param {Object} doc valid object to use in update
+             * @return {Query} an instance of Query
+             */
+            Query.prototype.update = function(conditions, doc) {
+
+                if (!this.sql && this.type === 'update') {
+                    this.sql = SQL.update().table(this.collection.tableName);
+                }
+
+                //set conditions
+                if (conditions && _.isPlainObject(conditions)) {
+                    this.where(conditions);
+                }
+
+                //set values
+                if (doc && _.isPlainObject(doc)) {
+                    this.sql.sets(doc);
+                }
+
+                return this;
             };
 
 
@@ -839,9 +813,11 @@
                         }
 
                     }
+
                     if (type === 'insert') {
                         result = result.insertId;
                     }
+
                     return result;
                 });
 

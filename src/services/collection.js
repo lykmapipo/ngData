@@ -179,14 +179,21 @@
                 return query;
             };
 
+            Query.prototype.findByIdAndRemove = function( /*id*/ ) {};
+
+            Query.prototype.findByIdAndUpdate = function( /*id, update, options*/ ) {};
+
 
             /**
-             * @description Updates documents in the database without
-             *              returning them.
-             * @param  {Object}   conditions
-             * @param  {Object}   doc
-             * @param  {Object}   options
-             * @param  {Function} callback
+             * @function
+             * @description updates documents in the database 
+             *              without returning them.
+             * @param  {Object}   conditions valid mongodb query object
+             * @param  {Object}   doc value to set to all matched documents
+             * @return {Promise} that will eventually resolved with full raw 
+             *                        response response from database
+             *
+             * @public
              */
             Collection.prototype.update = function(conditions, doc) {
 
@@ -198,34 +205,26 @@
                 //set update conditions and fields
                 query = query.update(conditions, doc);
 
-                //TODO return updated instances after execution
-
                 return query;
             };
 
 
             /**
              * @description removes documents from the collection.
-             * @param  {[Object]}   conditions
-             * @return {Promise} which resolve with collection of models instance
-             *                         removed
+             * @param  {Object}   conditions valid mongodb query object
+             * @return {Promise} that will eventually resolved with full raw 
+             *                        response response from database
              */
             Collection.prototype.remove = function(conditions) {
 
-                // var find = this.find(conditions);
-
-                var remove = new Query({
+                var query = new Query({
                     collection: this,
                     type: 'delete'
-                }).remove(conditions);
+                });
 
-                //find documents and then delete
-                // return find.then(function(instances) {
-                //     return remove.then(function( response ) {
-                //         return instances;
-                //     });
-                // });
-                return remove;
+                query = query.remove(conditions);
+
+                return query;
             };
 
 

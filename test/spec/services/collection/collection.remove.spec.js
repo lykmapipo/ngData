@@ -61,4 +61,31 @@ describe('Collection#remove', function() {
     }));
 
 
+    it('should be able to remove documents', function(done) {
+        inject(function($rootScope) {
+
+            Customer
+                .remove({
+                    id: 2
+                })
+                .then(function(response) {
+
+                    expect(response.rowsAffected).to.be.equal(1);
+
+                    done(null, response);
+
+                })
+                .catch(function(error) {
+                    done(error);
+                });
+
+            //wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+
+        });
+    });
+
+
 });

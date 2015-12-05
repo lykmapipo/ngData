@@ -80,14 +80,12 @@ describe('Collection#update', function() {
                 }, customers[1])
                 .then(function(response) {
 
-                    console.log(response.rowsAffected);
-                    console.log(response.rows);
+                    expect(response.rowsAffected).to.be.equal(1);
 
                     done(null, response);
 
                 })
                 .catch(function(error) {
-                    console.log(error.message);
                     done(error);
                 });
 
