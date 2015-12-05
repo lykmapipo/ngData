@@ -77,7 +77,7 @@ describe('Collection#create', function() {
             Customer
                 .create(customers[0])
                 .then(function(customer) {
-                    
+
                     expect(customer.id).to.exist;
                     expect(customer.name).to.equal(customers[0].name);
                     expect(customer.code).to.equal(customers[0].code);
@@ -96,5 +96,29 @@ describe('Collection#create', function() {
 
     });
 
-    it('should be able to create a new records and save them into the database');
+    it('should be able to create new records and save them into the database', function(done) {
+
+        inject(function($rootScope) {
+
+            Customer
+                .create(customers)
+                .then(function(_customers_) {
+
+                    expect(_customers_[0].id).to.exist;
+                    expect(_customers_[0].name).to.equal(customers[0].name);
+                    expect(_customers_[0].code).to.equal(customers[0].code);
+
+                    done(null, _customers_[0]);
+                })
+                .catch(function( /*error*/ ) {
+                    done();
+                });
+
+            //wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+        });
+
+    });
 });

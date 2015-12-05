@@ -46,9 +46,11 @@
              * @private
              */
             Collection.prototype._init = function() {
+
                 //deduce if collection use autoIncrement primary key
                 var id = this.properties.id;
                 this.autoPK = id && id.autoIncrement;
+
             };
 
 
@@ -65,90 +67,54 @@
             };
 
 
+            //creators
+
+
             /**
-             * @description shortcut for creating a new document that is
-             *              automatically saved to the database if valid.
-             * @param {Object} doc
-             * @return {type}
+             * @function
+             * @description Shortcut for creating a new Document that is 
+             *              automatically saved to the db if valid.
+             * @param {Object|Array<Object>} doc(s)
+             * @return {Promise} that will eventually resolve with newly created
+             *                        document
+             *
+             * @public
              */
             Collection.prototype.create = function(doc) {
+                //check for batch create
+                if (_.isArray(doc)) {
 
-                //TODO validate doc before save
-                //TODO check if id is autoIncrement
-                var query = new Query({
-                    collection: this,
-                    type: 'insert'
-                });
+                    var queries = _.map(doc, function(_doc_) {
+                        return this.create(_doc_);
+                    }.bind(this));
 
-                query = query.create(doc);
+                    return $q.all(_.compact(queries));
+                }
 
-                query = query.then(function(id) {
-                    //extend model with the returned id
-                    if (this.autoPK) {
-                        doc.id = id;
-                    }
+                //create single document
+                else {
 
-                    return new Model(this, doc);
+                    //TODO validate doc before save
+                    var query = new Query({
+                        collection: this,
+                        type: 'insert'
+                    });
 
-                }.bind(this));
+                    query = query.create(doc);
 
+                    query = query.then(function(id) {
+                        //extend model with the returned id
+                        //if autoIncrement primary key is used
+                        if (this.autoPK) {
+                            doc.id = id;
+                        }
 
-                //TODO batch create 
-                //TODO execute creates in parallel
+                        return new Model(this, doc);
 
-                //TODO execute query
-                //TODO fetch created model if primary key is auto increment
+                    }.bind(this));
 
-                return query;
-            };
-
-
-            /**
-             * @description Updates documents in the database without
-             *              returning them.
-             * @param  {Object}   conditions
-             * @param  {Object}   doc
-             * @param  {Object}   options
-             * @param  {Function} callback
-             */
-            Collection.prototype.update = function(conditions, doc) {
-
-                var query = new Query({
-                    collection: this,
-                    type: 'update'
-                });
-
-                //set update conditions and fields
-                query = query.update(conditions, doc);
-
-                //TODO return updated instances after execution
-
-                return query;
-            };
-
-
-            /**
-             * @description removes documents from the collection.
-             * @param  {[Object]}   conditions
-             * @return {Promise} which resolve with collection of models instance
-             *                         removed
-             */
-            Collection.prototype.remove = function(conditions) {
-
-                // var find = this.find(conditions);
-
-                var remove = new Query({
-                    collection: this,
-                    type: 'delete'
-                }).remove(conditions);
-
-                //find documents and then delete
-                // return find.then(function(instances) {
-                //     return remove.then(function( response ) {
-                //         return instances;
-                //     });
-                // });
-                return remove;
+                    return query;
+                }
             };
 
 
@@ -211,6 +177,55 @@
                 }, projections);
 
                 return query;
+            };
+
+
+            /**
+             * @description Updates documents in the database without
+             *              returning them.
+             * @param  {Object}   conditions
+             * @param  {Object}   doc
+             * @param  {Object}   options
+             * @param  {Function} callback
+             */
+            Collection.prototype.update = function(conditions, doc) {
+
+                var query = new Query({
+                    collection: this,
+                    type: 'update'
+                });
+
+                //set update conditions and fields
+                query = query.update(conditions, doc);
+
+                //TODO return updated instances after execution
+
+                return query;
+            };
+
+
+            /**
+             * @description removes documents from the collection.
+             * @param  {[Object]}   conditions
+             * @return {Promise} which resolve with collection of models instance
+             *                         removed
+             */
+            Collection.prototype.remove = function(conditions) {
+
+                // var find = this.find(conditions);
+
+                var remove = new Query({
+                    collection: this,
+                    type: 'delete'
+                }).remove(conditions);
+
+                //find documents and then delete
+                // return find.then(function(instances) {
+                //     return remove.then(function( response ) {
+                //         return instances;
+                //     });
+                // });
+                return remove;
             };
 
 
