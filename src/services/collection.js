@@ -152,8 +152,11 @@
             };
 
 
+            //finders
+
+
             /**
-             * @description find documents
+             * @description find documents using specified conditions
              * @param  {Object}   conditions valid mongodb query object
              * @param  {[Array|String]}   projections optional fields to return
              * @return {Promise} which resolve with collection of models instance
@@ -163,12 +166,39 @@
                 var query = new Query({
                     collection: this,
                     type: 'select'
-                }).find(conditions, projections);
+                });
+
+                query = query.find(conditions, projections);
 
                 return query;
             };
 
 
+            /**
+             * @description find a single document using specified conditiond
+             * @param  {Object}   conditions valid mongodb query object
+             * @param  {[Array|String]}   projections optional fields to return
+             * @return {Promise} which resolve with model instance
+             */
+            Collection.prototype.findOne = function(conditions, projections) {
+
+                var query = new Query({
+                    collection: this,
+                    type: 'select'
+                });
+
+                query = query.findOne(conditions, projections);
+
+                return query;
+            };
+
+
+            /**
+             * @description find a single document by its id
+             * @param  {String|Number}   id document id
+             * @param  {[Array|String]}   projections optional fields to return
+             * @return {Promise} which resolve with model instance
+             */
             Collection.prototype.findById = function(id, projections) {
 
                 var query = new Query({

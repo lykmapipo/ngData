@@ -160,6 +160,8 @@
             };
 
 
+            //finders
+
             /**
              * @description find documents
              * @param  {Object}   conditions valid mongodb query object
@@ -167,26 +169,23 @@
              * @return {Query} an instance of Query
              * @example
              *     Customer
-             *         .find({
-             *                 name:'john',
-             *                 age:{
-             *                         $gt:30
-             *                     }
-             *                 })
-             *                 .then(function(customers){
-             *                     ...
-             *                 }).catch(function(error){
-             *                     ...
-             *                 });
+             *         .find({name:'john', age:{$gt:30}})
+             *         .then(function(customers){
+             *              ...
+             *          })
+             *          .catch(function(error){
+             *              ...
+             *          });
              *     or
              *     
              *     Customer
-             *         .find({
-             *                 name:'john',
-             *                 age:{
-             *                         $gt:30
-             *                     }
-             *                },[name,accounts])
+             *         .find({name:'john', age:{$gt:30}}, 'name,accounts')
+             *         .then(function(customers){
+             *             ...
+             *         })
+             *         .catch(function(error){
+             *             ...
+             *         });
              */
             Query.prototype.find = function(conditions, projections) {
                 //harmonize arguments
@@ -195,14 +194,17 @@
                     conditions = undefined;
                 }
 
+                //build sql select dml if not exists
                 if (!this.sql && this.type === 'select') {
                     this.sql = SQL.select().from(this.collection.tableName);
                 }
 
+                //set where clause conditions
                 if (conditions && _.isPlainObject(conditions)) {
                     this.where(conditions);
                 }
 
+                //set fields to select
                 if (projections) {
                     this.sql.columns(projections);
                 }
@@ -218,7 +220,7 @@
              * @return {Promise}  an instance of promise
              * @example
              *     Customer
-             *         .findOne(<conditions>,<projections>)
+             *         .findOne({id:1},'name, code')
              *         .then(function(customer){
              *             ...
              *         })
@@ -230,6 +232,7 @@
                 //set result size required
                 this.single = true;
 
+                //build and return query
                 return this.find(conditions, projections).limit(1).offset(0);
             };
 
