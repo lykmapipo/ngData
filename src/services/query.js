@@ -82,57 +82,6 @@
 
 
             /**
-             * @description find documents
-             * @param  {Object}   conditions valid mongodb query object
-             * @param  {[Array|String]}   projections optional fields to return
-             * @return {Query} an instance of Query
-             * @example
-             *     Customer
-             *         .find({
-             *                 name:'john',
-             *                 age:{
-             *                         $gt:30
-             *                     }
-             *                 })
-             *                 .then(function(customers){
-             *                     ...
-             *                 }).catch(function(error){
-             *                     ...
-             *                 });
-             *     or
-             *     
-             *     Customer
-             *         .find({
-             *                 name:'john',
-             *                 age:{
-             *                         $gt:30
-             *                     }
-             *                },[name,accounts])
-             */
-            Query.prototype.find = function(conditions, projections) {
-                //harmonize arguments
-                if (_.isArray(conditions) || _.isString(conditions)) {
-                    projections = conditions;
-                    conditions = undefined;
-                }
-
-                if (!this.sql && this.type === 'select') {
-                    this.sql = SQL.select().from(this.collection.tableName);
-                }
-
-                if (conditions && _.isPlainObject(conditions)) {
-                    this.where(conditions);
-                }
-
-                if (projections) {
-                    this.sql.columns(projections);
-                }
-
-                return this;
-            };
-
-
-            /**
              * @description declare and/or execute this query as a remove() operation.
              * @param  {[type]} conditions valid mongodb query condition
              * @return {Query} an instance of Query
@@ -208,6 +157,57 @@
              */
             Query.prototype.findByIdAndUpdate = function( /*id, update, options*/ ) {
 
+            };
+
+
+            /**
+             * @description find documents
+             * @param  {Object}   conditions valid mongodb query object
+             * @param  {[Array|String]}   projections optional fields to return
+             * @return {Query} an instance of Query
+             * @example
+             *     Customer
+             *         .find({
+             *                 name:'john',
+             *                 age:{
+             *                         $gt:30
+             *                     }
+             *                 })
+             *                 .then(function(customers){
+             *                     ...
+             *                 }).catch(function(error){
+             *                     ...
+             *                 });
+             *     or
+             *     
+             *     Customer
+             *         .find({
+             *                 name:'john',
+             *                 age:{
+             *                         $gt:30
+             *                     }
+             *                },[name,accounts])
+             */
+            Query.prototype.find = function(conditions, projections) {
+                //harmonize arguments
+                if (_.isArray(conditions) || _.isString(conditions)) {
+                    projections = conditions;
+                    conditions = undefined;
+                }
+
+                if (!this.sql && this.type === 'select') {
+                    this.sql = SQL.select().from(this.collection.tableName);
+                }
+
+                if (conditions && _.isPlainObject(conditions)) {
+                    this.where(conditions);
+                }
+
+                if (projections) {
+                    this.sql.columns(projections);
+                }
+
+                return this;
             };
 
 
