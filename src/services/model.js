@@ -25,7 +25,7 @@
                 //and set default properties
                 _.forEach(_.keys(this.collection.properties), function(property) {
 
-                    var value = _.get(this.properties, property);
+                    var value = _.get(this.collection.properties, property);
 
                     this[property] = value ? value.defaultsTo : undefined;
 
@@ -34,7 +34,7 @@
                 //assign instance properties thier value
                 if (values && _.isPlainObject(values)) {
                     _.forEach(values, function(value, key) {
-                        if (_.has(this, key)) {
+                        if (_.has(this.collection.properties, key)) {
                             this[key] = value;
                         }
                     }.bind(this));
@@ -43,11 +43,53 @@
 
 
             /**
+             * @function
+             * @description check whether this model has not been persisted 
+             *              into the database
+             * @return {Boolean}
+             * @public
+             */
+            Model.prototype.isNew = function() {
+                //TODO update logics to check for new model instance
+                return !this.id;
+            };
+
+
+            /**
              * @description save the model instance into the database
              * @return {Promise}
              */
             Model.prototype.save = function() {
 
+                var self = this;
+                var query;
+                var asObject;
+
+                //create if new
+                if (this.isNew()) {
+                    asObject = this.toObject();
+
+                    if (this.collection.autoPK) {
+                        asObject = _.omit(asObject, 'id');
+                    }
+
+                    query = this.collection.create(asObject);
+                }
+
+                //else update
+                else {
+
+                    asObject = _.omit(this.toObject(), 'id');
+
+                    query = this.collection.update({
+                            id: this.id
+                        }, asObject)
+                        .then(function( /*response*/ ) {
+                            return self;
+                        });
+                }
+
+                return query;
             };
 
 
@@ -56,7 +98,15 @@
              * @return {Promise}
              */
             Model.prototype.remove = function() {
+                var self = this;
 
+                var query = this.collection.remove({
+                    id: this.id
+                }).then(function( /*response*/ ) {
+                    return self;
+                });
+
+                return query;
             };
 
 
@@ -66,7 +116,7 @@
              */
             Model.prototype.toObject =
                 Model.prototype.valueOf = function() {
-                    return _.pick(this, _.keys(this.properties));
+                    return _.pick(this, _.keys(this.collection.properties));
                 };
 
 

@@ -6,6 +6,18 @@ describe('Model', function() {
         return 10000;
     };
 
+    var id;
+
+    //fixtures
+    var customers = [{
+        name: faker.name.findName(),
+        code: Math.ceil(Math.random() * 999)
+    }, {
+        name: faker.name.findName(),
+        code: Math.ceil(Math.random() * 999)
+    }];
+
+
     var Customer;
 
     beforeEach(module('ngData'));
@@ -58,10 +70,12 @@ describe('Model', function() {
     });
 
     it('should be injectable', inject(function(Model) {
-
         expect(Model).to.exist;
+    }));
 
-        var model = new Model(Customer);
+    it('should be able to instantiate new model instance', inject(function(Model) {
+
+        var model = new Model(Customer, customers[0]);
 
         expect(model.save).to.exist;
         expect(model.remove).to.exist;
@@ -71,25 +85,71 @@ describe('Model', function() {
 
     }));
 
-    it('should  be able to save the new model instance', inject(function(Model) {
-        var customer = {
-            name: faker.name.firstName(),
-            code: Math.ceil(Math.random() * 999)
-        };
+    it('should be able to return instance JSON presentation', inject(function(Model) {
 
-        var model = new Model(Customer, customer);
+        var model = new Model(Customer, customers[0]);
 
-        expect(model.save).to.exist;
-        expect(model.remove).to.exist;
-        expect(model.toObject).to.exist;
-        expect(model.toString).to.exist;
-        expect(model.toJSON).to.exist;
+        expect(_.omit(model.toJSON(), 'id')).to.eql(customers[0]);
 
     }));
 
-    it('should be able to remove the model instance');
+    it('should be able to save new model instance', function(done) {
 
-    it('should be able to parse the model instance to string');
+        inject(function($rootScope, Model) {
 
-    it('should be able to parse the model instance to JSON');
+            var customer = new Model(Customer, customers[0]);
+
+            customer
+                .save()
+                .then(function(_customer_) {
+                    //reference id
+                    id = _customer_.id;
+
+                    expect(_customer_.id).to.exist;
+                    expect(_customer_.name).to.equal(customers[0].name);
+                    expect(_customer_.code).to.equal(customers[0].code);
+
+                    done(null, _customer_);
+                })
+                .catch(function( /*error*/ ) {
+                    done();
+                });
+
+            //wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+        });
+
+    });
+
+    it('should be able to update existing model instance', function(done) {
+
+        inject(function($rootScope, Model) {
+
+            var customer = new Model(Customer, _.merge({
+                id: id
+            }, customers[0]));
+
+            customer
+                .save()
+                .then(function(_customer_) {
+
+                    expect(_customer_.id).to.exist;
+                    expect(_customer_.name).to.equal(customers[0].name);
+                    expect(_customer_.code).to.equal(customers[0].code);
+
+                    done(null, _customer_);
+                })
+                .catch(function( /*error*/ ) {
+                    done();
+                });
+
+            //wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+        });
+
+    });
 });
