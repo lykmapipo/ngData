@@ -48,6 +48,17 @@ describe('Query#find', function() {
 
 
         expect(query.toString()).to.equal('SELECT name, age FROM customers');
+
+    }));
+
+    it('should return a select query with given multiple projections', inject(function(Query) {
+        var query = new Query({
+            collection: Customer
+        }).find('name age');
+
+
+        expect(query.toString()).to.equal('SELECT name, age FROM customers');
+
     }));
 
     it('should be able to find records based on given conditions', inject(function(Query) {
