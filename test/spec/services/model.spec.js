@@ -51,23 +51,6 @@ describe('Model', function() {
         });
     });
 
-    beforeEach(function(done) {
-
-        inject(function($rootScope) {
-            Customer.remove().then(function(response) {
-                done(null, response);
-            }).catch(function(error) {
-                done(error);
-            });
-
-            //wait for propagation
-            setTimeout(function() {
-                $rootScope.$apply();
-            }, 50);
-
-        });
-
-    });
 
     it('should be injectable', inject(function(Model) {
         expect(Model).to.exist;
@@ -133,6 +116,36 @@ describe('Model', function() {
 
             customer
                 .save()
+                .then(function(_customer_) {
+
+                    expect(_customer_.id).to.exist;
+                    expect(_customer_.name).to.equal(customers[0].name);
+                    expect(_customer_.code).to.equal(customers[0].code);
+
+                    done(null, _customer_);
+                })
+                .catch(function( /*error*/ ) {
+                    done();
+                });
+
+            //wait for propagation
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+        });
+
+    });
+
+    it('should be able to remove existing model instance', function(done) {
+
+        inject(function($rootScope, Model) {
+
+            var customer = new Model(Customer, _.merge({
+                id: id
+            }, customers[0]));
+
+            customer
+                .remove()
                 .then(function(_customer_) {
 
                     expect(_customer_.id).to.exist;
