@@ -28,7 +28,17 @@ describe('Query#offset', function() {
 
         var query = new Query({
             collection: Customer
-        }).select().offset(10);
+        }).find().skip(10);
+
+        expect(query.toString()).to.be.equal('SELECT * FROM customers OFFSET 10');
+    }));
+
+
+    it('should be able to add a limit condition to a query', inject(function(Query) {
+
+        var query = new Query({
+            collection: Customer
+        }).find().offset(10);
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers OFFSET 10');
     }));

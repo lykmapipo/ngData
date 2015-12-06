@@ -556,6 +556,69 @@
 
             /**
              * @function
+             * @description specifies the number of documents to skip.
+             * @param {Number} val
+             * @return {Query} an instance of Query
+             * @example
+             *     query.offset(10)
+             * or
+             *     query.skip(10)
+             * @public
+             */
+            Query.prototype.skip =
+                Query.prototype.offset = function(val) {
+
+                    if (val && _.isNumber(val)) {
+                        this.sql.offset(val);
+                    }
+
+                    return this;
+
+                };
+
+
+            /**
+             * @function
+             * @description sets the sort order
+             * @param  {(Object|String)} arg
+             * @return {Query} an instance of Query
+             * @example
+             *     query.sort('name')
+             *
+             * or 
+             *     query.sort({name: 'asc',age : 'desc'})
+             *
+             * @public
+             */
+            Query.prototype.sort =
+                Query.prototype.order = function(arg) {
+                    // check for arguments provided
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (_.isString(arguments[i])) {
+
+                            this.sql.order(arguments[i]);
+                        }
+                    }
+
+                    if (_.isPlainObject(arg)) {
+
+                        _.forEach(arg, function(value, key) {
+                            // check for order by options
+                            if (value === 'asc' || value === 1) {
+                                this.sql.order(key, true);
+                            } else if (value === 'desc' || value === -1) {
+                                this.sql.order(key, false);
+                            }
+
+                        }.bind(this));
+                    }
+
+                    return this;
+                };
+
+
+            /**
+             * @function
              * @description declare and/or execute this query as an update() operation
              * @param  {[type]} conditions valid mongodb query condition
              * @param {Object} doc valid object to use in update
@@ -587,20 +650,15 @@
              * @param  {Number|String} [val] value to use in comparison
              * @return {Query}      
              * @example
-             *     Customer
-             *         .find()
-             *         .where({
+             *     query.where({
              *                 name:'john',
              *                 age:20
              *               })
              *  or
-             *      Customer
-             *         .where('name','john')
+             *      query.where('name','john')
              *
              * or
-             *     Customer
-             *         .select()
-             *         .where({
+             *     Customer.where({
              *                 name:'john',
              *                 age:{$gt:20}
              *                )
@@ -629,74 +687,7 @@
             };
 
 
-            /**
-             * @description sets the sort order
-             * @param  {(Object|String)} arg
-             * @return {Query} 
-             * @example
-             *     Customer
-             *         .select()
-             *         .sort('name')
-             *
-             * or 
-             *     Customer
-             *         .select()
-             *         .sort({
-             *              name: 'asc',
-             *              age : 'desc'
-             *          })   
-             */
-            Query.prototype.sort =
-                Query.prototype.order = function(arg) {
-                    // check for arguments provided
-                    for (var i = 0; i < arguments.length; i++) {
-                        if (_.isString(arguments[i])) {
-
-                            this.sql.order(arguments[i]);
-                        }
-                    }
-
-                    if (_.isPlainObject(arg)) {
-
-                        _.forEach(arg, function(value, key) {
-                            // check for order by options
-                            if (value === 'asc') {
-                                this.sql.order(key, true);
-                            } else if (value === 'desc' || value === -1) {
-                                this.sql.order(key, false);
-                            }
-
-                        }.bind(this));
-                    }
-
-                    return this;
-                };
-
-
             //TODO implement the min,max, avg, sum
-
-
-            /**
-             * @description specifies the number of documents to skip.
-             * @param {Number} val
-             * @return {Query} 
-             * @example
-             *     Customer
-             *         .select()
-             *         .offset(10)
-             *
-             */
-            Query.prototype.offset =
-                Query.prototype.skip = function(val) {
-
-                    if (val && _.isNumber(val)) {
-
-                        this.sql.offset(val);
-                    }
-
-                    return this;
-
-                };
 
 
             /**

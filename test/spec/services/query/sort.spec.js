@@ -24,19 +24,11 @@ describe('Query#sort', function() {
         });
     }));
 
-    // it('should be to build simple ascending order by query condition', inject(function(Query) {
-    //     var query = new Query({
-    //         collection: Customer
-    //     }).select().sort('name');
-
-    //     //     expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC');
-    // }));
-
     it('should be able to build a simple ascending order by query condition', inject(function(Query) {
 
         var query = new Query({
             collection: Customer
-        }).select().sort('name');
+        }).find().sort('name');
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC');
     }));
@@ -45,7 +37,7 @@ describe('Query#sort', function() {
 
         var query = new Query({
             collection: Customer
-        }).select().sort('name', 'age', 'height');
+        }).find().sort('name', 'age', 'height');
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name ASC, age ASC, height ASC');
     }));
@@ -57,9 +49,10 @@ describe('Query#sort', function() {
         }).select().sort({
             name: 'desc',
             age: 'asc',
+            code: 1,
             height: -1
         });
 
-        expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name DESC, age ASC, height DESC');
+        expect(query.toString()).to.be.equal('SELECT * FROM customers ORDER BY name DESC, age ASC, code ASC, height DESC');
     }));
 });
