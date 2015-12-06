@@ -313,6 +313,65 @@
 
             /**
              * @function
+             * @description specifies in query condition.
+             *              When called with one argument, the most recent 
+             *              path passed to where() is used.
+             * @param  {String} [path] valid document path
+             * @param  {Number} val value to be used in `in` condition
+             * @return {Query}  an instance of Query
+             * @example
+             *     Customer.where('code').in(['22','44'])
+             * or 
+             *     Customer.in('code', ['22','44']) 
+             *
+             * @public
+             */
+            Query.prototype.in = function(path, val) {
+
+                //normalize arguments
+                if (arguments.length === 1) {
+                    val = path;
+                    path = undefined;
+                }
+
+                //prepare conditions for path val pair
+                var conditions = {};
+                if ((path || this._path) && _.isArray(val)) {
+                    path = path || this._path;
+                    conditions[path] = {
+                        $in: val
+                    };
+                }
+
+                //add conditions to current expression
+                this.where(conditions);
+
+                return this;
+            };
+
+
+            /**
+             * @description specifies the maximum number of records the query
+             *              will return can not be used with distinct
+             * @param  {Number} val maximum number of document to return
+             * @return {Query}  an instance of Query
+             * @example
+             *     query.limit(5)
+             *
+             * @public
+             */
+            Query.prototype.limit = function(val) {
+
+                if (val && _.isNumber(val)) {
+                    this.sql.limit(val);
+                }
+
+                return this;
+            };
+
+
+            /**
+             * @function
              * @description declare and/or execute this query as a remove() operation
              * @param  {[type]} conditions valid mongodb query condition
              * @return {Query} an instance of Query
@@ -561,57 +620,6 @@
 
 
             /**
-             * @description specifies a 'in' query condition.
-             * @param  {String} path
-             * @param  {Number} val
-             * @return {Query}  
-             * @example
-             * Customer
-             *         .select()
-             *         .where()
-             *         .in({city: ['mbeya', 'arusha', 'singida']})
-             *
-             * or 
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .in({city: ['mbeya', 'arusha', 'singida']}, 5)
-             */
-            Query.prototype.in = function(path, val) {
-
-                if (path) {
-
-                    _.forIn(path, function(value, key) {
-                        // string that contains the values 
-                        var values = '( ';
-
-                        if (_.isArray(value)) {
-
-                            for (var i = 0; i < value.length; i++) {
-
-                                if (i < value.length - 1) {
-                                    values += ('\"' + value[i] + '\"' + ',');
-                                } else {
-                                    values += ('\"' + value[i] + '\"' + ' )');
-                                }
-                            }
-                            this.expression.and(key + ' IN ' + values);
-                        }
-
-
-                    }.bind(this));
-                }
-
-                if (_.isNumber(val)) {
-
-                    this.sql.limit(val);
-                }
-
-                return this;
-            };
-
-
-            /**
              * @description specifies arguments for an $or condition.
              * @param  {Array} array
              * @return {Query}  
@@ -673,28 +681,6 @@
                     _.forEach(path, function(value, key) {
                         this.expression.and(key + ' <> ' + value);
                     }.bind(this));
-                }
-
-                return this;
-            };
-
-
-            /**
-             * @description specifies the maximum number of records the query
-             *              will return. can not be used with distinct
-             * @param  {Number} val [description]
-             * @return {Query}  
-             * @example
-             *     Customer
-             *         .select()
-             *         .limit(5)
-             *
-             */
-            Query.prototype.limit = function(val) {
-
-                if (val && _.isNumber(val)) {
-
-                    this.sql.limit(val);
                 }
 
                 return this;

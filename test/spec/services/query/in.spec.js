@@ -24,24 +24,22 @@ describe('Query#in', function() {
         });
     }));
 
-    it('should be able to create in condition given criteria', inject(function(Query) {
+    it('should be able to create query using specified in condition', inject(function(Query) {
         var query = new Query({
             collection: Customer
-        }).select().where().in({
-            city: ['mwanza', 'arusha', 'singida']
-        });
+        }).where('city').in(['mwanza', 'arusha', 'singida']);
 
-        expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (city IN ( "mwanza","arusha","singida" ))');
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("SELECT * FROM customers WHERE (city IN ('mwanza','arusha','singida'))");
     }));
 
-    it('should be able to create in condition given criteria and limit value', inject(function(Query) {
+    it('should be able to create query using specified in condition', inject(function(Query) {
         var query = new Query({
             collection: Customer
-        }).select().where().in({
-            city: ['mwanza', 'arusha', 'singida']
-        }, 5);
+        }).in('city', ['mwanza', 'arusha', 'singida']);
 
-        expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (city IN ( "mwanza","arusha","singida" )) LIMIT 5');
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("SELECT * FROM customers WHERE (city IN ('mwanza','arusha','singida'))");
     }));
 
 

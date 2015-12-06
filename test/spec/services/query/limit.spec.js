@@ -28,7 +28,7 @@ describe('Query#limit', function() {
 
         var query = new Query({
             collection: Customer
-        }).select().limit(5);
+        }).find().limit(5);
 
         expect(query.toString()).to.be.equal('SELECT * FROM customers LIMIT 5');
     }));
