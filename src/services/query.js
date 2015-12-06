@@ -79,7 +79,7 @@
              */
             Query.prototype.and = function(conditions) {
                 return this.where({
-                    $and: conditions
+                    $and: conditions || []
                 });
             };
 
@@ -93,25 +93,16 @@
              */
             Query.prototype.count = function(conditions) {
 
-                if (!this.sql && this.type === 'select') {
-                    this.sql = SQL.select().from(this.collection.tableName);
-                }
+                this.where(conditions);
 
                 //set count selections
                 this.sql.field('COUNT(*)', 'count');
-
-                if (conditions && _.isPlainObject(conditions)) {
-                    this.where(conditions);
-                }
 
                 //set query form
                 this.query = 'count';
 
                 return this;
             };
-
-
-            //creators
 
 
             /**
@@ -126,6 +117,29 @@
                 }
 
                 this.sql.values(doc);
+
+                return this;
+            };
+
+
+            /**
+             * @function
+             * @description declares or executes a distinct() operation
+             * @param  {String} field valid document property
+             * @param  {Object} [conditions] valid mongodb query object
+             * @return {Query}    an instance of Query
+             * @example
+             *     query.distinct('name')
+             *     query.distinct('name', {code:{$in:['11','22','33','44']}})
+             * @public
+             */
+            Query.prototype.distinct = function(field, conditions) {
+
+                this.where(conditions);
+
+                this.sql.columns(field);
+
+                this.sql.distinct();
 
                 return this;
             };
@@ -722,29 +736,6 @@
                         this.expression.and(key + ' <> ' + value);
                     }.bind(this));
                 }
-
-                return this;
-            };
-
-
-            /**
-             * @description Declares or executes a distinct() operation.
-             * @param  {String}   fields
-             * @param  {(Object|Query)}   criteria
-             * @return {Query}    
-             * @example
-             *     Customers
-             *         .select()
-             *         .distinct()
-             *         
-             * or 
-             *     Customer
-             *         .select()
-             *         .distinct()
-             */
-            Query.prototype.distinct = function( /*fields, criteria*/ ) {
-                //TODO create a simple select query based on the fields
-                this.sql.distinct();
 
                 return this;
             };

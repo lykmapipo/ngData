@@ -26,10 +26,15 @@ describe('Query#distinct', function() {
 
     it('should be able to create a select distinct query', inject(function(Query) {
         var query = new Query({
-            collection: Customer
-        }).select(['name', 'age', 'gender']).distinct().where().gt('age', 20);
+                collection: Customer
+            })
+            .distinct('name', {
+                'age': {
+                    $gt: 20
+                }
+            });
 
-        expect(query.toString()).to.equal('SELECT DISTINCT name, age, gender FROM customers WHERE (age > 20)');
+        expect(query.toString()).to.equal('SELECT DISTINCT name FROM customers WHERE (age > 20)');
 
     }));
 
