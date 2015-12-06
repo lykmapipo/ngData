@@ -372,6 +372,84 @@
 
             /**
              * @function
+             * @description specifies a 'less than' query condition.
+             *              When called with one argument, the most recent 
+             *              path passed to where() is used.
+             * @param  {String} [path] valid document path
+             * @param  {Number} val value to be used in less than condition
+             * @return {Query}  an instance of Query
+             * @example
+             *     Customer.lt('age', 20)
+             * or 
+             *     Customer.where('age').lt(20) 
+             *
+             * @public
+             */
+            Query.prototype.lt = function(path, val) {
+
+                //normalize arguments
+                if (arguments.length === 1) {
+                    val = path;
+                    path = undefined;
+                }
+
+                //prepare conditions for path val pair
+                var conditions = {};
+                if ((path || this._path) && _.isNumber(val)) {
+                    path = path || this._path;
+                    conditions[path] = {
+                        $lt: val
+                    };
+                }
+
+                //add conditions to current expression
+                this.where(conditions);
+
+                return this;
+            };
+
+
+            /**
+             * @function
+             * @description specifies a 'less than or equal' query condition.
+             *              When called with one argument, the most recent 
+             *              path passed to where() is used.
+             * @param  {String} [path] valid document path
+             * @param  {Number} val value to be used in less than or equal condition
+             * @return {Query}  an instance of Query
+             * @example
+             *     Customer.lte('age', 20)
+             * or 
+             *     Customer.where('age').lte(20) 
+             *
+             * @public
+             */
+            Query.prototype.lte = function(path, val) {
+
+                //normalize arguments
+                if (arguments.length === 1) {
+                    val = path;
+                    path = undefined;
+                }
+
+                //prepare conditions for path val pair
+                var conditions = {};
+                if ((path || this._path) && _.isNumber(val)) {
+                    path = path || this._path;
+                    conditions[path] = {
+                        $lte: val
+                    };
+                }
+
+                //add conditions to current expression
+                this.where(conditions);
+
+                return this;
+            };
+
+
+            /**
+             * @function
              * @description declare and/or execute this query as a remove() operation
              * @param  {[type]} conditions valid mongodb query condition
              * @return {Query} an instance of Query
@@ -533,90 +611,6 @@
                     return this;
                 };
 
-
-            /**
-             * @description specifies a 'less than' query condition.
-             * @param  {String} path
-             * @param  {Number} val
-             * @return {Query}  
-             * @example
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .lt({
-             *                 age:20,
-             *                  height: 140
-             *             })
-             *
-             * or 
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .lt('age',20)
-             */
-
-            Query.prototype.lt = function(path, val) {
-
-                // harmonize arguments
-                if (_.isPlainObject(path) && !val) {
-                    // reading object properties
-                    _.forEach(path, function(value, key) {
-                        this.expression.and(key + ' < ' + value);
-                    }.bind(this));
-                }
-
-                if (_.isNumber(path)) {
-                    val = path;
-                }
-
-                if (path && val) {
-                    this.expression.and(path + ' < ' + val);
-                }
-
-                return this;
-            };
-
-
-            /**
-             * @description specifies a 'less or equal' query condition.
-             * @param  {String} path
-             * @param  {Number} val
-             * @return {Query}  
-             * @example
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .lte({
-             *                 age:20,
-             *                  height: 140
-             *             })
-             *
-             * or 
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .lte('age',20)
-             */
-            Query.prototype.lte = function(path, val) {
-
-                // harmonize arguments
-                if (_.isPlainObject(path) && !val) {
-                    // reading object properties
-                    _.forEach(path, function(value, key) {
-                        this.expression.and(key + ' <= ' + value);
-                    }.bind(this));
-                }
-
-                if (_.isNumber(path)) {
-                    val = path;
-                }
-
-                if (path && val) {
-                    this.expression.and(path + ' <= ' + val);
-                }
-
-                return this;
-            };
 
 
             /**

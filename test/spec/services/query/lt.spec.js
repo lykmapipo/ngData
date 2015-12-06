@@ -24,20 +24,20 @@ describe('Query#lt', function() {
         });
     }));
 
-    it('should be able to build a simple where less than query condition', inject(function(Query) {
+    it('should be able to build a query from less than query condition', inject(function(Query) {
         var query = new Query({
             collection: Customer
-        }).find().where().lt('age', 20);
+        }).lt('age', 20);
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age < 20)');
     }));
 
-    it('should be able to build a less than condition given condition object', inject(function(Query) {
+    it('should be able to build a query from less than conditions', inject(function(Query) {
         var query = new Query({
-            collection: Customer
-        }).find().where().lt({
-            age: 20,
-            height: 40
-        });
+                collection: Customer
+            })
+            .where('age').lt(20)
+            .where('height').lt(40);
+
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age < 20 AND height < 40)');
     }));
 
