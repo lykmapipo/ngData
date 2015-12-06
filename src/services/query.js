@@ -41,6 +41,9 @@
 
             Query.prototype.single = false;
 
+            //specify where query has already been finalized
+            Query.prototype._finalized = false;
+
             Query.prototype._init = function() {
                 //instantiate SQL
                 this.sql = SQL[this.type]();
@@ -62,11 +65,31 @@
                 }
             };
 
+            //commons
 
             /**
+             * @function
+             * @description specifies arguments for an $and condition
+             * @param {Array<Object>} conditions array of conditions of valid 
+             *                                   mongodb query object
+             * @return {Query} an instance of query
+             * @example
+             *     query.and([{ color: 'green' }, { status: 'ok' }])
+             * @public      
+             */
+            Query.prototype.and = function(conditions) {
+                return this.where({
+                    $and: conditions
+                });
+            };
+
+
+            /**
+             * @function
              * @description specifying this query as a count query
              * @param  {Object}   conditions valid mongodb query objecr
-             * @return {Query} 
+             * @return {Query}  an instance of Query
+             * @public
              */
             Query.prototype.count = function(conditions) {
 
@@ -74,7 +97,7 @@
                     this.sql = SQL.select().from(this.collection.tableName);
                 }
 
-                //set count
+                //set count selections
                 this.sql.field('COUNT(*)', 'count');
 
                 if (conditions && _.isPlainObject(conditions)) {
@@ -289,9 +312,9 @@
 
 
             /**
-             * @description Specify the 'where' query conditions
-             * @param  {String} path
-             * @param  {Object} val  [optional]
+             * @description specifies a path for use with chaining.
+             * @param  {String} [path] a valid document path
+             * @param  {Number|String} [val] value to use in comparison
              * @return {Query}      
              * @example
              *     Customer
@@ -302,11 +325,7 @@
              *               })
              *  or
              *      Customer
-             *         .select()
-             *         .where({
-             *                 name:'john',
-             *                 age:20
-             *               })
+             *         .where('name','john')
              *
              * or
              *     Customer
@@ -316,9 +335,25 @@
              *                 age:{$gt:20}
              *                )
              */
-            Query.prototype.where = function(path) {
+            Query.prototype.where = function(path, value) {
+                if (!this.sql) {
+                    this.find();
+                }
 
-                this.expression = $where(path);
+                //build condition if both path and value provided
+                if (path && _.isString(path) && value) {
+                    var condition = {};
+                    condition[path] = value;
+                    path = condition;
+                }
+
+                //reference path for later use
+                else if (_.isString(path) && !value) {
+                    this.path = path;
+                }
+
+                //continue build expression if path is condition object
+                this.expression = $where(path, this.expression);
 
                 return this;
             };
@@ -590,20 +625,6 @@
 
 
             /**
-             * @description specifies arguments for an $and condition.
-             * @return {Query}       
-             */
-            Query.prototype.and = function() {
-
-                /* jshint camelcase: false*/
-                this.expression.and_begin();
-                /*jshint camelcase: true*/
-
-                return this;
-            };
-
-
-            /**
              * @description specifies arguments for an $or condition.
              * @param  {Array} array
              * @return {Query}  
@@ -865,8 +886,11 @@
             Query.prototype.finalize = function() {
 
                 // check the expession condition if is still open
-                if (this.expression) {
+                // and query has not been finalize
+                // otherwise finalize query expression
+                if (this.expression && !this._finalized) {
                     this.sql.where(this.expression);
+                    this._finalized = true;
                 }
 
                 return this;

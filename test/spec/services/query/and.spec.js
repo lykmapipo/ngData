@@ -24,4 +24,19 @@ describe('Query#and', function() {
         });
     }));
 
+
+    it('should be able to to `$and` provided query conditions', inject(function(Query) {
+        var query = new Query({
+            collection: Customer
+        }).and([{
+            name: 'benson'
+        }, {
+            age: 20
+        }]);
+
+        /*jshint quotmark:double*/
+        expect(query.toString())
+            .to.be.equal("SELECT * FROM customers WHERE (name = 'benson' AND age = 20)");
+    }));
+
 });
