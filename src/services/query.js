@@ -242,7 +242,7 @@
              * @param  {Number} val value to be used in greater than condition
              * @return {Query}  an instance of Query
              * @example
-             *     Customer.gt('age',20)
+             *     Customer.gt('age', 20)
              * or 
              *     Customer.where('age').gt(20) 
              *
@@ -262,6 +262,45 @@
                     path = path || this._path;
                     conditions[path] = {
                         $gt: val
+                    };
+                }
+
+                //add conditions to current expression
+                this.where(conditions);
+
+                return this;
+            };
+
+
+            /**
+             * @function
+             * @description specifies a 'greater than or equal' query condition.
+             *              When called with one argument, the most recent 
+             *              path passed to where() is used.
+             * @param  {String} [path] valid document path
+             * @param  {Number} val value to be used in greater than or equal condition
+             * @return {Query}  an instance of Query
+             * @example
+             *     Customer.gte('age', 20)
+             * or 
+             *     Customer.where('age').gte(20) 
+             *
+             * @public
+             */
+            Query.prototype.gte = function(path, val) {
+
+                //normalize arguments
+                if (arguments.length === 1) {
+                    val = path;
+                    path = undefined;
+                }
+
+                //prepare conditions for path val pair
+                var conditions = {};
+                if ((path || this._path) && _.isNumber(val)) {
+                    path = path || this._path;
+                    conditions[path] = {
+                        $gte: val
                     };
                 }
 
@@ -434,48 +473,6 @@
 
                     return this;
                 };
-
-
-            /**
-             * @description specifies a 'greater or equal' query condition.
-             * @param  {(String|Object)} path
-             * @param  {Number} val
-             * @return {Query}   
-             *  @example
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .gte({
-             *                 age:20,
-             *                  height: 140
-             *             })
-             *
-             * or 
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .gte('age',20)
-             */
-            Query.prototype.gte = function(path, val) {
-
-                // harmonize arguments
-                if (_.isPlainObject(path) && !val) {
-                    // reading object properties
-                    _.forEach(path, function(value, key) {
-                        this.expression.and(key + ' >= ' + value);
-                    }.bind(this));
-                }
-
-                if (_.isNumber(path)) {
-                    val = path;
-                }
-
-                if (path && val) {
-                    this.expression.and(path + ' >= ' + val);
-                }
-
-                return this;
-            };
 
 
             /**
