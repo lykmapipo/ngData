@@ -145,6 +145,30 @@
             };
 
 
+            /**
+             * @function
+             * @description specifies the complementary comparison value for
+             *               paths specified with where()
+             * @param  {Object} val value to be used in equals
+             * @return {Query}  an instance of Query
+             * @example
+             * @public 
+             */
+            Query.prototype.equals = function(val) {
+
+                //prepare conditions for path val pair
+                var conditions = {};
+                if (this._path) {
+                    conditions[this._path] = val;
+                }
+
+                //add conditions to current expression
+                this.where(conditions);
+
+                return this;
+            };
+
+
             //finders
 
 
@@ -363,7 +387,7 @@
 
                 //reference path for later use
                 else if (_.isString(path) && !value) {
-                    this.path = path;
+                    this._path = path;
                 }
 
                 //continue build expression if path is condition object
@@ -662,41 +686,6 @@
 
             };
 
-
-            /**
-             * @description specifies the complementary comparison value for
-             *               paths specified with where()
-             * @param {String} path
-             * @param  {Object} val
-             * @return {Query}  
-             * @example
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .equals({age:20, height: 140})
-             *
-             * or 
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .equals('age', 20)  
-             *  
-             */
-            Query.prototype.equals = function(path, val) {
-
-                if (_.isString(path) && val) {
-                    this.expression.and([path, '=', '?'].join(' '), val);
-                }
-
-                if (_.isPlainObject(path)) {
-                    // reading object properties
-                    _.forEach(path, function(value, key) {
-                        this.expression.and([key, '=', '?'].join(' '), value);
-                    }.bind(this));
-                }
-
-                return this;
-            };
 
 
             /**

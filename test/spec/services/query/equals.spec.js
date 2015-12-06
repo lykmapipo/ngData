@@ -24,23 +24,23 @@ describe('Query#equals', function() {
         });
     }));
 
-    it('should be able to build a simple where equal to condition', inject(function(Query) {
+    it('should be able to build a simple where equals condition', inject(function(Query) {
         var query = new Query({
             collection: Customer
-        }).find().where().equals('age', 20);
+        }).where('age').equals(20);
 
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age = 20)');
     }));
 
-
-    it('should be able to build equals condition given condition object', inject(function(Query) {
+    it('should be able to chain where equals conditions', inject(function(Query) {
         var query = new Query({
-            collection: Customer
-        }).find().where().equals({
-            age: 20,
-            height: 40
-        });
-        expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age = 20 AND height = 40)');
+                collection: Customer
+            })
+            .where('age').equals(20)
+            .where('name').equals('john');
+
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.equal("SELECT * FROM customers WHERE (age = 20 AND name = 'john')");
     }));
 
 });
