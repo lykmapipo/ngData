@@ -65,7 +65,6 @@
                 }
             };
 
-            //commons
 
             /**
              * @function
@@ -450,6 +449,62 @@
 
             /**
              * @function
+             * @description specifies a 'not equal' query condition.
+             *              When called with one argument, the most recent 
+             *              path passed to where() is used.
+             * @param  {String} [path] valid document path
+             * @param  {Number} val value to be used in not equal condition
+             * @return {Query}  an instance of Query
+             * @example
+             *     Customer.ne('age', 20)
+             * or 
+             *     Customer.where('age').ne(20) 
+             *
+             * @public
+             */
+            Query.prototype.ne = function(path, val) {
+
+                //normalize arguments
+                if (arguments.length === 1) {
+                    val = path;
+                    path = undefined;
+                }
+
+                //prepare conditions for path val pair
+                var conditions = {};
+                if ((path || this._path) && _.isNumber(val)) {
+                    path = path || this._path;
+                    conditions[path] = {
+                        $ne: val
+                    };
+                }
+
+                //add conditions to current expression
+                this.where(conditions);
+
+                return this;
+            };
+
+
+            /**
+             * @function
+             * @description specifies arguments for an $or condition
+             * @param {Array<Object>} conditions array of conditions of valid 
+             *                                   mongodb query object
+             * @return {Query} an instance of query
+             * @example
+             *     query.or([{ color: 'green' }, { status: 'ok' }])
+             * @public      
+             */
+            Query.prototype.or = function(conditions) {
+                return this.where({
+                    $or: conditions || []
+                });
+            };
+
+
+            /**
+             * @function
              * @description declare and/or execute this query as a remove() operation
              * @param  {[type]} conditions valid mongodb query condition
              * @return {Query} an instance of Query
@@ -612,86 +667,8 @@
                 };
 
 
-
-            /**
-             * @description specifies arguments for an $or condition.
-             * @param  {Array} array
-             * @return {Query}  
-             */
-            Query.prototype.or = function() {
-
-                /* jshint camelcase: false*/
-                this.expression.or_begin();
-                /*jshint camelcase: true*/
-
-                return this;
-            };
-
-
-            /**
-             * @description specifies arguments for an $nor condition.
-             * @param  {Array} array
-             * @return {Query} 
-             */
-            Query.prototype.nor = function( /*array*/ ) {
-
-            };
-
-
-
-            /**
-             * @description specifies arguments for not equal query condition
-             * @param  {String} path 
-             * @param  {Number} val 
-             * @return {Query}  
-             * @example
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .ne({
-             *                 age:20,
-             *                  height: 140
-             *             })
-             *
-             * or 
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .ne('age',20)
-             */
-            Query.prototype.ne = function(path, val) {
-                //harmonize arguments
-                if (_.isNumber(path)) {
-                    val = path;
-                    path = undefined;
-                }
-
-                if (path && val) {
-                    this.expression.and(path + ' <> ' + val);
-                }
-
-                if (_.isPlainObject(path) && !val) {
-                    // reading object properties
-                    _.forEach(path, function(value, key) {
-                        this.expression.and(key + ' <> ' + value);
-                    }.bind(this));
-                }
-
-                return this;
-            };
-
-
-            /**
-             * @description specifies an $exists condition
-             * @param  {String} path
-             * @param  {Number} val
-             * @return {Query}      
-             */
-            Query.prototype.exists = function( /*path, val*/ ) {
-
-            };
-
             //TODO implement the min,max, avg, sum
+
 
             /**
              * @description specifies the number of documents to skip.

@@ -24,4 +24,18 @@ describe('Query#or', function() {
         });
     }));
 
+    it('should be able to to `$or` provided query conditions', inject(function(Query) {
+        var query = new Query({
+            collection: Customer
+        }).or([{
+            name: 'benson'
+        }, {
+            age: 20
+        }]);
+
+        /*jshint quotmark:double*/
+        expect(query.toString())
+            .to.be.equal("SELECT * FROM customers WHERE (name = 'benson' OR age = 20)");
+    }));
+
 });

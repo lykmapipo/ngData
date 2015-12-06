@@ -28,18 +28,18 @@ describe('Query#ne', function() {
     it('should be able to build a simple where not equal query condition', inject(function(Query) {
         var query = new Query({
             collection: Customer
-        }).find().where().ne('age', 20);
+        }).ne('age', 20);
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age <> 20)');
     }));
 
 
     it('should be able to build a not equal condition given condition object', inject(function(Query) {
         var query = new Query({
-            collection: Customer
-        }).find().where().ne({
-            age: 20,
-            height: 40
-        });
+                collection: Customer
+            })
+            .where('age').ne(20)
+            .where('height').ne(40);
+
         expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age <> 20 AND height <> 40)');
     }));
 
