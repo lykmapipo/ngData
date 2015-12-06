@@ -42,6 +42,11 @@
         "angular-mocks": "~1.4.5",
         "faker": "Faker#~3.0.1"
     },
+    "overrides": {
+        "squel": {
+            "main": "squel-basic.js"
+        }
+    },
     "resolutions": {
         "angular": "~1.4.5"
     }
