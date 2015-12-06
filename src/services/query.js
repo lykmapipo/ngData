@@ -525,6 +525,37 @@
 
             /**
              * @function
+             * @description specifies which document fields to include or
+             *              exclude (also known as the query "projection")
+             * @param  {(Object|String)} arg document field(s) to select
+             * @return {Query}   an instance of Query
+             * @example
+             *     // include a and b, exclude other fields
+             *     query.select('a b');
+             *     query.select(['a', 'b']);
+             *
+             *     // exclude c and d, include other fields
+             *     query.select('-c -d');
+             *
+             *     // or you may use object notation, useful when
+             *     // you have keys already prefixed with a "-"
+             *     query.select({ a: 1, b: 1 });
+             *     query.select({ c: 0, d: 0 }); 
+             *     
+             * @public
+             */
+            Query.prototype.select = function(arg) {
+
+                if (_.isString(arg) || _.isArray(arg)) {
+                    this.find(arg);
+                }
+
+                return this;
+            };
+
+
+            /**
+             * @function
              * @description declare and/or execute this query as an update() operation
              * @param  {[type]} conditions valid mongodb query condition
              * @param {Object} doc valid object to use in update
@@ -544,31 +575,6 @@
                 //set values
                 if (doc && _.isPlainObject(doc)) {
                     this.sql.sets(doc);
-                }
-
-                return this;
-            };
-
-
-            /**
-             * @description specifies which document fields to include or
-             *              exclude (also known as the query "projection")
-             * @param  {(Object|String)} arg
-             * @return {Query}   
-             * @example
-             *     Customer
-             *         .select()
-             * 
-             *
-             * or 
-             *     Customer
-             *         .select(['name','age'])
-             */
-            Query.prototype.select = function(arg) {
-                // harmonize argument
-                if (_.isString(arg) || _.isArray(arg)) {
-
-                    return this.find(arg);
                 }
 
                 return this;
