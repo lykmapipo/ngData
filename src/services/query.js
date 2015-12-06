@@ -214,19 +214,15 @@
 
 
             /**
-             * @description find a single document using given conditions
+             * @function
+             * @description declares the query a findOne operation. 
+             *              When executed, the first found document is returned
              * @param  {Object}   conditions   valid mongodb query object
              * @param  {Object}   projections optional fields to return
-             * @return {Promise}  an instance of promise
+             * @return {Query}  an instance of Query
              * @example
-             *     Customer
-             *         .findOne({id:1},'name, code')
-             *         .then(function(customer){
-             *             ...
-             *         })
-             *         .catch(function(error){
-             *             ...
-             *         });           
+             *     Customer.findOne({id:1},'name, code')
+             * @public
              */
             Query.prototype.findOne = function(conditions, projections) {
                 //set result size required
@@ -238,30 +234,42 @@
 
 
             /**
-             * @description Issue a findAndModify remove command
-             * @param  {Object}   conditions
-             * @param  {Object}   options
-             * @param  {Function} callback
-             * @return {Query}              
+             * @function
+             * @description specifies a 'greater than' query condition.
+             *              When called with one argument, the most recent 
+             *              path passed to where() is used.
+             * @param  {String} [path] valid document path
+             * @param  {Number} val value to be used in greater than condition
+             * @return {Query}  an instance of Query
+             * @example
+             *     Customer.gt('age',20)
+             * or 
+             *     Customer.where('age').gt(20) 
+             *
+             * @public
              */
-            Query.prototype.findOneAndRemove = function( /*conditions, options*/ ) {
+            Query.prototype.gt = function(path, val) {
 
+                //normalize arguments
+                if (arguments.length === 1) {
+                    val = path;
+                    path = undefined;
+                }
+
+                //prepare conditions for path val pair
+                var conditions = {};
+                if ((path || this._path) && _.isNumber(val)) {
+                    path = path || this._path;
+                    conditions[path] = {
+                        $gt: val
+                    };
+                }
+
+                //add conditions to current expression
+                this.where(conditions);
+
+                return this;
             };
-
-
-            /**
-             * @description Issues a mongodb findAndModify update command.
-             * @param  {Object}   conditions
-             * @param  {Object}   update
-             * @param  {Object}   options
-             * @return {Query}    
-             */
-            Query.prototype.findOneAndUpdate = function( /*conditions, update, options*/ ) {
-
-            };
-
-
-            //removers
 
 
             /**
@@ -426,49 +434,6 @@
 
                     return this;
                 };
-
-
-            /**
-             * @description specifies a 'greater than' query condition.
-             * @param  {(String|Object)} path
-             * @param  {Number} val
-             * @return {Query}  
-             * @example
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .gt({
-             *                 age:20,
-             *                  height: 140
-             *             })
-             *
-             * or 
-             *     Customer
-             *         .select()
-             *         .where()
-             *         .gt('age',20)   
-             */
-            Query.prototype.gt = function(path, val) {
-
-                // harmonize arguments
-                if (_.isPlainObject(path) && !val) {
-                    // reading object properties
-                    _.forEach(path, function(value, key) {
-                        this.expression.and(key + ' > ' + value);
-                    }.bind(this));
-                }
-
-                //harmonize arguments
-                if (_.isNumber(path)) {
-                    val = path;
-                }
-
-                if (path && val) {
-                    this.expression.and(path + ' > ' + val);
-                }
-
-                return this;
-            };
 
 
             /**
