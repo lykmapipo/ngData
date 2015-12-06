@@ -169,35 +169,22 @@
             };
 
 
-            //finders
-
-
             /**
+             * @function
              * @description find documents
              * @param  {Object}   conditions valid mongodb query object
              * @param  {[Array|String]}   projections optional fields to return
              * @return {Query} an instance of Query
              * @example
-             *     Customer
-             *         .find({name:'john', age:{$gt:30}})
-             *         .then(function(customers){
-             *              ...
-             *          })
-             *          .catch(function(error){
-             *              ...
-             *          });
+             *     Customer.find({name:'john', age:{$gt:30}})
              *     or
              *     
-             *     Customer
-             *         .find({name:'john', age:{$gt:30}}, 'name,accounts')
-             *         .then(function(customers){
-             *             ...
-             *         })
-             *         .catch(function(error){
-             *             ...
-             *         });
+             *     Customer.find({name:'john', age:{$gt:30}}, 'name,accounts')
+             *
+             * @public
              */
             Query.prototype.find = function(conditions, projections) {
+
                 //harmonize arguments
                 if (_.isArray(conditions) || _.isString(conditions)) {
                     projections = conditions;

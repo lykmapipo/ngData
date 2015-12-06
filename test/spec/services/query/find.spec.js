@@ -51,7 +51,7 @@ describe('Query#find', function() {
 
     }));
 
-    it('should return a select query with given multiple projections', inject(function(Query) {
+    it('should return a select query with given multiple string projections', inject(function(Query) {
         var query = new Query({
             collection: Customer
         }).find('name age');
@@ -89,7 +89,7 @@ describe('Query#find', function() {
         expect(query.toString()).to.equal("SELECT name, age FROM customers WHERE (name = 'john' AND age > 30)");
     }));
 
-    it('should be able to find records given joiner and conditions objects', inject(function(Query) {
+    it('should be able to find records on given joined conditions objects', inject(function(Query) {
         var query = new Query({
             collection: Customer
         }).find({
