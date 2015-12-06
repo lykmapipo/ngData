@@ -54,6 +54,9 @@
             };
 
 
+            //commons
+
+
             /**
              * @description initialize new model without persist it
              * @return {Object}      new model instance
@@ -64,6 +67,25 @@
 
                 //return model instance
                 return model;
+            };
+
+
+            /**
+             * @description counts number of matching documents in a database 
+             *              collection
+             * @param  {Object} conditions valid mongodb query object
+             * @return {Query}            an instance of query
+             */
+            Collection.prototype.count = function(conditions) {
+
+                var query = new Query({
+                    collection: this,
+                    type: 'select'
+                });
+
+                query = query.count(conditions);
+
+                return query;
             };
 
 

@@ -75,11 +75,14 @@
                 }
 
                 //set count
-                this.sql.field('COUNT(*)');
+                this.sql.field('COUNT(*)', 'count');
 
                 if (conditions && _.isPlainObject(conditions)) {
                     this.where(conditions);
                 }
+
+                //set query form
+                this.query = 'count';
 
                 return this;
             };
@@ -154,6 +157,9 @@
                 if (projections) {
                     this.sql.columns(projections);
                 }
+
+                //set query form
+                this.query = 'find';
 
                 return this;
             };
@@ -789,6 +795,7 @@
                 this.finalize();
 
                 var type = this.type;
+                var query = this.query;
                 var single = this.single;
                 var collection = this.collection;
 
@@ -799,11 +806,13 @@
                 promise = promise.then(function(result) {
                     //handle select query
                     if (type === 'select') {
+
                         result = SQL.fetchAll(result);
 
                         result = result || [];
 
-                        if (result) {
+                        //return data
+                        if (result && query === 'find') {
 
                             //map results to model
                             result = _.map(result, function(instance) {
@@ -817,6 +826,11 @@
                                 result = _.first(result);
                             }
 
+                        }
+
+                        //return other result types
+                        else {
+                            result = _.first(result);
                         }
 
                     }

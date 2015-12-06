@@ -30,7 +30,7 @@ describe('Query#count', function() {
             collection: Customer
         }).count();
 
-        expect(query.toString()).to.be.equal('SELECT COUNT(*) FROM customers');
+        expect(query.toString()).to.be.equal('SELECT COUNT(*) AS "count" FROM customers');
 
     }));
 
@@ -43,7 +43,7 @@ describe('Query#count', function() {
         });
 
         /*jshint quotmark:double*/
-        expect(query.toString()).to.be.equal("SELECT COUNT(*) FROM customers WHERE (name = 'lorem')");
+        expect(query.toString()).to.be.equal("SELECT COUNT(*) AS \"count\" FROM customers WHERE (name = 'lorem')");
 
     }));
 });
