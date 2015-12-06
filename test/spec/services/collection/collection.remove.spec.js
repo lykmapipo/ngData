@@ -5,6 +5,18 @@ describe('Collection#remove', function() {
         return 10000;
     };
 
+    //fixtures
+    // var customers = [{
+    //     name: faker.name.findName(),
+    //     code: faker.random.uuid()
+    // }, {
+    //     name: faker.name.findName(),
+    //     code: faker.random.uuid()
+    // }, {
+    //     name: faker.name.findName(),
+    //     code: faker.random.uuid()
+    // }];
+
     var Customer;
 
     beforeEach(module('ngData'));

@@ -63,6 +63,28 @@
             };
 
 
+            /**
+             * @description specifying this query as a count query
+             * @param  {Object}   conditions valid mongodb query objecr
+             * @return {Query} 
+             */
+            Query.prototype.count = function(conditions) {
+
+                if (!this.sql && this.type === 'select') {
+                    this.sql = SQL.select().from(this.collection.tableName);
+                }
+
+                //set count
+                this.sql.field('COUNT(*)');
+
+                if (conditions && _.isPlainObject(conditions)) {
+                    this.where(conditions);
+                }
+
+                return this;
+            };
+
+
             //creators
 
 
@@ -610,28 +632,25 @@
              *     Customer
              *         .select()
              *         .where()
-             *         .equals({
-             *                 age:20,
-             *                 height: 140
-             *             })
+             *         .equals({age:20, height: 140})
              *
              * or 
              *     Customer
              *         .select()
              *         .where()
-             *         .equals('age',20)  
+             *         .equals('age', 20)  
              *  
              */
             Query.prototype.equals = function(path, val) {
 
                 if (_.isString(path) && val) {
-                    this.expression.and(path + ' = ' + val);
+                    this.expression.and([path, '=', '?'].join(' '), val);
                 }
 
                 if (_.isPlainObject(path)) {
                     // reading object properties
                     _.forEach(path, function(value, key) {
-                        this.expression.and(key + ' = ' + value);
+                        this.expression.and([key, '=', '?'].join(' '), value);
                     }.bind(this));
                 }
 
@@ -676,18 +695,6 @@
                         this.expression.and(key + ' <> ' + value);
                     }.bind(this));
                 }
-
-                return this;
-            };
-
-
-            /**
-             * @description Specifying this query as a count query.
-             * @param  {Object}   criteria
-             * @return {Query} 
-             */
-            Query.prototype.count = function( /*criteria*/ ) {
-                // TODO check how to implement this
 
                 return this;
             };

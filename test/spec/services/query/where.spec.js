@@ -32,7 +32,8 @@ describe('Query#where', function() {
             age: 20
         });
 
-        expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (name = benson AND age = 20)');
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("SELECT * FROM customers WHERE (name = 'benson' AND age = 20)");
     }));
 
     it('should be able to return a query given condition object and joiner using find()', inject(function(Query) {
@@ -62,7 +63,8 @@ describe('Query#where', function() {
             collection: Customer
         }).find().where(condition);
 
-        expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (age > 20 OR name = john OR height >= 206 OR weight < 60 OR lives IN ("arusha","mbeya","iringa"))');
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("SELECT * FROM customers WHERE (age > 20 OR name = 'john' OR height >= 206 OR weight < 60 OR lives IN ('arusha','mbeya','iringa'))");
     }));
 
     it('should be able to return a query given condition object and joiner using select()', inject(function(Query) {
@@ -92,7 +94,8 @@ describe('Query#where', function() {
             collection: Customer
         }).select().where(condition);
 
-        expect(query.toString()).to.be.equal('SELECT * FROM customers WHERE (age > 20 OR name = john OR height >= 206 OR weight < 60 OR lives IN ("arusha","mbeya","iringa"))');
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("SELECT * FROM customers WHERE (age > 20 OR name = 'john' OR height >= 206 OR weight < 60 OR lives IN ('arusha','mbeya','iringa'))");
     }));
 
 });

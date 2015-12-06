@@ -71,7 +71,8 @@ describe('Query#find', function() {
             }
         });
 
-        expect(query.toString()).to.equal('SELECT * FROM customers WHERE (name = john AND age > 30)');
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.equal("SELECT * FROM customers WHERE (name = 'john' AND age > 30)");
     }));
 
     it('should be able to find records on given conditions and projections', inject(function(Query) {
@@ -84,7 +85,8 @@ describe('Query#find', function() {
             }
         }, ['name', 'age']);
 
-        expect(query.toString()).to.equal('SELECT name, age FROM customers WHERE (name = john AND age > 30)');
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.equal("SELECT name, age FROM customers WHERE (name = 'john' AND age > 30)");
     }));
 
     it('should be able to find records given joiner and conditions objects', inject(function(Query) {
@@ -100,7 +102,8 @@ describe('Query#find', function() {
             }]
         });
 
-        expect(query.toString()).to.equal('SELECT * FROM customers WHERE (name = john OR age > 30)');
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.equal("SELECT * FROM customers WHERE (name = 'john' OR age > 30)");
     }));
 
 

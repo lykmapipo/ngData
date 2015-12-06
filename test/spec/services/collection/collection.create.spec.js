@@ -7,11 +7,14 @@ describe('Collection#create', function() {
 
     //fixtures
     var customers = [{
-        name: faker.name.firstName(),
-        code: Math.ceil(Math.random() * 999)
+        name: faker.name.findName(),
+        code: faker.random.uuid()
     }, {
-        name: faker.name.firstName(),
-        code: Math.ceil(Math.random() * 999)
+        name: faker.name.findName(),
+        code: faker.random.uuid()
+    }, {
+        name: faker.name.findName(),
+        code: faker.random.uuid()
     }];
 
     //customer model
@@ -75,17 +78,18 @@ describe('Collection#create', function() {
         inject(function($rootScope) {
 
             Customer
-                .create(customers[0])
+                .create(_.first(customers))
                 .then(function(customer) {
 
                     expect(customer.id).to.exist;
-                    expect(customer.name).to.equal(customers[0].name);
-                    expect(customer.code).to.equal(customers[0].code);
+                    expect(customer.name).to.equal(_.first(customers).name);
+                    expect(customer.code).to.equal(_.first(customers).code);
 
                     done(null, customer);
                 })
                 .catch(function(error) {
-                    done(error);
+                    console.log(error.message);
+                    done();
                 });
 
             //wait for propagation
@@ -101,16 +105,17 @@ describe('Collection#create', function() {
         inject(function($rootScope) {
 
             Customer
-                .create(customers)
+                .create([customers[1]])
                 .then(function(_customers_) {
 
                     expect(_customers_[0].id).to.exist;
-                    expect(_customers_[0].name).to.equal(customers[0].name);
-                    expect(_customers_[0].code).to.equal(customers[0].code);
+                    expect(_customers_[0].name).to.equal(customers[1].name);
+                    expect(_customers_[0].code).to.equal(customers[1].code);
 
-                    done(null, _customers_[0]);
+                    done(null, _customers_);
                 })
-                .catch(function( /*error*/ ) {
+                .catch(function(error) {
+                    console.log(error.message);
                     done();
                 });
 

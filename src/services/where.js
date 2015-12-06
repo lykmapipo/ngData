@@ -16,6 +16,11 @@
             function buildSQLCondition(joiner, condition, key, value) {
                 //this refer to expression context
                 /*jshint validthis:true*/
+                var expr = [
+                    key,
+                    '=',
+                    '?'
+                ];
 
                 //harminize condition joiner
                 //default to and
@@ -24,19 +29,50 @@
                 //obtain condition function
                 var fn = this[joiner];
 
+                //handel gt
                 if (condition === '$gt') {
-                    fn.call(this, key + ' > ' + value);
-                } else if (condition === '$gte') {
-                    fn.call(this, key + ' >= ' + value);
-                } else if (condition === '$lt') {
-                    fn.call(this, key + ' < ' + value);
-                } else if (condition === '$lte') {
-                    fn.call(this, key + ' <= ' + value);
-                } else if (condition === '$ne') {
-                    fn.call(this, key + ' <> ' + value);
-                } else if (condition === '$eq') {
-                    fn.call(this, key + ' = ' + value);
-                } else if (condition === '$in') {
+                    expr[1] = '>';
+                    expr = expr.join(' ');
+                    fn.call(this, expr, value);
+                }
+
+                //handle gte
+                else if (condition === '$gte') {
+                    expr[1] = '>=';
+                    expr = expr.join(' ');
+                    fn.call(this, expr, value);
+                }
+
+                //handle lt
+                else if (condition === '$lt') {
+                    expr[1] = '<';
+                    expr = expr.join(' ');
+                    fn.call(this, expr, value);
+                }
+
+                //handle lte
+                else if (condition === '$lte') {
+                    expr[1] = '<=';
+                    expr = expr.join(' ');
+                    fn.call(this, expr, value);
+                }
+
+                //handle ne
+                else if (condition === '$ne') {
+                    expr[1] = '<>';
+                    expr = expr.join(' ');
+                    fn.call(this, expr, value);
+                }
+
+                //handle eq
+                else if (condition === '$eq') {
+                    expr[1] = '=';
+                    expr = expr.join(' ');
+                    fn.call(this, expr, value);
+                }
+
+                //handle in
+                else if (condition === '$in') {
 
                     if (!_.isArray(value)) {
                         value = [value];
@@ -44,7 +80,7 @@
 
                     //TODO what if IN operator used in other type than string
                     value = _.map(value, function(val) {
-                        return ['"', val, '"'].join('');
+                        return ['\'', val, '\''].join('');
                     }).join(',');
 
                     value = ['(', value, ')'].join('');
@@ -75,10 +111,17 @@
 
                         //else handle primitive values to object
                         else {
+                            //prepare condition expression
+                            var expr = [
+                                key,
+                                '=',
+                                '?'
+                            ].join(' ');
+
                             if (joiner === 'or') {
-                                expression.or(key + ' = ' + value);
+                                expression.or(expr, value);
                             } else {
-                                expression.and(key + ' = ' + value);
+                                expression.and(expr, value);
                             }
                         }
 

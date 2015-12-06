@@ -81,6 +81,7 @@
              * @public
              */
             Collection.prototype.create = function(doc) {
+
                 //check for batch create
                 if (_.isArray(doc)) {
 

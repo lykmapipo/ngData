@@ -7,11 +7,14 @@ describe('Collection#findOne', function() {
 
     //fixtures
     // var customers = [{
-    //     name: faker.name.firstName(),
-    //     code: Math.ceil(Math.random() * 999)
+    //     name: faker.name.findName(),
+    //     code: faker.random.uuid()
     // }, {
-    //     name: faker.name.firstName(),
-    //     code: Math.ceil(Math.random() * 999)
+    //     name: faker.name.findName(),
+    //     code: faker.random.uuid()
+    // }, {
+    //     name: faker.name.findName(),
+    //     code: faker.random.uuid()
     // }];
 
     //customer model
