@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#update', function() {
 
     var Customer;
 
@@ -24,15 +24,21 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+    it('should be able to create an update query', inject(function(Query) {
         var query = new Query({
-            collection: Customer
+            collection: Customer,
+            type: 'update'
         });
 
-        expect(query).to.exist;
+        query = query.update({
+            id: 1
+        }, {
+            code: '7464'
+        });
 
-        expect(query).to.be.instanceof(Query);
-
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("UPDATE customers SET code = '7464' WHERE (id = 1)");
     }));
+
 
 });

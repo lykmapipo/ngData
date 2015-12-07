@@ -61,11 +61,9 @@ describe('SQL', function() {
         SQL
             .insert()
             .into('users')
-            .values([{
+            .values({
                 firstName: faker.name.firstName()
-            }, {
-                firstName: faker.name.firstName()
-            }])
+            })
             .catch(function(error) {
                 expect(error).to.exist;
                 expect(error.code).to.be.equal(5);

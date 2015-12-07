@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#distinct', function() {
 
     var Customer;
 
@@ -24,15 +24,19 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+    it('should be able to create a select distinct query', inject(function(Query) {
         var query = new Query({
-            collection: Customer
-        });
+                collection: Customer
+            })
+            .distinct('name', {
+                'age': {
+                    $gt: 20
+                }
+            });
 
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
+        expect(query.toString()).to.equal('SELECT DISTINCT name FROM customers WHERE (age > 20)');
 
     }));
+
 
 });

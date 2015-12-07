@@ -23,6 +23,7 @@
         "after": false,
         "afterEach": false,
         "angular": false,
+        "validate": false,
         "before": false,
         "beforeEach": false,
         "describe": false,
@@ -31,9 +32,6 @@
         "it": false,
         "faker": false,
         "_": false,
-        "Knex": false,
-        "knex": false,
-        "squel": false,
-        "bluebird": false
+        "squel": false
     }
 }

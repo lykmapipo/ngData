@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#findOne', function() {
 
     var Customer;
 
@@ -22,17 +22,6 @@ describe('Query', function() {
                 }
             }
         });
-    }));
-
-    it('should be injectable', inject(function(Query) {
-        var query = new Query({
-            collection: Customer
-        });
-
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
-
     }));
 
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#count', function() {
 
     var Customer;
 
@@ -24,15 +24,26 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+    it('should be able to create a count all query', inject(function(Query) {
+
         var query = new Query({
             collection: Customer
-        });
+        }).count();
 
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
+        expect(query.toString()).to.be.equal('SELECT COUNT(*) AS "count" FROM customers');
 
     }));
 
+    it('should be able to create a count all query', inject(function(Query) {
+
+        var query = new Query({
+            collection: Customer
+        }).count({
+            name: 'lorem'
+        });
+
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("SELECT COUNT(*) AS \"count\" FROM customers WHERE (name = 'lorem')");
+
+    }));
 });

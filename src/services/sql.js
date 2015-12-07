@@ -10,9 +10,10 @@
     angular
         .module('ngData')
         .factory('SQL', function($database) {
-            //create a local copy of sql
-            //by cloning/copying a global sql
-            var sql = angular.copy(squel);
+            //create a local copy of squel
+            //by cloning/copying a global squel
+            var sql = _.clone(squel);
+
 
             //extend insert queries with `values(Array|Object)` builder
             sql.cls.Insert.prototype.values = function(values) {
@@ -23,8 +24,40 @@
                     //TODO fix collection insertion
                     this.setFieldsRows(values);
                 }
+
                 return this;
             };
+
+
+            //extend update set to support object values
+            sql.cls.Update.prototype.sets = function(field, value) {
+
+                if (_.isPlainObject(field)) {
+                    this.setFields(field);
+                } else if (field && value) {
+                    this.set(field, value);
+                }
+
+                return this;
+            };
+
+
+            //extend select with ability to pass array fields
+            sql.cls.Select.prototype.columns = function(fields) {
+                //normalize columns to select
+                if (!_.isArray(fields) && _.isString(fields)) {
+                    fields = fields.split(' ');
+                }
+
+                //iterate over all fields
+                _.forEach(fields, function(field) {
+                    this.field(field);
+                }.bind(this));
+
+                return this;
+
+            };
+
 
             //extending local sql with then executor
             sql.cls.QueryBuilder.prototype.then = function( /*resolve, reject*/ ) {
@@ -37,6 +70,7 @@
                 return promise;
             };
 
+
             //extending local sql with catch executor
             sql.cls.QueryBuilder.prototype.catch = function( /*reject*/ ) {
                 var promise = this.then();
@@ -44,10 +78,11 @@
                 return promise;
             };
 
+
             /**
              * @description process `SQLResultSetRowList` to obtain data
              * @param  {SQLResultSetRowList} result [description]
-             * @return {Object|Array}        [description]
+             * @return {Object|Array}
              */
             sql.fetch = function(result) {
                 var output = null;
@@ -66,7 +101,7 @@
             /**
              * @description process `SQLResultSetRowList` to obtain data
              * @param  {SQLResultSetRowList} result [description]
-             * @return {Object|Array}        [description]
+             * @return {Object|Array}
              */
             sql.fetchAll = function(result) {
                 var output = [];

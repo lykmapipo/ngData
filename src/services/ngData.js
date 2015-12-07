@@ -9,33 +9,34 @@
      *
      * @example <caption>registering a new model</caption>
      * angular
-     * 	.module('<moduleName>')
-     * 	.factory('Customer', function($ngData){
-     * 		//create $ngData model
-     * 		var Customer = $ngData.model('User',{
-     * 				tableName:'customers',
-     * 				timestamp:true,
-     * 				properties:{
-     * 					name:{
-     * 						type:String,
-     * 						required:true
-     * 					},
-     * 					code:String,
-     * 					email:{
-     * 						type:String,
-     * 						email:true,
-     * 						required:true
-     * 					},
-     * 					joinedAt:{
-     * 						type:Date,
-     * 						defaultsTo: new Date()
-     * 					}
-     * 				}
-     * 			});
-     *
-     * 		//return created model
-     * 		return Customer;
-     * 	});
+     *  .module('<moduleName>')
+     *  .run(function($ngData) {
+     *      //create $ngData model
+     *      var Customer = $ngData.model('Customer',{
+     *              tableName:'customers',
+     *              timestamp:true,
+     *              properties:{
+     *                  name:{
+     *                      type:String,
+     *                      required:true
+     *                  },
+     *                  code:String,
+     *                  email:{
+     *                      type:String,
+     *                      email:true,
+     *                      required:true
+     *                  },
+     *                  joinedAt:{
+     *                      type:Date,
+     *                      defaultsTo: new Date()
+     *                  }
+     *              }
+     *          });
+     *  })
+     *  .factory('Customer', function($ngData){
+     *      //return created model or extend it
+     *      return $ngData.model('Customer');
+     *  });
      *
      * @public
      */
@@ -67,12 +68,22 @@
                     //extend definition with model name
                     definition.name = name;
 
+                    //add id property if not exists
+                    definition.properties =
+                        _.merge({
+                            id: {
+                                type: Number,
+                                autoIncrement: true
+                            }
+                        }, definition.properties);
+
                     //instantiate a collection with definetion
                     $ngData.models[name] = new Collection(definition);
 
                     return _.get($ngData.models, name);
                 }
             };
+
 
             /**
              * @description initialize ngData
@@ -81,11 +92,13 @@
                 //1. scan for models
 
                 //2. apply migration
-                var migrations = _.map(_.values($ngData.models), function(collection) {
-                    console.log(collection);
-                    return Schema
-                        .alter(collection.tableName, collection.properties);
-                });
+                var migrations =
+                    _.map(_.values($ngData.models), function(collection) {
+                        return Schema.alter(
+                            collection.tableName,
+                            collection.properties
+                        );
+                    });
 
                 return $q.all(migrations);
 

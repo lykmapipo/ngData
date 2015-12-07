@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#and', function() {
 
     var Customer;
 
@@ -24,15 +24,19 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+
+    it('should be able to to `$and` provided query conditions', inject(function(Query) {
         var query = new Query({
             collection: Customer
-        });
+        }).and([{
+            name: 'benson'
+        }, {
+            age: 20
+        }]);
 
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
-
+        /*jshint quotmark:double*/
+        expect(query.toString())
+            .to.be.equal("SELECT * FROM customers WHERE (name = 'benson' AND age = 20)");
     }));
 
 });

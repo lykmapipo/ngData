@@ -6,6 +6,7 @@ describe('Schema', function() {
         return 8000;
     };
 
+    var table = 'users';
     var defaultsTo = faker.name.firstName();
 
     var properties = {
@@ -46,7 +47,7 @@ describe('Schema', function() {
         var ddl = Schema.propertiesDDL(properties);
 
         var expectedDDL =
-            'firstName TEXT  UNIQUE DEFAULT "' + defaultsTo + '", lastName TEXT, ssn TEXT PRIMARY KEY';
+            'firstName TEXT UNIQUE DEFAULT "' + defaultsTo + '", lastName TEXT, ssn TEXT PRIMARY KEY';
 
         expect(ddl).to.exist;
         expect(ddl).to.equal(expectedDDL);
@@ -79,7 +80,7 @@ describe('Schema', function() {
     }));
 
 
-    it('should be able to update existing table data for new table structure', inject(function(Schema) {
+    it('should be able to update existing table data to new schema properties', inject(function(Schema) {
         var data = [{
             firstName: faker.name.firstName(),
             lastName: faker.name.lastName(),
@@ -90,6 +91,7 @@ describe('Schema', function() {
             ssn: faker.random.number().toString(),
         }];
 
+        //add additional propertis
         var props = _.merge(properties, {
             otherName: String,
             dob: Date,
@@ -99,11 +101,39 @@ describe('Schema', function() {
             }
         });
 
+        //omit property
+        props = _.omit(props, 'firstName');
+
         data = Schema.copyData(data, props);
 
-        expect(_.map(data, 'otherName')).to.exist;
-        expect(_.map(data, 'dob')).to.exist;
-        expect(_.map(data, 'interests')).to.exist;
+        expect(data[0].firstName).to.not.exist;
+        expect(data[0].otherName).to.exist;
+        expect(data[0].dob).to.exist;
+        expect(data[0].interests).to.exist;
+
     }));
+
+    beforeEach(function(done) {
+        inject(function($rootScope, Schema) {
+
+            Schema
+                .alter(table, properties)
+                .then(function(result) {
+
+                    expect(result).to.exist;
+                    expect(result).to.be.equal(table + ' migrated successfully');
+
+                    done(null, result);
+                })
+                .catch(function(error) {
+                    done(error);
+                });
+
+            setTimeout(function() {
+                $rootScope.$apply();
+            }, 50);
+
+        });
+    });
 
 });

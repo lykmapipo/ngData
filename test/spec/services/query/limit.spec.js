@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#limit', function() {
 
     var Customer;
 
@@ -24,15 +24,13 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+    it('should be able to add a limit condition to a query', inject(function(Query) {
+
         var query = new Query({
             collection: Customer
-        });
+        }).find().limit(5);
 
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
-
+        expect(query.toString()).to.be.equal('SELECT * FROM customers LIMIT 5');
     }));
 
 });

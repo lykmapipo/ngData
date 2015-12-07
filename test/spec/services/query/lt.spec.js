@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Query', function() {
+describe('Query#lt', function() {
 
     var Customer;
 
@@ -24,15 +24,22 @@ describe('Query', function() {
         });
     }));
 
-    it('should be injectable', inject(function(Query) {
+    it('should be able to build a query from less than query condition', inject(function(Query) {
         var query = new Query({
             collection: Customer
-        });
-
-        expect(query).to.exist;
-
-        expect(query).to.be.instanceof(Query);
-
+        }).lt('age', 20);
+        expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age < 20)');
     }));
+
+    it('should be able to build a query from less than conditions', inject(function(Query) {
+        var query = new Query({
+                collection: Customer
+            })
+            .where('age').lt(20)
+            .where('height').lt(40);
+
+        expect(query.toString()).to.equal('SELECT * FROM customers WHERE (age < 20 AND height < 40)');
+    }));
+
 
 });

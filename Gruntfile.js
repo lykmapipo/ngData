@@ -180,31 +180,6 @@ module.exports = function(grunt) {
                 }
             },
 
-            //universal module definition task
-            umd: {
-                dist: {
-                    src: 'dist/<%= pkg.name %>.js',
-                    dest: 'dist/<%= pkg.name %>.js',
-                    objectToExport: 'ngData',
-                    globalAlias: 'ngData',
-                    amdModuleId: 'ngData',
-                    indent: 4,
-                    deps: {
-                        args: [
-                            'angular',
-                            '_',
-                            'squel'
-                        ],
-                        default: [
-                            'angular',
-                            '_',
-                            'squel'
-                        ],
-                        items: ['angular', 'lodash', 'squel']
-                    }
-                }
-            },
-
             // The actual grunt server settings
             connect: {
                 options: {
@@ -251,8 +226,7 @@ module.exports = function(grunt) {
         'jshint',
         'karma',
         'ngAnnotate',
-        'concat:dist',
-        'umd:dist'
+        'concat:dist'
     ]);
 
     grunt.registerTask('test', [

@@ -21,10 +21,10 @@
             //database connection reference
             self.connection = null;
 
-
             //provider implementation
-            self.$get = function($q, $cordovaSQLite) {
+            self.$get = function($q, $window) {
                 var DB = {};
+
 
                 //connection magic getter and setter
                 Object.defineProperty(DB, 'connection', {
@@ -35,6 +35,7 @@
                         self.connection = connection;
                     }
                 });
+
 
                 /**
                  * @description initialize database connection
@@ -49,23 +50,28 @@
 
                     //try to open SQLite database connection if we running
                     //on mobile device
-                    if (window.cordova) {
-                        self.connection = $cordovaSQLite.openDB({
-                            name: self.name + '.db',
-                            description: self.description,
-                            version: self.version
-                                // size: self.size
-                        });
+                    if ($window.cordova && $window.sqlitePlugin) {
+
+                        self.connection =
+                            $window.sqlitePlugin.openDatabase({
+                                name: self.name + '.db',
+                                description: self.description,
+                                version: self.version
+                                    // size: self.size
+                            });
+
                     }
 
                     //otherwise open WebSQL database connection
                     else {
                         self.connection =
-                            window.openDatabase(
+                            $window.openDatabase(
                                 self.name, self.version,
                                 self.description, self.size
                             );
                     }
+
+                    return self.connection;
                 };
 
 
@@ -80,7 +86,20 @@
                     //ensure database connection exists
                     DB.connect();
 
-                    return $cordovaSQLite.execute(self.connection, query, bindings);
+                    bindings = bindings || [];
+
+                    var q = $q.defer();
+
+                    self.connection.transaction(function(tx) {
+                        tx.executeSql(query, bindings, function(_tx, result) {
+                                q.resolve(result);
+                            },
+                            function(__tx, error) {
+                                q.reject(error);
+                            });
+                    });
+
+                    return q.promise;
                 };
 
                 //export database
