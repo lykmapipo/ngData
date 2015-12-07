@@ -10,6 +10,9 @@
     angular
         .module('ngData')
         .factory('$validate', function($q) {
+            validate.Promise = function(fn) {
+                return $q(fn);
+            };
             //create a local copy of validatejs
             //by cloning/copying a global validate
             var $validate = _.clone(validate);
