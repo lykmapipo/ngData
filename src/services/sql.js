@@ -12,7 +12,7 @@
         .factory('SQL', function($database) {
             //create a local copy of squel
             //by cloning/copying a global squel
-            var sql = angular.copy(squel);
+            var sql = _.clone(squel);
 
 
             //extend insert queries with `values(Array|Object)` builder

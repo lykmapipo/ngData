@@ -11,10 +11,10 @@ describe('Model', function() {
     //fixtures
     var customers = [{
         name: faker.name.findName(),
-        code: Math.ceil(Math.random() * 999)
+        code: faker.random.uuid()
     }, {
         name: faker.name.findName(),
-        code: Math.ceil(Math.random() * 999)
+        code: faker.random.uuid()
     }];
 
 
@@ -29,10 +29,14 @@ describe('Model', function() {
                 properties: {
                     name: {
                         type: String,
+                        presence: true,
                         defaultsTo: faker.name.findName()
                     },
                     code: {
-                        type: String
+                        type: String,
+                        length: {
+                            minimum: 3
+                        }
                     }
                 }
             });
@@ -73,6 +77,16 @@ describe('Model', function() {
         var model = new Model(Customer, customers[0]);
 
         expect(_.omit(model.toJSON(), 'id')).to.eql(customers[0]);
+
+    }));
+
+    it('should be able to validate model instance', inject(function($rootScope, Model) {
+
+        var model = new Model(Customer, customers[0]);
+
+        model.validate().then(function(model) {
+            expect(_.omit(model.toObject(), 'id')).to.eql(customers[0]);
+        });
 
     }));
 

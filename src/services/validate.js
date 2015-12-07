@@ -15,7 +15,15 @@
             var $validate = _.clone(validate);
 
             //bind angular $q as promise
-            validate.Promise = $q;
+            $validate.Promise = $q;
+
+            //available validators
+            $validate.validators = [
+                'date', 'datetime', 'email', 'equality',
+                'exclusion', 'format', 'inclusion', 'length',
+                'numericality', 'presence', 'url'
+            ];
+
 
             //export sql validate
             return $validate;

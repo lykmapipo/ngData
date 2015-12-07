@@ -8,7 +8,7 @@
      */
     angular
         .module('ngData')
-        .factory('Model', function() {
+        .factory('Model', function($validate) {
 
             /**
              * @constructor
@@ -116,7 +116,10 @@
              */
             Model.prototype.toObject =
                 Model.prototype.valueOf = function() {
-                    return _.pick(this, _.keys(this.collection.properties));
+                    var toObject =
+                        _.pick(this, _.keys(this.collection.properties));
+
+                    return toObject;
                 };
 
 
@@ -126,6 +129,40 @@
              */
             Model.prototype.toJSON = function() {
                 return this.toObject();
+            };
+
+
+            /**
+             * @function
+             * @description Executes registered validation rules for this document.
+             * @return {Model} an instance of Model
+             * @public
+             */
+            Model.prototype.validate = function() {
+                var constraints = {};
+
+                var asObject = this.toObject();
+
+                if (this.collection.autoPK) {
+                    asObject = _.omit(asObject, 'id');
+                }
+
+                //build constraints
+                _.forEach(_.keys(asObject), function(key) {
+                    //obtain attribute definition from collection
+                    //properties
+                    var attribute = this.collection.properties[key];
+
+                    //pick only validation definition
+                    constraints[key] = _.pick(attribute, $validate.validators);
+
+                }.bind(this));
+
+                return $validate
+                    .async(this.toObject(), constraints)
+                    .then(function( /*object*/ ) {
+                        return this;
+                    }.bind(this));
             };
 
             return Model;
