@@ -14,6 +14,8 @@
             //by cloning/copying a global validate
             var $validate = _.clone(validate);
 
+            $validate.Promise = $q;
+
             //available validators
             $validate.validators = [
                 'date', 'datetime', 'email', 'equality',
