@@ -160,7 +160,7 @@
                 }.bind(this));
 
                 return $validate
-                    ._validate(this.toObject(), constraints)
+                    .async(this.toObject(), constraints)
                     .then(function( /*object*/ ) {
                         return this;
                     }.bind(this));

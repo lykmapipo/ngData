@@ -10,16 +10,15 @@
     angular
         .module('ngData')
         .factory('$validate', function($q) {
+
+            //set $q as validatejs promise
             validate.Promise = function(fn) {
                 return $q(fn);
             };
+
             //create a local copy of validatejs
             //by cloning/copying a global validate
             var $validate = _.clone(validate);
-
-            $validate.Promise = function(fn) {
-                return $q(fn);
-            };
 
             //available validators
             $validate.validators = [
@@ -27,23 +26,6 @@
                 'exclusion', 'format', 'inclusion', 'length',
                 'numericality', 'presence', 'url'
             ];
-
-            //wrap validatejs async validation with angular
-            //promises
-            $validate._validate = function(attributes, constraints, options) {
-                var q = $q.defer();
-
-                $validate
-                    .async(attributes, constraints, options)
-                    .then(function(response) {
-                        q.resolve(response);
-                    }).catch(function(error) {
-                        q.reject(error);
-                    });
-
-                return q.promise;
-
-            };
 
             //export sql validate
             return $validate;
