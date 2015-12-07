@@ -701,35 +701,30 @@
                 //finalize query
                 this.finalize();
 
-                var type = this.type;
-                var query = this.query;
-                var single = this.single;
-                var collection = this.collection;
-
                 var promise = this.sql.then();
 
                 //TODO check query type
                 //select,create,delete,upate
                 promise = promise.then(function(result) {
                     //handle select query
-                    if (type === 'select') {
+                    if (this.type === 'select') {
 
                         result = SQL.fetchAll(result);
 
                         result = result || [];
 
                         //return data
-                        if (result && query === 'find') {
+                        if (result && this.query === 'find') {
 
                             //map results to model
                             result = _.map(result, function(instance) {
-                                return new Model(collection, instance);
-                            });
+                                return new Model(this.collection, instance);
+                            }.bind(this));
 
                             //compact result
                             result = _.compact(result);
 
-                            if (single) {
+                            if (this.single) {
                                 result = _.first(result);
                             }
 
@@ -742,12 +737,13 @@
 
                     }
 
-                    if (type === 'insert') {
+                    if (this.type === 'insert') {
                         result = result.insertId;
                     }
 
                     return result;
-                });
+
+                }.bind(this));
 
                 promise = promise.then.apply(promise, arguments);
 

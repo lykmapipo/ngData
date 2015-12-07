@@ -34,7 +34,7 @@ describe('Collection#count', function() {
         expect(Customer.count).to.be.a('function');
     }));
 
-    it('should be able to all count existing documents', function(done) {
+    it('should be able to count all existing documents', function(done) {
         inject(function($rootScope) {
 
             Customer

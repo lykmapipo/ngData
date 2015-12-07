@@ -318,7 +318,7 @@
                 var query = new Query({
                     collection: this,
                     type: 'select'
-                });
+                }).find();
 
                 //set update conditions and fields
                 query = query.where(path, val);
