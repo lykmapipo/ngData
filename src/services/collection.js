@@ -54,12 +54,11 @@
             };
 
 
-            //commons
-
-
             /**
+             * @function
              * @description initialize new model without persist it
              * @return {Object}      new model instance
+             * @public
              */
             Collection.prototype.new = function(values) {
                 //instantiate new model
@@ -71,10 +70,12 @@
 
 
             /**
+             * @function
              * @description counts number of matching documents in a database 
              *              collection
              * @param  {Object} conditions valid mongodb query object
-             * @return {Query}            an instance of query
+             * @return {Query}            an instance of Query
+             * @public
              */
             Collection.prototype.count = function(conditions) {
 
@@ -89,13 +90,10 @@
             };
 
 
-            //creators
-
-
             /**
              * @function
-             * @description Shortcut for creating a new Document that is 
-             *              automatically saved to the db if valid.
+             * @description shortcut for creating a new document(s) that is 
+             *              automatically saved to the database if valid.
              * @param {Object|Array<Object>} doc(s)
              * @return {Promise} that will eventually resolve with newly created
              *                        document
@@ -141,14 +139,34 @@
             };
 
 
-            //finders
+            /**
+             * @function
+             * @description creates a Query for a distinct operation
+             * @param  {String} field valid document property
+             * @param  {Object} [conditions] valid mongodb query object
+             * @return {Query}    an instance of Query
+             * @public
+             */
+            Collection.prototype.distinct = function(field, conditions) {
+
+                var query = new Query({
+                    collection: this,
+                    type: 'select'
+                });
+
+                query = query.distinct(field, conditions);
+
+                return query;
+            };
 
 
             /**
+             * @function
              * @description find documents using specified conditions
              * @param  {Object}   conditions valid mongodb query object
              * @param  {[Array|String]}   projections optional fields to return
-             * @return {Promise} which resolve with collection of models instance
+             * @return {Query} an instnce of Query
+             * @public
              */
             Collection.prototype.find = function(conditions, projections) {
 
@@ -164,29 +182,12 @@
 
 
             /**
-             * @description find a single document using specified conditiond
-             * @param  {Object}   conditions valid mongodb query object
-             * @param  {[Array|String]}   projections optional fields to return
-             * @return {Promise} which resolve with model instance
-             */
-            Collection.prototype.findOne = function(conditions, projections) {
-
-                var query = new Query({
-                    collection: this,
-                    type: 'select'
-                });
-
-                query = query.findOne(conditions, projections);
-
-                return query;
-            };
-
-
-            /**
+             * @function
              * @description find a single document by its id
              * @param  {String|Number}   id document id
              * @param  {[Array|String]}   projections optional fields to return
-             * @return {Promise} which resolve with model instance
+             * @return {Query} an instance of Query
+             * @public
              */
             Collection.prototype.findById = function(id, projections) {
 
@@ -202,9 +203,48 @@
                 return query;
             };
 
-            Query.prototype.findByIdAndRemove = function( /*id*/ ) {};
 
-            Query.prototype.findByIdAndUpdate = function( /*id, update, options*/ ) {};
+            /**
+             * @function
+             * @description find a single document using specified conditiond
+             * @param  {Object}   conditions valid mongodb query object
+             * @param  {[Array|String]}   projections optional fields to return
+             * @return {Query} an instance of Query
+             * @public
+             */
+            Collection.prototype.findOne = function(conditions, projections) {
+
+                var query = new Query({
+                    collection: this,
+                    type: 'select'
+                });
+
+                query = query.findOne(conditions, projections);
+
+                return query;
+            };
+
+
+            /**
+             * @function
+             * @description removes documents from the collection.
+             * @param  {Object}   conditions valid mongodb query object
+             * @return {Promise} that will eventually resolved with full raw 
+             *                        response response from database
+             *
+             * @public
+             */
+            Collection.prototype.remove = function(conditions) {
+
+                var query = new Query({
+                    collection: this,
+                    type: 'delete'
+                });
+
+                query = query.remove(conditions);
+
+                return query;
+            };
 
 
             /**
@@ -233,19 +273,21 @@
 
 
             /**
-             * @description removes documents from the collection.
-             * @param  {Object}   conditions valid mongodb query object
-             * @return {Promise} that will eventually resolved with full raw 
-             *                        response response from database
+             * @description creates a Query, applies the passed conditions, 
+             *              and returns the Query
+             * @param  {String} [path] a valid document path
+             * @param  {Number|String} [val] value to use in comparison
+             * @return {Query}  an instance of Query
              */
-            Collection.prototype.remove = function(conditions) {
+            Collection.prototype.where = function(path, val) {
 
                 var query = new Query({
                     collection: this,
-                    type: 'delete'
+                    type: 'select'
                 });
 
-                query = query.remove(conditions);
+                //set update conditions and fields
+                query = query.where(path, val);
 
                 return query;
             };

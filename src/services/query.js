@@ -623,6 +623,7 @@
              * @param  {[type]} conditions valid mongodb query condition
              * @param {Object} doc valid object to use in update
              * @return {Query} an instance of Query
+             * @public
              */
             Query.prototype.update = function(conditions, doc) {
 
@@ -645,16 +646,19 @@
 
 
             /**
+             * @function
              * @description specifies a path for use with chaining.
              * @param  {String} [path] a valid document path
              * @param  {Number|String} [val] value to use in comparison
-             * @return {Query}      
+             * @return {Query}  an instance of Query    
              * @example
              *     query.where({name:'john',age:20})
              *  or
              *      query.where('name','john')
              * or
              *     Customer.where({name:'john',age:{$gt:20})
+             *
+             * @public
              */
             Query.prototype.where = function(path, value) {
                 if (!this.sql) {
@@ -688,8 +692,10 @@
 
 
             /**
+             * @function
              * @description Executes this query and resolve with a promise
-             * @return {promise}
+             * @return {Promise} an instance of Promise
+             * @public
              */
             Query.prototype.then = function( /*resolve, reject*/ ) {
                 //finalize query
@@ -750,8 +756,10 @@
 
 
             /**
+             * @function
              * @description Executes this query and reject with a promise
-             * @return {promise}
+             * @return {Promise} an instance of Query
+             * @public
              */
             Query.prototype.catch = function( /*reject*/ ) {
                 this.finalize();
@@ -763,6 +771,12 @@
             };
 
 
+            /**
+             * @function
+             * @description finalize query DML
+             * @return {Query} an instance of Query
+             * @private 
+             */
             Query.prototype.finalize = function() {
 
                 // check the expession condition if is still open
@@ -778,8 +792,10 @@
 
 
             /**
+             * @function
              * @description convert current query into its string presentation
              * @return {String} current query as sql DML 
+             * @public
              */
             Query.prototype.toString = function() {
 
