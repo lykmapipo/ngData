@@ -9,7 +9,6 @@
      */
     angular
         .module('ngData', [
-            'bt.jsonValidator',
             'platanus.inflector'
         ]);
 
