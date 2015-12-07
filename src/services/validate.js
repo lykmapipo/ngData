@@ -20,6 +20,7 @@
             //by cloning/copying a global validate
             var $validate = _.clone(validate);
 
+
             //available validators
             $validate.validators = [
                 'date', 'datetime', 'email', 'equality',

@@ -1,5 +1,5 @@
-ngData (WIP)
-============
+ngData
+======
 [![Build Status](https://travis-ci.org/lykmapipo/ngData.svg?branch=master)](https://travis-ci.org/lykmapipo/ngData)
 
 Simple and minimal WebSQL and cordova SQLite ORM for [ionic](https://github.com/driftyco/ionic) and [angular](https://github.com/angular/angular)
@@ -16,6 +16,93 @@ $ bower install ng-data --save
 * Install all development dependencies
 ```sh
 $ npm install && bower install
+```
+
+## Usage
+
+### Configure database and define model
+```js
+angular
+        .module('ngBooks', ['ngData'])
+        .config(function($databaseProvider) {
+            //configure database
+            $databaseProvider.name = 'books';
+            $databaseProvider.description = 'Books database';
+            $databaseProvider.version = '1.0.0';
+            $databaseProvider.size = 4 * 1024 * 1024;
+
+        })
+        .run(function($ngData) {
+            //define model
+            $ngData.model('Book', {
+                tableName: 'books',
+                properties: {
+                    name: String,
+                    author: Object,
+                    isbn: {
+                        type: String,
+                        required: true,
+                        unique: true
+                    }
+                }
+            });
+
+            //initialize 
+            $ngData.initialize().then(function(results) {
+                console.log(results);
+            }).catch(function(error) {
+                console.log(error);
+            });
+
+        });
+```
+
+### Define factories
+```js
+angular
+    .module('ngBooks')
+    .factory('Book', function($ngData) {
+        
+        var Book = $ngData.model('Book');
+
+        return Book;
+    });
+```
+
+### Use it
+```js
+angular
+        .module('ngBooks')
+        .controller('BookCtrl', function($scope, $q, Book) {
+
+            $scope.index = function(offset, limit) {
+                Book.find().limit(limit).offset(offset).then(function(books) {
+                    $scope.books = books;
+                });
+            };
+
+            $scope.book = Book.new();
+
+            $scope.show = function(id) {
+                return Book.findById(id);
+            };
+
+            $scope.create = function(book) {
+                return Book.create(book);
+            };
+
+            $scope.update = function(book) {
+                return book.save();
+            };
+
+            $scope.delete = function(book) {
+                return book.delete();
+            };
+           
+            //load books
+            $scope.index();
+
+        });
 ```
 
 * Then run test

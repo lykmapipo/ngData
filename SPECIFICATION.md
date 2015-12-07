@@ -173,7 +173,7 @@ angular
 angular
     .module('ngPOS')
     .controller(function(User){
-        $scope.user = new User();
+        $scope.user = User.new();
 
         $scope.save = function(user){
             user.save();
