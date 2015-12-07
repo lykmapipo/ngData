@@ -650,18 +650,11 @@
              * @param  {Number|String} [val] value to use in comparison
              * @return {Query}      
              * @example
-             *     query.where({
-             *                 name:'john',
-             *                 age:20
-             *               })
+             *     query.where({name:'john',age:20})
              *  or
              *      query.where('name','john')
-             *
              * or
-             *     Customer.where({
-             *                 name:'john',
-             *                 age:{$gt:20}
-             *                )
+             *     Customer.where({name:'john',age:{$gt:20})
              */
             Query.prototype.where = function(path, value) {
                 if (!this.sql) {
@@ -670,6 +663,9 @@
 
                 //build condition if both path and value provided
                 if (path && _.isString(path) && value) {
+                    //reference path for later use
+                    this._path = path;
+
                     var condition = {};
                     condition[path] = value;
                     path = condition;
@@ -687,7 +683,8 @@
             };
 
 
-            //TODO implement the min,max, avg, sum
+            //TODO implement aggregate queries
+            //i.e the min, max, avg, sum
 
 
             /**
