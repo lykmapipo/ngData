@@ -15,9 +15,7 @@
             var $validate = _.clone(validate);
 
             //bind angular $q as promise
-            $validate.Promise = function Promise(fn) {
-                return $q(fn);
-            };
+            $validate.Promise = $q.when();
 
             //available validators
             $validate.validators = [
