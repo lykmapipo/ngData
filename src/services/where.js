@@ -78,9 +78,16 @@
                         value = [value];
                     }
 
-                    //TODO what if IN operator used in other type than string
                     value = _.map(value, function(val) {
-                        return ['\'', val, '\''].join('');
+                        //handle string type value
+                        if (_.isString(val)) {
+                            return ['\'', val, '\''].join('');
+                        }
+
+                        //handle number type value
+                        else {
+                            return val;
+                        }
                     }).join(',');
 
                     value = ['(', value, ')'].join('');

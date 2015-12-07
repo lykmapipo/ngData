@@ -42,5 +42,14 @@ describe('Query#in', function() {
         expect(query.toString()).to.be.equal("SELECT * FROM customers WHERE (city IN ('mwanza','arusha','singida'))");
     }));
 
+    it('should be able to create query using specified in condition', inject(function(Query) {
+        var query = new Query({
+            collection: Customer
+        }).in('age', [1, 2, 3]);
+
+        /*jshint quotmark:double*/
+        expect(query.toString()).to.be.equal("SELECT * FROM customers WHERE (age IN (1,2,3))");
+    }));
+
 
 });
