@@ -14,7 +14,7 @@
             //by cloning/copying a global validate
             var $validate = _.clone(validate);
 
-            $validate.Promise = $q;
+            $validate.Promise = $q.when();
 
             //available validators
             $validate.validators = [
@@ -26,6 +26,7 @@
             //wrap validatejs async validation with angular
             //promises
             $validate._validate = function(attributes, constraints, options) {
+                console.log(typeof validate.Promise);
                 var q = $q.defer();
 
                 $validate
