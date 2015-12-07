@@ -134,7 +134,7 @@
 
             /**
              * @function
-             * @description Executes registered validation rules for this document.
+             * @description executes registered validation rules for this document
              * @return {Model} an instance of Model
              * @public
              */

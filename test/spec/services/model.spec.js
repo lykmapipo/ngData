@@ -88,6 +88,11 @@ describe('Model', function() {
             expect(_.omit(model.toObject(), 'id')).to.eql(customers[0]);
         });
 
+        //wait for propagation
+        setTimeout(function() {
+            $rootScope.$apply();
+        }, 50);
+
     }));
 
     it('should be able to save new model instance', function(done) {

@@ -6,7 +6,7 @@
      */
     angular
         .module('ngData')
-        .factory('Collection', function($q, inflector, Model, Query) {
+        .factory('Collection', function($q, inflector, $validate, Model, Query) {
 
             /**
              * @description Collection
@@ -271,6 +271,40 @@
                 return query;
             };
 
+
+            /**
+             * @function
+             * @description executes registered validation rules on the provided
+             *              document
+             * @return {Object} a document if valid
+             * @public
+             */
+            Collection.prototype.validate = function(doc) {
+                var constraints = {};
+
+                var asObject = doc;
+
+                if (this.autoPK) {
+                    asObject = _.omit(asObject, 'id');
+                }
+
+                //build constraints
+                _.forEach(_.keys(asObject), function(key) {
+                    //obtain attribute definition from collection
+                    //properties
+                    var attribute = this.properties[key];
+
+                    //pick only validation definition
+                    constraints[key] = _.pick(attribute, $validate.validators);
+
+                }.bind(this));
+
+                return $validate
+                    .async(doc, constraints)
+                    .then(function( /*object*/ ) {
+                        return doc;
+                    });
+            };
 
             /**
              * @description creates a Query, applies the passed conditions, 
