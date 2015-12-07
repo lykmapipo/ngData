@@ -110,6 +110,7 @@ describe('Collection#count', function() {
                     done(null, response);
                 })
                 .catch(function(error) {
+
                     done(error);
                 });
 
