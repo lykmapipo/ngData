@@ -82,11 +82,11 @@ describe('Model', function() {
 
     it('should be able to validate model instance', inject(function($rootScope, Model) {
 
-        var model = new Model(Customer, customers[0]);
-
-        model.validate().then(function(model) {
-            expect(_.omit(model.toObject(), 'id')).to.eql(customers[0]);
-        });
+        new Model(Customer, customers[0])
+            .validate()
+            .then(function(model) {
+                expect(_.omit(model.toObject(), 'id')).to.eql(customers[0]);
+            });
 
         //wait for propagation
         setTimeout(function() {

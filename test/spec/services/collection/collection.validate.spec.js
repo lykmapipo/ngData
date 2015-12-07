@@ -57,9 +57,11 @@ describe('Collection#create', function() {
 
     it('should be able to validate a document', inject(function($rootScope) {
 
-        Customer.validate(customers[0]).then(function(model) {
-            expect(_.omit(model.toObject(), 'id')).to.eql(customers[0]);
-        });
+        Customer
+            .validate(customers[0])
+            .then(function(model) {
+                expect(_.omit(model, 'id')).to.eql(customers[0]);
+            });
 
         //wait for propagation
         setTimeout(function() {

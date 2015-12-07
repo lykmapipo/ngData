@@ -14,9 +14,6 @@
             //by cloning/copying a global validate
             var $validate = _.clone(validate);
 
-            //bind angular $q as promise
-            $validate.Promise = $q.when();
-
             //available validators
             $validate.validators = [
                 'date', 'datetime', 'email', 'equality',
@@ -24,6 +21,22 @@
                 'numericality', 'presence', 'url'
             ];
 
+            //wrap validatejs async validation with angular
+            //promises
+            $validate._validate = function(attributes, constraints, options) {
+                var q = $q.defer();
+
+                $validate
+                    .async(attributes, constraints, options)
+                    .then(function(response) {
+                        q.resolve(response);
+                    }).catch(function(error) {
+                        q.reject(error);
+                    });
+
+                return q.promise;
+
+            };
 
             //export sql validate
             return $validate;

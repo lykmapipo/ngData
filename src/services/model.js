@@ -139,6 +139,7 @@
              * @public
              */
             Model.prototype.validate = function() {
+
                 var constraints = {};
 
                 var asObject = this.toObject();
@@ -159,7 +160,7 @@
                 }.bind(this));
 
                 return $validate
-                    .async(this.toObject(), constraints)
+                    ._validate(this.toObject(), constraints)
                     .then(function( /*object*/ ) {
                         return this;
                     }.bind(this));

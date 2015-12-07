@@ -300,7 +300,7 @@
                 }.bind(this));
 
                 return $validate
-                    .async(doc, constraints)
+                    ._validate(doc, constraints)
                     .then(function( /*object*/ ) {
                         return doc;
                     });
