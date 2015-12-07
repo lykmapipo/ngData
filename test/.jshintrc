@@ -23,6 +23,7 @@
         "after": false,
         "afterEach": false,
         "angular": false,
+        "validate": false,
         "before": false,
         "beforeEach": false,
         "describe": false,

@@ -20,6 +20,7 @@
     "expr": true,
     "globals": {
         "angular": false,
+        "validate": false,
         "faker": false,
         "_": false,
         "squel": false
