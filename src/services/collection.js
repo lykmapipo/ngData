@@ -51,6 +51,14 @@
                 var id = this.properties.id;
                 this.autoPK = id && id.autoIncrement;
 
+                //bind collection methods
+                if (this.definition.statics) {
+                    _.forEach(this.definition.statics, function(value, key) {
+                        // extend collection with statics methods
+                        this[key] = value;
+                    }.bind(this));
+                }
+
             };
 
 

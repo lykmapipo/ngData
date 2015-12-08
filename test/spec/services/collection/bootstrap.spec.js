@@ -38,6 +38,13 @@ describe('Collection', function() {
                             minimum: 3
                         }
                     }
+                },
+                statics: {
+                    findByCode: function(code) {
+                        return this.findOne({
+                            code: code
+                        });
+                    }
                 }
             });
 
@@ -58,6 +65,12 @@ describe('Collection', function() {
 
     it('should be registerable', function() {
         expect(Customer).to.exist;
+    });
+
+
+    it('should be able to extend collection with provided static methods', function() {
+        expect(Customer.findByCode).to.exist;
+        expect(Customer.findByCode).to.be.a('function');
     });
 
     //seed data

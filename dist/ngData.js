@@ -1,6 +1,6 @@
 /**
  * @description Simple and minimal WebSQL and cordova SQLite ORM for ionic and angular
- * @version v0.1.0 - Mon Dec 07 2015 20:42:55
+ * @version v0.2.0 - Tue Dec 08 2015 16:32:40
  * @link https://github.com/lykmapipo/ngData
  * @authors lykmapipo <lallyelias87@gmail.com>, BenMaruchu <https://github.com/BenMaruchu>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -232,6 +232,14 @@
                 //deduce if collection use autoIncrement primary key
                 var id = this.properties.id;
                 this.autoPK = id && id.autoIncrement;
+
+                //bind collection methods
+                if (this.definition.statics) {
+                    _.forEach(this.definition.statics, function(value, key) {
+                        // extend collection with statics methods
+                        this[key] = value;
+                    }.bind(this));
+                }
 
             };
 
@@ -536,6 +544,17 @@
                 //reference to model collection
                 this.collection = collection;
 
+                this._init(values);
+            }
+
+
+            /**
+             * @function
+             * @description model initialization logics
+             * @private
+             */
+            Model.prototype._init = function(values) {
+
                 //initialize model properties
                 //and set default properties
                 _.forEach(_.keys(this.collection.properties), function(property) {
@@ -546,6 +565,15 @@
 
                 }.bind(this));
 
+                //bind collection instance methods
+                if (this.collection.definition.methods) {
+                    _.forEach(this.collection.definition.methods, function(value, key) {
+                        // extend model with instance methods
+                        this[key] = value;
+                    }.bind(this));
+                }
+
+
                 //assign instance properties thier value
                 if (values && _.isPlainObject(values)) {
                     _.forEach(values, function(value, key) {
@@ -554,7 +582,8 @@
                         }
                     }.bind(this));
                 }
-            }
+
+            };
 
 
             /**
@@ -706,17 +735,27 @@
      *              properties:{
      *                  name:{
      *                      type:String,
-     *                      required:true
+     *                      presence:true
      *                  },
      *                  code:String,
      *                  email:{
      *                      type:String,
      *                      email:true,
-     *                      required:true
+     *                      presence:true
      *                  },
      *                  joinedAt:{
      *                      type:Date,
      *                      defaultsTo: new Date()
+     *                  }
+     *              },
+     *              methods:{//instance methods
+     *                  getCodedName:function(){
+     *                      return [this.code,this.name].join('-');
+     *                  }
+     *              },
+     *              statics:{//static methods
+     *                  findByCode:function(code){
+     *                      return this.findOne({code:code})
      *                  }
      *              }
      *          });

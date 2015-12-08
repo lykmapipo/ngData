@@ -37,6 +37,11 @@ describe('Model', function() {
                         minimum: 3
                     }
                 }
+            },
+            methods: {
+                getCodedName: function() {
+                    return [this.code, this.name].join('-');
+                }
             }
         });
 
@@ -45,6 +50,15 @@ describe('Model', function() {
 
     it('should be injectable', inject(function(Model) {
         expect(Model).to.exist;
+    }));
+
+    it('should be able to register instance methods', inject(function(Model) {
+
+        var model = new Model(Customer, customers[0]);
+
+        expect(model.getCodedName).to.exist;
+        expect(model.getCodedName).to.be.a('function');
+
     }));
 
     it('should be able to instantiate new model instance', inject(function(Model) {

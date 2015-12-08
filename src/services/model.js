@@ -21,6 +21,17 @@
                 //reference to model collection
                 this.collection = collection;
 
+                this._init(values);
+            }
+
+
+            /**
+             * @function
+             * @description model initialization logics
+             * @private
+             */
+            Model.prototype._init = function(values) {
+
                 //initialize model properties
                 //and set default properties
                 _.forEach(_.keys(this.collection.properties), function(property) {
@@ -31,6 +42,15 @@
 
                 }.bind(this));
 
+                //bind collection instance methods
+                if (this.collection.definition.methods) {
+                    _.forEach(this.collection.definition.methods, function(value, key) {
+                        // extend model with instance methods
+                        this[key] = value;
+                    }.bind(this));
+                }
+
+
                 //assign instance properties thier value
                 if (values && _.isPlainObject(values)) {
                     _.forEach(values, function(value, key) {
@@ -39,7 +59,8 @@
                         }
                     }.bind(this));
                 }
-            }
+
+            };
 
 
             /**

@@ -18,17 +18,27 @@
      *              properties:{
      *                  name:{
      *                      type:String,
-     *                      required:true
+     *                      presence:true
      *                  },
      *                  code:String,
      *                  email:{
      *                      type:String,
      *                      email:true,
-     *                      required:true
+     *                      presence:true
      *                  },
      *                  joinedAt:{
      *                      type:Date,
      *                      defaultsTo: new Date()
+     *                  }
+     *              },
+     *              methods:{//instance methods
+     *                  getCodedName:function(){
+     *                      return [this.code,this.name].join('-');
+     *                  }
+     *              },
+     *              statics:{//static methods
+     *                  findByCode:function(code){
+     *                      return this.findOne({code:code})
      *                  }
      *              }
      *          });

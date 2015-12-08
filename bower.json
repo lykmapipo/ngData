@@ -1,6 +1,6 @@
 {
     "name": "ngData",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Simple and minimal WebSQL and cordova SQLite ORM for ionic and angular",
     "homepage": "https://github.com/lykmapipo/ngData",
     "main": [

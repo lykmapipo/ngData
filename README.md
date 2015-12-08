@@ -44,6 +44,16 @@ angular
                         required: true,
                         unique: true
                     }
+                },
+                methods:{//instance methods
+                   getCodedName: function(){
+                       return [this.code, this.name].join('-');
+                   }
+                },
+                statics:{//static methods
+                   findByCode: function(code){
+                       return this.findOne({code:code});
+                   }
                 }
             });
 
