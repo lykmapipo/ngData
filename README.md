@@ -6,7 +6,7 @@ Simple and minimal WebSQL and cordova SQLite ORM for [ionic](https://github.com/
 
 ## Istallation
 ```sh
-$ bower install ng-data --save
+$ bower install ngData --save
 ```
 
 ## Testing
