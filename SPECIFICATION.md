@@ -42,6 +42,8 @@ $databaseprovider
 - Establish data base connection based on environment
     + SQLite for ionic
     + WEBSQL for browsers
+    + IndexDB
+    + InMemory
 
 ### Migration
 Apply latest migration and provide other utilities for:
