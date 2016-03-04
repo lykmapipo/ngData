@@ -27,6 +27,7 @@ module.exports = function(config) {
             'bower_components/lodash/lodash.js',
             'bower_components/squel/squel-basic.js',
             'bower_components/validate/validate.js',
+            'bower_components/lovefield/dist/lovefield.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'bower_components/faker/build/build/faker.js',
             // endbower

@@ -38,7 +38,8 @@
         "angular-inflector": "~0.2.0",
         "lodash": "~3.10.1",
         "squel": "~4.2.2",
-        "validate": "~0.9.0"
+        "validate": "~0.9.0",
+        "lovefield": "~2.1.6"
     },
     "devDependencies": {
         "angular-mocks": "~1.4.5",
@@ -47,6 +48,9 @@
     "overrides": {
         "squel": {
             "main": "squel-basic.js"
+        },
+        "lovefield": {
+            "main": "dist/lovefield.js"
         }
     },
     "resolutions": {
