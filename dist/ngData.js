@@ -1,6 +1,6 @@
 /**
  * @description Simple and minimal WebSQL and cordova SQLite ORM for ionic and angular
- * @version v0.2.0 - Tue Dec 08 2015 16:32:40
+ * @version v0.2.0 - Fri Mar 04 2016 11:51:42
  * @link https://github.com/lykmapipo/ngData
  * @authors lykmapipo <lallyelias87@gmail.com>, BenMaruchu <https://github.com/BenMaruchu>
  * @license MIT License, http://www.opensource.org/licenses/MIT
