@@ -20,15 +20,20 @@
             self.description = 'Database';
             self.version = '1.0.0';
             self.size = 4 * 1024 * 1024;
-            self.store = self.Stores.INDEXED_DB;
+            self.store = self.Stores.MEMORY;
 
             //database connection reference
             self.connection = null;
 
             //provider implementation
-            self.$get = function($q, $window) {
+            self.$get = function($q) {
                 var DB = {};
 
+                //prepare database onUpgrade handler
+                self.onUpgrade = self.onUpgrade || function onUpgrade(rawDatabase) {
+                    console.log(rawDatabase);
+                    return $q.when(rawDatabase);
+                };
 
                 //connection magic getter and setter
                 Object.defineProperty(DB, 'connection', {
@@ -42,40 +47,37 @@
 
 
                 /**
+                 * @name connect
                  * @description initialize database connection
-                 * @return {Object} database connection
+                 * @return {Promise} database connection
+                 * @type {Function}
                  */
                 DB.connect = function() {
                     //check if there is
                     //exsting database connection
                     if (self.connection) {
-                        return;
+                        return $q.when(self.connection);
                     }
 
-                    //try to open SQLite database connection if we running
-                    //on mobile device
-                    if ($window.cordova && $window.sqlitePlugin) {
-
-                        self.connection =
-                            $window.sqlitePlugin.openDatabase({
-                                name: self.name + '.db',
-                                description: self.description,
-                                version: self.version
-                                    // size: self.size
-                            });
-
+                    //reset WebSQL provider based on environment
+                    if (window.cordova && window.sqlitePlugin) {
+                        window.openDatabase =
+                            window.sqlitePlugin.openDatabase;
                     }
 
-                    //otherwise open WebSQL database connection
-                    else {
-                        self.connection =
-                            $window.openDatabase(
-                                self.name, self.version,
-                                self.description, self.size
-                            );
-                    }
+                    //open database connection
+                    //TODO migrate schemas before connect
+                    var promise =
+                        lf.schema.create(self.name, self.version).connect({
+                            storeType: self.store,
+                            onUpgrade: self.onUpgrade
+                        });
 
-                    return self.connection;
+                    return promise.then(function(_connection) {
+                        self.connection = _connection;
+                        return _connection;
+                    });
+
                 };
 
 

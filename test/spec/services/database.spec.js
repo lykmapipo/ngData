@@ -1,9 +1,14 @@
 'use strict';
 
 describe('$database', function() {
+    var databaseProvider;
 
     // load the ngData module
-    beforeEach(module('ngData'));
+    beforeEach(function() {
+        module('ngData', function($databaseProvider) {
+            databaseProvider = $databaseProvider;
+        });
+    });
 
 
     it('should be injectable', inject(function($database) {
@@ -12,14 +17,29 @@ describe('$database', function() {
         expect($database.connect).to.exist;
     }));
 
-    it('should be able to establish connection', inject(function($database) {
-        $database.connect();
-        expect($database.connection).to.exist;
-        expect($database.connection.transaction).to.exist;
-    }));
+    it.only('should be able to establish connection', function(done) {
+
+        inject(function($rootScope, $timeout, $database) {
+
+            $database.connect().then(function(_connection) {
+                expect(_connection).to.exist;
+                expect(databaseProvider.connection).to.exist;
+                done(null, _connection);
+            }).catch(function(error) {
+                done(error);
+            });
+
+            // wait for propagation
+            $timeout(function() {
+                $rootScope.$apply();
+            }, 50);
+
+        });
+
+    });
 
 
-    it('should be able to execute plain sql query', inject(function($rootScope, $database) {
+    it.skip('should be able to execute plain sql query', inject(function($rootScope, $database) {
 
         $database
             .query('SELECT * FROM users')

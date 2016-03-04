@@ -1,6 +1,6 @@
 'use strict';
 
-describe.only('$databaseProvider', function() {
+describe('$databaseProvider', function() {
     //reference
     var databaseProvider;
 
@@ -11,6 +11,10 @@ describe.only('$databaseProvider', function() {
         });
     });
 
+    afterEach(function() {
+        databaseProvider.store = databaseProvider.Stores.MEMORY;
+    });
+
     it('should be injectable', inject(function() {
         expect(databaseProvider).to.exist;
     }));
@@ -19,14 +23,14 @@ describe.only('$databaseProvider', function() {
         expect(databaseProvider.Stores).to.exist;
     }));
 
-    it('should have default database configurations', inject(function() {
+    it('should be able to provide default database configurations', inject(function() {
         expect(databaseProvider.name).to.exist;
         expect(databaseProvider.description).to.exist;
         expect(databaseProvider.version).to.exist;
         expect(databaseProvider.size).to.exist;
         expect(databaseProvider.store).to.exist;
         expect(databaseProvider.store)
-            .to.equal(databaseProvider.Stores.INDEXED_DB);
+            .to.be.equal(databaseProvider.Stores.MEMORY);
     }));
 
     it('should be able to configure database', inject(function() {
@@ -40,11 +44,14 @@ describe.only('$databaseProvider', function() {
         databaseProvider.description = description;
         databaseProvider.version = version;
         databaseProvider.size = size;
+        databaseProvider.store = databaseProvider.Stores.WEB_SQL;
 
         expect(databaseProvider.name).to.be.equal(name);
         expect(databaseProvider.description).to.be.equal(description);
         expect(databaseProvider.version).to.be.equal(version);
         expect(databaseProvider.size).to.be.equal(size);
+        expect(databaseProvider.store)
+            .to.be.equal(databaseProvider.Stores.WEB_SQL);
     }));
 
 });
