@@ -10,7 +10,12 @@
 - description = 'Books database'
 - version = '1.0.0'
 - size = 4 * 1024 * 1024
-- storeType = $storeProvider.IndexDB 
+- store = $storeProvider.IndexDB, $storeProvider.WebSQL, $storeProvider.Memory
+- onUpgrade = default upgrade && user defined fn:Promise
+
+### Connection LifeCycle
+- onConnect
+- onUpgrade
 
 ## Schema
 

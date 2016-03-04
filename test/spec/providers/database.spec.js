@@ -1,6 +1,7 @@
 'use strict';
 
-describe('$databaseProvider', function() {
+describe.only('$databaseProvider', function() {
+    //reference
     var databaseProvider;
 
     // load the ngData module
@@ -14,11 +15,18 @@ describe('$databaseProvider', function() {
         expect(databaseProvider).to.exist;
     }));
 
+    it('should be able to provide data store types', inject(function() {
+        expect(databaseProvider.DataStoreType).to.exist;
+    }));
+
     it('should have default database configurations', inject(function() {
         expect(databaseProvider.name).to.exist;
         expect(databaseProvider.description).to.exist;
         expect(databaseProvider.version).to.exist;
         expect(databaseProvider.size).to.exist;
+        expect(databaseProvider.storeType).to.exist;
+        expect(databaseProvider.storeType)
+            .to.equal(databaseProvider.DataStoreType.INDEXED_DB);
     }));
 
     it('should be able to configure database', inject(function() {

@@ -12,11 +12,15 @@
             /*jshint validthis:true*/
             var self = this;
 
-            //database properties
+            //database store type
+            self.DataStoreType = lf.schema && lf.schema.DataStoreType;
+
+            //default database properties
             self.name = 'db';
             self.description = 'Database';
             self.version = '1.0.0';
             self.size = 4 * 1024 * 1024;
+            self.storeType = self.DataStoreType.INDEXED_DB;
 
             //database connection reference
             self.connection = null;

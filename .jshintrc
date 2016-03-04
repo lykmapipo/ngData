@@ -23,6 +23,7 @@
         "validate": false,
         "faker": false,
         "_": false,
-        "squel": false
+        "squel": false,
+        "lf": false
     }
 }
