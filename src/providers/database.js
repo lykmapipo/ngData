@@ -83,7 +83,8 @@
                     return $q.when(rawDatabase);
                 };
 
-                //connection magic getter and setter
+
+                //expose connection
                 Object.defineProperty(DB, 'connection', {
                     get: function() {
                         return self.connection;
@@ -95,12 +96,24 @@
 
 
                 /**
+                 * @name model
+                 * @param  {String} modelName valid registered model name
+                 * @return {Collection}  an instance of collection
+                 */
+                DB.model = function(modelName) {
+                    return modelName && self.models[modelName];
+                };
+
+
+                /**
                  * @name connect
                  * @description initialize database connection
                  * @return {Promise} database connection
                  * @type {Function}
                  */
                 DB.connect = function() {
+                    //TODO why not return connection if exists?
+                    //TODO detect schema change and reconnect?
 
                     //reset WebSQL provider based on environment
                     if (window.cordova && window.sqlitePlugin) {
@@ -110,7 +123,7 @@
 
                     //TODO compile models
                     _.forEach(_.keys(self.models), function(modelName) {
-                        self.model[modelName] =
+                        self.models[modelName] =
                             new Collection(self.models[modelName]);
                     });
 

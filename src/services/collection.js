@@ -49,6 +49,7 @@
              */
             Collection.prototype._init = function() {
 
+                //TODO cleanup auto primary key
                 //deduce if collection use autoIncrement primary key
                 var id = this.properties.id;
                 this.autoPK = id && id.autoIncrement;

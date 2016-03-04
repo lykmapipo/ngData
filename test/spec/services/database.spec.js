@@ -39,20 +39,46 @@ describe('$database', function() {
 
     });
 
+    describe.only('model', function() {
 
-    it.skip('should be able to execute plain sql query', inject(function($rootScope, $database) {
+        it('should be able to compile models', function(done) {
 
-        $database
-            .query('SELECT * FROM users')
-            .catch(function(error) {
-                expect(error).to.exist;
-                expect(error.code).to.be.equal(5);
-                expect(error.message).to.be.equal('no such table: users');
+            inject(function($rootScope, $timeout, $database) {
+                var Types = databaseProvider.Types;
+                var properties = {
+                    name: Types.STRING
+                };
+
+                //register model
+                databaseProvider.model('User', {
+                    properties: properties
+                });
+
+                $database.connect().then(function(_connection) {
+
+                    expect(_connection).to.exist;
+                    expect($database.connection).to.exist;
+                    expect($database.connection).to.not.be.null;
+
+                    var User = $database.model('User');
+
+                    expect(User.name).to.equal('User');
+                    expect(User.tableName).to.equal('users');
+
+                    done(null, _connection);
+                }).catch(function(error) {
+                    done(error);
+                });
+
+                // wait for propagation
+                $timeout(function() {
+                    $rootScope.$apply();
+                }, 50);
+
             });
 
-        //wait for propagation
-        $rootScope.$apply();
+        });
 
-    }));
+    });
 
 });

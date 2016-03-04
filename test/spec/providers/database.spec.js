@@ -1,6 +1,6 @@
 'use strict';
 
-describe.only('$databaseProvider', function() {
+describe('$databaseProvider', function() {
     //reference
     var databaseProvider;
 
