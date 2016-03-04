@@ -51,7 +51,7 @@
                 }
 
 
-                //assign instance properties their value
+                //assign instance properties thier value
                 if (values && _.isPlainObject(values)) {
                     _.forEach(values, function(value, key) {
                         if (_.has(this.collection.properties, key)) {
@@ -73,6 +73,62 @@
             Model.prototype.isNew = function() {
                 //TODO update logics to check for new model instance
                 return !this.id;
+            };
+
+
+            /**
+             * @description save the model instance into the database
+             * @return {Promise}
+             */
+            Model.prototype.save = function() {
+
+                var self = this;
+                var query;
+                var asObject;
+
+                //create if new
+                if (this.isNew()) {
+                    asObject = this.toObject();
+
+                    if (this.collection.autoPK) {
+                        asObject = _.omit(asObject, 'id');
+                    }
+
+                    query = this.collection.create(asObject);
+                }
+
+                //else update
+                else {
+
+                    asObject = _.omit(this.toObject(), 'id');
+
+                    query = this.collection.update({
+                            id: this.id
+                        }, asObject)
+                        .then(function( /*response*/ ) {
+                            return self;
+                        });
+                }
+
+                return query;
+
+            };
+
+
+            /**
+             * @description remove the instance
+             * @return {Promise}
+             */
+            Model.prototype.remove = function() {
+                var self = this;
+
+                var query = this.collection.remove({
+                    id: this.id
+                }).then(function( /*response*/ ) {
+                    return self;
+                });
+
+                return query;
             };
 
 
@@ -110,7 +166,6 @@
 
                 var asObject = this.toObject();
 
-                //autoIncrement
                 if (this.collection.autoPK) {
                     asObject = _.omit(asObject, 'id');
                 }
@@ -126,15 +181,13 @@
 
                 }.bind(this));
 
-                return $validate.async(this.toObject(), constraints)
+                return $validate
+                    .async(this.toObject(), constraints)
                     .then(function( /*object*/ ) {
                         return this;
                     }.bind(this));
-
             };
 
             return Model;
-
         });
-
 }());

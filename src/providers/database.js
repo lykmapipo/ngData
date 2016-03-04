@@ -12,8 +12,13 @@
             /*jshint validthis:true*/
             var self = this;
 
+            //TODO clone lf to maintain local copy
+
             //database store type
             self.Stores = lf.schema && lf.schema.DataStoreType;
+
+            //database data types
+            self.Types = lf.Type;
 
             //default database properties
             self.name = 'db';
@@ -25,13 +30,56 @@
             //database connection reference
             self.connection = null;
 
+            //models map registry
+            self.models = {};
+
+
+            /**
+             * @description register a new model into ngData and compile it
+             * @param  {String} name       name of the model
+             * @param  {Object} definition model definition
+             * @return {Object}            valid ngData model
+             */
+            self.model = function(name, definition) {
+                //check if model already exist
+                var model = name && self.models[name];
+                if (model && !definition) {
+                    return model;
+                }
+
+                //compile a model definition
+                //and register it
+                else {
+                    //no model definition
+                    if (!definition) {
+                        return;
+                    }
+
+                    //continue with model compiling
+                    else {
+                        //extend definition with model name
+                        definition.name = name;
+
+                        //instantiate a collection with definetion
+                        model =
+                            self.models[name] = definition;
+                        // new Collection(definition);
+                        // TODO instantiate a model
+                        // TODO build model schema using lovefield
+
+                        return model;
+                    }
+                }
+            };
+
+
+
             //provider implementation
-            self.$get = function($q) {
+            self.$get = function($q, Collection) {
                 var DB = {};
 
                 //prepare database onUpgrade handler
                 self.onUpgrade = self.onUpgrade || function onUpgrade(rawDatabase) {
-                    console.log(rawDatabase);
                     return $q.when(rawDatabase);
                 };
 
@@ -53,11 +101,6 @@
                  * @type {Function}
                  */
                 DB.connect = function() {
-                    //check if there is
-                    //exsting database connection
-                    if (self.connection) {
-                        return $q.when(self.connection);
-                    }
 
                     //reset WebSQL provider based on environment
                     if (window.cordova && window.sqlitePlugin) {
@@ -65,6 +108,13 @@
                             window.sqlitePlugin.openDatabase;
                     }
 
+                    //TODO compile models
+                    _.forEach(_.keys(self.models), function(modelName) {
+                        self.model[modelName] =
+                            new Collection(self.models[modelName]);
+                    });
+
+                    //TODO update schema builder with model schema
                     //open database connection
                     //TODO migrate schemas before connect
                     var promise =
@@ -78,34 +128,6 @@
                         return _connection;
                     });
 
-                };
-
-
-                /**
-                 * @description execute the given query
-                 * @param  {String} query    SQL query to execute
-                 * @param  {Object} bindings query bindings
-                 * @return {Promise}         a promise that will resolve with the
-                 *                             result of executed query
-                 */
-                DB.query = function(query, bindings) {
-                    //ensure database connection exists
-                    DB.connect();
-
-                    bindings = bindings || [];
-
-                    var q = $q.defer();
-
-                    self.connection.transaction(function(tx) {
-                        tx.executeSql(query, bindings, function(_tx, result) {
-                                q.resolve(result);
-                            },
-                            function(__tx, error) {
-                                q.reject(error);
-                            });
-                    });
-
-                    return q.promise;
                 };
 
                 //export database

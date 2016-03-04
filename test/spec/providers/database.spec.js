@@ -1,6 +1,6 @@
 'use strict';
 
-describe('$databaseProvider', function() {
+describe.only('$databaseProvider', function() {
     //reference
     var databaseProvider;
 
@@ -34,6 +34,7 @@ describe('$databaseProvider', function() {
     }));
 
     it('should be able to configure database', inject(function() {
+        //seeds
         var name = faker.internet.userName();
         var description = faker.lorem.sentence();
         var version = Math.ceil(Math.random() * 10) + '.0.0';
@@ -53,5 +54,34 @@ describe('$databaseProvider', function() {
         expect(databaseProvider.store)
             .to.be.equal(databaseProvider.Stores.WEB_SQL);
     }));
+
+    describe('model', function() {
+
+        it('should be able to expose model register', inject(function() {
+            expect(databaseProvider.model).to.exist;
+            expect(databaseProvider.model).to.be.a('function');
+        }));
+
+        it('should be able to register a model definition', inject(function() {
+            var model = databaseProvider.model('User');
+            expect(model).to.not.exist;
+            expect(model).to.be.an.undefined;
+
+            var Types = databaseProvider.Types;
+            var properties = {
+                name: Types.STRING
+            };
+
+            model = databaseProvider.model('User', {
+                properties: properties
+            });
+
+            expect(model).to.exist;
+            expect(model.name).to.exist;
+            expect(model.properties).to.eql(properties);
+
+        }));
+
+    });
 
 });

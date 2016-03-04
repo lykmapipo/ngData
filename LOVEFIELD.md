@@ -34,6 +34,25 @@
 
 ## Model
 
+### Definition
+```js
+angular
+    .module('az',[])
+    .config(function($databaseProvider){
+        //reference Types
+        var Types = $databaseProvder.Types;
+
+        //register model
+        $databaseProvider.model('User', {
+            name: Types.STRING
+        });
+
+    })
+    .run(function($database){
+        $database.initialize().then(fn).catch(fn)
+    });
+```
+
 ## Query
 
 ## References

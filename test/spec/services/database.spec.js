@@ -17,7 +17,7 @@ describe('$database', function() {
         expect($database.connect).to.exist;
     }));
 
-    it.only('should be able to establish connection', function(done) {
+    it('should be able to establish connection', function(done) {
 
         inject(function($rootScope, $timeout, $database) {
 
