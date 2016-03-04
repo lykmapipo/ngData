@@ -15,8 +15,8 @@ describe.only('$databaseProvider', function() {
         expect(databaseProvider).to.exist;
     }));
 
-    it('should be able to provide data store types', inject(function() {
-        expect(databaseProvider.DataStoreType).to.exist;
+    it('should be able to provide database types', inject(function() {
+        expect(databaseProvider.Stores).to.exist;
     }));
 
     it('should have default database configurations', inject(function() {
@@ -24,9 +24,9 @@ describe.only('$databaseProvider', function() {
         expect(databaseProvider.description).to.exist;
         expect(databaseProvider.version).to.exist;
         expect(databaseProvider.size).to.exist;
-        expect(databaseProvider.storeType).to.exist;
-        expect(databaseProvider.storeType)
-            .to.equal(databaseProvider.DataStoreType.INDEXED_DB);
+        expect(databaseProvider.store).to.exist;
+        expect(databaseProvider.store)
+            .to.equal(databaseProvider.Stores.INDEXED_DB);
     }));
 
     it('should be able to configure database', inject(function() {
