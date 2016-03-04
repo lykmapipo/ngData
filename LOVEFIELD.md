@@ -56,5 +56,8 @@ angular
 
 ## Query
 
+## TODO
+- compile collection to lovefield schema builder
+
 ## References
 - [io2015-codelabs](https://github.com/googlesamples/io2015-codelabs/tree/master/lovefield)

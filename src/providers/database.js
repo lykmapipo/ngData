@@ -57,8 +57,8 @@
 
                     //continue with model compiling
                     else {
-                        //extend definition with model name
-                        definition.name = name;
+                        //extend definition with collection name
+                        definition.collectionName = name;
 
                         //instantiate a collection with definetion
                         model =

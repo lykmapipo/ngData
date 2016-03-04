@@ -15,31 +15,18 @@
              * @param {Object} options
              */
             function Collection(options) {
-                this.name = options.name;
 
-                this.tableName =
+                //TODO make use of inflector tableize
+                options.tableName =
                     options.tableName ||
-                    inflector.pluralize(options.name.toLowerCase());
+                    inflector.pluralize(options.collectionName.toLowerCase());
 
                 this.definition = options;
-
-                this.properties = this.definition.properties;
 
                 //initialize collection
                 this._init();
             }
 
-            //table back this collection
-            Collection.prototype.tableName;
-
-            //name of collection
-            Collection.prototype.name;
-
-            //collection definition/schema
-            Collection.prototype.definition;
-
-            //collection properties
-            Collection.prototype.properties;
 
 
             /**
@@ -49,10 +36,24 @@
              */
             Collection.prototype._init = function() {
 
+                //add magic getter
+                var properties =
+                    _.keys(_.omit(this.definition, ['methods', 'statics']));
+
+                _.forEach(properties, function(property) {
+
+                    Object.defineProperty(this, property, {
+                        get: function() {
+                            return this.definition[property];
+                        }.bind(this)
+                    });
+
+                }.bind(this));
+
                 //TODO cleanup auto primary key
                 //deduce if collection use autoIncrement primary key
-                var id = this.properties.id;
-                this.autoPK = id && id.autoIncrement;
+                // var id = this.properties.id;
+                // this.autoPK = id && id.autoIncrement;
 
                 //bind collection methods
                 if (this.definition.statics) {
@@ -78,6 +79,7 @@
                 //return model instance
                 return model;
             };
+
 
             //TODO return lovefield migration definition for the collection
 

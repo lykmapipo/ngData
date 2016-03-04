@@ -61,8 +61,7 @@ describe('$database', function() {
                     expect($database.connection).to.not.be.null;
 
                     var User = $database.model('User');
-
-                    expect(User.name).to.equal('User');
+                    expect(User.collectionName).to.equal('User');
                     expect(User.tableName).to.equal('users');
 
                     done(null, _connection);
