@@ -23,7 +23,8 @@ describe('$database', function() {
 
             $database.connect().then(function(_connection) {
                 expect(_connection).to.exist;
-                expect(databaseProvider.connection).to.exist;
+                expect($database.connection).to.exist;
+                expect($database.connection).to.not.be.null;
                 done(null, _connection);
             }).catch(function(error) {
                 done(error);
