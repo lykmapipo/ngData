@@ -3,6 +3,7 @@
 ## Heads Up!!
 - set window.openDatabase as per evironment and let lovefield `WebSQL` to use it.
 - keep model defition information in one object and refer to them using magic getter and setter
+- Add default primary key
 
 ## Database
 

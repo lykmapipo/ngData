@@ -3,6 +3,10 @@
 describe('$database', function() {
     var databaseProvider;
 
+    this.timeout = function() {
+        return 8000;
+    };
+
     // load the ngData module
     beforeEach(function() {
         module('ngData', function($databaseProvider) {
@@ -22,10 +26,12 @@ describe('$database', function() {
         inject(function($rootScope, $timeout, $database) {
 
             $database.connect().then(function(_connection) {
+
                 expect(_connection).to.exist;
                 expect($database.connection).to.exist;
                 expect($database.connection).to.not.be.null;
                 done(null, _connection);
+
             }).catch(function(error) {
                 done(error);
             });
@@ -44,9 +50,16 @@ describe('$database', function() {
         it('should be able to compile models', function(done) {
 
             inject(function($rootScope, $timeout, $database) {
-                var Types = databaseProvider.Types;
+                var Type = databaseProvider.Type;
                 var properties = {
-                    name: Types.STRING
+                    name: {
+                        type: Type.String,
+                        index: true
+                    },
+                    dob: {
+                        type: Type.Date,
+                        index: true
+                    }
                 };
 
                 //register model
@@ -63,6 +76,7 @@ describe('$database', function() {
                     var User = $database.model('User');
                     expect(User.collectionName).to.equal('User');
                     expect(User.tableName).to.equal('users');
+                    console.log(User.table.dob);
 
                     done(null, _connection);
                 }).catch(function(error) {

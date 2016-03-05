@@ -28,6 +28,9 @@
             }
 
 
+            //backing database table
+            Collection.prototype.table;
+
 
             /**
              * @function
@@ -63,6 +66,40 @@
                     }.bind(this));
                 }
 
+            };
+
+
+            /**
+             * @name toSchema
+             * @description convert collection definition to lovefield schema
+             * @param  {SchemaBuilder} schemaBuilder valid lovefield schema builder
+             * @return {SchemaBuilder}               valid lovefield schema builder
+             * @type {Function}
+             */
+            Collection.prototype.toSchema = function(schemaBuilder) {
+                //create table
+                var table = schemaBuilder.createTable(this.tableName);
+
+                //add columns
+                _.forEach(this.properties, function(def, property) {
+                    //TODO convert JS type to lovefield type
+
+                    //add column
+                    table.addColumn(property, def.type.lf);
+
+                    //add index if set
+                    if (def && (def.index || def.unique)) {
+                        var index = ['idx', property].join('_');
+                        var isUnique = def.unique || false;
+                        table.addIndex(index, [property], isUnique);
+                    }
+
+
+                    //TODO add primary key
+                    //TODO add auto increment primary key
+                });
+
+                return schemaBuilder;
             };
 
 

@@ -67,9 +67,9 @@ describe('$databaseProvider', function() {
             expect(model).to.not.exist;
             expect(model).to.be.an.undefined;
 
-            var Types = databaseProvider.Types;
+            var Type = databaseProvider.Type;
             var properties = {
-                name: Types.STRING
+                name: Type.String
             };
 
             model = databaseProvider.model('User', {

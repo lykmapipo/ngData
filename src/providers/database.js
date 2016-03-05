@@ -2,13 +2,44 @@
     'use strict';
 
     /**
+     * @name normalizeProperty
+     * @description normalize given property to use object property 
+     *              definition
+     * @param  {Object|String} property        property definition
+     * @param  {Object} properties schema properties definition
+     * @return {Object}            normalized property definition
+     * @example
+     *         This property definition
+     *         {
+     *             name: String
+     *         }
+     *
+     *         Will be normalized to
+     *         {
+     *             name:{
+     *                 type:String
+     *             }
+     *         }
+     */
+    function normalizeProperty(property, properties) {
+        var _property = {};
+        if (!_.isPlainObject(properties[property])) {
+            _property.type = properties[property];
+        } else {
+            _property = properties[property];
+        }
+        return _property;
+    }
+
+
+    /**
      * @ngdoc module
      * @name $database
      * @description database connection manager and provider
      */
     angular
         .module('ngData')
-        .provider('$database', function() {
+        .provider('$database', function(Types) {
             /*jshint validthis:true*/
             var self = this;
 
@@ -18,7 +49,7 @@
             self.Stores = lf.schema && lf.schema.DataStoreType;
 
             //database data types
-            self.Types = lf.Type;
+            self.Type = Types;
 
             //default database properties
             self.name = 'db';
@@ -59,6 +90,13 @@
                     else {
                         //extend definition with collection name
                         definition.collectionName = name;
+
+                        //normalize properties
+                        var properties = _.clone(definition.properties);
+                        _.forEach(properties, function(def, name) {
+                            definition.properties[name] =
+                                normalizeProperty(name, properties);
+                        });
 
                         //instantiate a collection with definetion
                         model =
@@ -112,6 +150,7 @@
                  * @type {Function}
                  */
                 DB.connect = function() {
+
                     //TODO why not return connection if exists?
                     //TODO detect schema change and reconnect?
 
@@ -127,19 +166,36 @@
                             new Collection(self.models[modelName]);
                     });
 
-                    //TODO update schema builder with model schema
                     //open database connection
+                    var schemaBuilder =
+                        lf.schema.create(self.name, self.version);
+
                     //TODO migrate schemas before connect
-                    var promise =
-                        lf.schema.create(self.name, self.version).connect({
-                            storeType: self.store,
-                            onUpgrade: self.onUpgrade
-                        });
+                    //add tables
+                    _.forEach(self.models, function(model) {
+                        //update schema builder with collection schema
+                        model.toSchema(schemaBuilder);
+                    });
+
+                    var promise = schemaBuilder.connect({
+                        storeType: self.store,
+                        onUpgrade: self.onUpgrade
+                    });
 
                     return promise.then(function(_connection) {
+
+                        //extend collection with table
+                        _.forEach(self.models, function(model) {
+                            model.table =
+                                _connection.getSchema().table(model.tableName);
+                        });
+
                         self.connection = _connection;
+
                         return _connection;
                     });
+
+                    //TODO handle database error and rethrow errors
 
                 };
 
